@@ -57,7 +57,7 @@ header h1{font-size:1.05rem;font-weight:900;}
 .rep-logo-text .sub{font-size:0.6rem;font-weight:bold;color:#ef4444;letter-spacing:2px;display:block;}
 .rep-logo-text .phone{font-size:0.72rem;color:#f1f5f9;display:block;margin-top:1px;}
 .rep-fecha{font-size:0.78rem;color:#94a3b8;padding:0 16px 4px;}
-.rep-badges{display:flex;flex-wrap:wrap;gap:5px;padding:0 16px 8px;}
+
 .hbadge{padding:3px 9px;border-radius:20px;font-size:0.68rem;font-weight:bold;}
 .hb-blue{background:#1d4ed8 !important;color:white !important;}
 .hb-yellow{background:#f59e0b !important;color:black !important;}
@@ -314,15 +314,6 @@ header h1{font-size:1.05rem;font-weight:900;}
         <span class="sub">ENTREGAS R&#193;PIDAS</span>
         <span class="phone">&#128241; +1 849-343-8658</span>
       </div>
-    </div>
-    <div class="rep-fecha" id="fechaDisplay">Sin fecha cargada</div>
-    <div class="rep-badges">
-      <span class="hbadge hb-blue" id="badgeTotal">Total: 0</span>
-      <span class="hbadge hb-green" id="badgeEnviados">Enviados: 0</span>
-      <span class="hbadge hb-yellow" id="badgePendientes">Pendientes: 0</span>
-      <span class="hbadge hb-yellow" id="badgeCodTotal">RD$ 0</span>
-      <span class="hbadge hb-green" id="badgeRecaudado">&#10003; RD$ 0</span>
-      <span class="hbadge hb-red" id="badgePendCod">&#8987; RD$ 0</span>
     </div>
     <div class="rep-toolbar">
       <button style="background:#1d4ed8 !important" onclick="document.getElementById('fileInputRepXlsx').click()">&#128202; Cargar Excel</button>
@@ -909,21 +900,6 @@ function borrarTodoRep(){
 }
 
 function renderRep(){
-  var fechaFmt=repFecha?new Date(repFecha+'T12:00:00').toLocaleDateString('es-DO',{weekday:'long',year:'numeric',month:'long',day:'numeric'}):'Sin fecha';
-  document.getElementById('fechaDisplay').textContent='\ud83d\udcc5 '+fechaFmt;
-  var total=clientes.length;
-  var enviados=clientes.filter(function(c){ return c.estado==='enviado'; }).length;
-  var entregados=clientes.filter(function(c){ return c.estado==='entregado'; }).length;
-  var pendientes=clientes.filter(function(c){ return !c.estado||c.estado==='pendiente'; }).length;
-  var codTotal=clientes.reduce(function(s,c){ return s+calcCod(c); },0);
-  var recaudado=clientes.filter(function(c){ return c.estado==='entregado'; }).reduce(function(s,c){ return s+calcCod(c); },0);
-  document.getElementById('badgeTotal').textContent='Total: '+total;
-  document.getElementById('badgeEnviados').textContent='Enviados: '+(enviados+entregados);
-  document.getElementById('badgePendientes').textContent='Pendientes: '+pendientes;
-  document.getElementById('badgeCodTotal').textContent='RD$ '+codTotal.toLocaleString();
-  document.getElementById('badgeRecaudado').textContent='\u2705 RD$ '+recaudado.toLocaleString();
-  document.getElementById('badgePendCod').textContent='\u23f3 RD$ '+(codTotal-recaudado).toLocaleString();
-
   var list=document.getElementById('list-rep');
   if(!clientes.length){ list.innerHTML='<div class="empty">Carga un archivo Excel para comenzar</div>'; return; }
 
