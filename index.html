@@ -16,7 +16,7 @@ body{background:#0f172a;color:#f1f5f9;min-height:100vh;padding-bottom:80px;overf
 #drawer.open{left:0;}
 .drawer-header{padding:20px 20px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f1f5f9;}
 .drawer-logo{display:flex;align-items:center;gap:10px;}
-.drawer-logo-icon{width:40px;height:40px;background:#f97316;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:900;color:white;letter-spacing:-1px;}
+.drawer-logo-icon{width:40px;height:40px;background:#f97316;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:900;color:white;}
 .drawer-logo-text{font-size:1.1rem;font-weight:900;color:#1e3a5f;letter-spacing:1px;}
 .drawer-close{width:32px;height:32px;border:2px solid #f97316;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#f97316;font-size:1rem;font-weight:bold;background:none;flex-shrink:0;}
 .drawer-nav{flex:1;padding:12px 0;overflow-y:auto;}
@@ -25,20 +25,19 @@ body{background:#0f172a;color:#f1f5f9;min-height:100vh;padding-bottom:80px;overf
 .drawer-item.active{background:#fff3ed;color:#f97316;font-weight:bold;}
 .drawer-item .di-icon{font-size:1.1rem;width:22px;text-align:center;}
 .drawer-footer{border-top:1px solid #f1f5f9;padding:16px 20px;}
-.drawer-footer-item{display:flex;align-items:center;gap:14px;padding:10px 0;cursor:pointer;font-size:0.9rem;}
-.drawer-footer-item.danger{color:#ef4444;}
+.drawer-footer-item{display:flex;align-items:center;gap:14px;padding:10px 0;cursor:pointer;font-size:0.9rem;color:#374151;}
 .drawer-user{display:flex;align-items:center;gap:12px;padding:12px 0 0;}
 .drawer-user-avatar{width:36px;height:36px;background:#e2e8f0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#475569;font-size:0.9rem;}
 .drawer-user-info{display:flex;flex-direction:column;}
 .drawer-user-name{font-size:0.85rem;font-weight:bold;color:#1e293b;}
 .drawer-user-role{font-size:0.72rem;color:#94a3b8;}
 
-/* ── HEADER ── */
+/* ── SHARED HEADER ── */
 header{background:#1e293b;padding:14px 16px;border-bottom:1px solid #334155;position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;}
 header h1{font-size:1.05rem;font-weight:900;}
 .hamburger{background:none;border:none;color:#f1f5f9;font-size:1.4rem;cursor:pointer;padding:4px 6px;line-height:1;}
 
-/* ── APP ADMIN (App 1) ── */
+/* ── APP ADMIN ── */
 #app-admin{display:block;}
 #app-admin .toolbar{display:flex;gap:8px;padding:10px;background:#0f172a;border-bottom:1px solid #334155;position:sticky;top:53px;z-index:49;}
 #app-admin .toolbar button{flex:1;padding:10px 6px;border-radius:8px;border:none;font-weight:bold;font-size:0.8rem;cursor:pointer;color:white;}
@@ -52,34 +51,34 @@ header h1{font-size:1.05rem;font-weight:900;}
 #app-admin .tab{flex:1;padding:10px;text-align:center;font-size:0.78rem;font-weight:bold;cursor:pointer;border-bottom:3px solid transparent;color:#94a3b8;}
 #app-admin .tab.active{color:#3b82f6;border-bottom-color:#3b82f6;}
 
-/* ── APP REPARTIDOR (App 2) ── */
+/* ── APP REPARTIDOR — single sticky block ── */
 #app-repartidor{display:none;}
-#app-repartidor .rep-header-ext{background:#111827;padding:10px 16px 8px;border-bottom:2px solid #f59e0b;position:sticky;top:53px;z-index:49;}
-.logo-block{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
-.logo-icon-r{width:44px;height:44px;background:#1d4ed8;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;}
-.logo-text-r .brand{font-size:1.2rem;font-weight:900;color:#f59e0b;letter-spacing:1px;display:block;}
-.logo-text-r .sub{font-size:0.6rem;font-weight:bold;color:#ef4444;letter-spacing:2px;display:block;}
-.logo-text-r .phone{font-size:0.72rem;color:#f1f5f9;display:block;margin-top:1px;}
-.fecha-line{font-size:0.78rem;color:#94a3b8;margin-bottom:4px;}
-.header-badges{display:flex;flex-wrap:wrap;gap:5px;}
+#rep-sticky{position:sticky;top:53px;z-index:49;background:#111827;border-bottom:2px solid #f59e0b;}
+.rep-logo-row{display:flex;align-items:center;gap:10px;padding:10px 16px 6px;}
+.rep-logo-icon{width:40px;height:40px;background:#1d4ed8;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+.rep-logo-text .brand{font-size:1.1rem;font-weight:900;color:#f59e0b;letter-spacing:1px;display:block;}
+.rep-logo-text .sub{font-size:0.58rem;font-weight:bold;color:#ef4444;letter-spacing:2px;display:block;}
+.rep-logo-text .phone{font-size:0.7rem;color:#f1f5f9;display:block;margin-top:1px;}
+.rep-fecha{font-size:0.75rem;color:#94a3b8;padding:0 16px 4px;}
+.rep-badges{display:flex;flex-wrap:wrap;gap:4px;padding:0 16px 8px;}
 .hbadge{padding:3px 9px;border-radius:20px;font-size:0.68rem;font-weight:bold;}
 .hb-blue{background:#1d4ed8;color:white;}
 .hb-yellow{background:#f59e0b;color:black;}
 .hb-red{background:#ef4444;color:white;}
 .hb-green{background:#10b981;color:white;}
-#app-repartidor .toolbar{display:flex;gap:8px;padding:8px 10px;background:#0f172a;border-bottom:1px solid #334155;position:sticky;top:216px;z-index:48;}
-#app-repartidor .toolbar button{flex:1;padding:9px 6px;border-radius:8px;border:none;font-weight:bold;font-size:0.78rem;cursor:pointer;color:white;}
-#app-repartidor .tabs{display:flex;border-bottom:1px solid #334155;background:#111827;position:sticky;top:258px;z-index:47;}
-#app-repartidor .tab{flex:1;padding:10px;text-align:center;font-size:0.82rem;font-weight:bold;cursor:pointer;border-bottom:3px solid transparent;color:#94a3b8;}
-#app-repartidor .tab.active{color:#f59e0b;border-bottom-color:#f59e0b;}
-#app-repartidor .search-bar{padding:8px 10px;background:#0f172a;border-bottom:1px solid #334155;position:sticky;top:302px;z-index:46;}
-#app-repartidor .search-bar input{width:100%;padding:9px 14px 9px 36px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#f1f5f9;font-size:0.88rem;outline:none;}
-#app-repartidor .search-bar input:focus{border-color:#f59e0b;}
-#app-repartidor .search-wrap{position:relative;}
-#app-repartidor .search-wrap .lupa{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:1rem;pointer-events:none;}
+.rep-toolbar{display:flex;gap:8px;padding:8px 16px 10px;}
+.rep-toolbar button{flex:1;padding:9px 6px;border-radius:8px;border:none;font-weight:bold;font-size:0.78rem;cursor:pointer;color:white;}
+.rep-tabs{display:flex;background:#111827;}
+.rep-tab{flex:1;padding:10px;text-align:center;font-size:0.82rem;font-weight:bold;cursor:pointer;border-bottom:3px solid transparent;color:#94a3b8;}
+.rep-tab.active{color:#f59e0b;border-bottom-color:#f59e0b;}
+.rep-search{padding:8px 16px;background:#0f172a;border-bottom:1px solid #334155;}
+.rep-search input{width:100%;padding:9px 14px 9px 36px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#f1f5f9;font-size:0.88rem;outline:none;-webkit-text-fill-color:#f1f5f9;-webkit-box-shadow:0 0 0px 1000px #1e293b inset;}
+.rep-search input:focus{border-color:#f59e0b;}
+.rep-search-wrap{position:relative;}
+.rep-search-wrap .lupa{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:1rem;pointer-events:none;}
 
-/* ── SHARED CARD STYLES ── */
-#list-admin, #list-rep{padding:10px;}
+/* ── SHARED CARDS ── */
+#list-admin,#list-rep{padding:10px;}
 .card{background:#1e293b;border-radius:12px;margin-bottom:12px;border-left:4px solid #3b82f6;overflow:hidden;}
 .card.completado{border-left-color:#10b981;opacity:0.6;}
 .card.sin-ubi{border-left-color:#f59e0b;}
@@ -89,10 +88,11 @@ header h1{font-size:1.05rem;font-weight:900;}
 .card-header{padding:12px 14px 4px;display:flex;align-items:flex-start;justify-content:space-between;}
 .card-header .info{flex:1;}
 .card-header .nombre{font-weight:bold;font-size:1rem;}
-.card-header .cod{font-size:0.8rem;color:#94a3b8;margin-top:2px;}
-.card-header .cod-yellow{font-size:0.9rem;font-weight:bold;color:#f59e0b;margin-top:4px;}
-.card-header .tel{font-size:0.8rem;color:#94a3b8;margin-top:2px;}
+.card-header .subcod{font-size:0.8rem;color:#94a3b8;margin-top:2px;}
+.card-header .tel{font-size:0.8rem;color:#94a3b8;margin-top:4px;}
+.card-header .cod-yellow{font-size:0.95rem;font-weight:bold;color:#f59e0b;margin-top:4px;}
 .badge-pedidos{display:inline-block;background:#7c3aed;color:white;padding:2px 8px;border-radius:12px;font-size:0.7rem;font-weight:bold;margin-left:6px;vertical-align:middle;}
+.badge-orange{background:#f59e0b;color:black;display:inline-block;padding:2px 8px;border-radius:20px;font-size:0.7rem;font-weight:bold;margin-left:6px;}
 .notas-multi{margin-top:6px;border-top:1px solid #334155;padding-top:6px;}
 .nota-item{font-size:0.82rem;color:#cbd5e1;padding:2px 0;}
 .nota-simple{font-size:0.82rem;color:#cbd5e1;margin-top:4px;}
@@ -102,7 +102,6 @@ header h1{font-size:1.05rem;font-weight:900;}
 .btn-row{display:flex;gap:6px;}
 .btn{padding:10px;border-radius:8px;border:none;font-weight:bold;font-size:0.82rem;cursor:pointer;color:white;text-align:center;text-decoration:none;display:block;width:100%;}
 .btn-sm{flex:1;padding:9px 4px;border-radius:8px;border:none;font-weight:bold;font-size:0.78rem;cursor:pointer;color:white;text-align:center;text-decoration:none;display:inline-block;}
-.badge-orange{background:#f59e0b;color:black;display:inline-block;padding:2px 8px;border-radius:20px;font-size:0.7rem;font-weight:bold;}
 
 /* ── MODALS ── */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;}
@@ -127,31 +126,28 @@ header h1{font-size:1.05rem;font-weight:900;}
 </head>
 <body>
 
-<!-- DRAWER OVERLAY -->
-
-<div id="drawer-overlay" onclick="closeDrawer()"></div>
-
 <!-- DRAWER -->
 
+<div id="drawer-overlay" onclick="closeDrawer()"></div>
 <div id="drawer">
   <div class="drawer-header">
     <div class="drawer-logo">
       <div class="drawer-logo-icon">LY</div>
       <div class="drawer-logo-text">LLEGA YA</div>
     </div>
-    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <button class="drawer-close" onclick="closeDrawer()">&#10005;</button>
   </div>
   <nav class="drawer-nav">
     <div class="drawer-item active" id="nav-admin" onclick="switchApp('admin')">
-      <span class="di-icon">🗺️</span> Rutas (Admin)
+      <span class="di-icon">&#128506;</span> Rutas (Admin)
     </div>
     <div class="drawer-item" id="nav-repartidor" onclick="switchApp('repartidor')">
-      <span class="di-icon">🛵</span> Entregas (Repartidor)
+      <span class="di-icon">&#128757;</span> Entregas (Repartidor)
     </div>
   </nav>
   <div class="drawer-footer">
-    <div class="drawer-footer-item" onclick="openModalGlobal('modalConfigAdmin');closeDrawer();">
-      <span style="font-size:1.1rem">⚙️</span> Ajustes
+    <div class="drawer-footer-item" onclick="openMG('modalConfigAdmin');closeDrawer();">
+      <span style="font-size:1.1rem">&#9881;</span> Ajustes
     </div>
     <div class="drawer-user">
       <div class="drawer-user-avatar">J</div>
@@ -166,650 +162,520 @@ header h1{font-size:1.05rem;font-weight:900;}
 <!-- SHARED HEADER -->
 
 <header>
-  <h1 id="headerTitle">🛵 LLEGA YA — Rutas</h1>
-  <button class="hamburger" onclick="openDrawer()">☰</button>
+  <h1 id="headerTitle">&#128757; LLEGA YA &#8212; Rutas</h1>
+  <button class="hamburger" onclick="openDrawer()">&#9776;</button>
 </header>
 
-<!-- ════════════════════════════════════════ -->
-
-<!-- APP 1: ADMIN / RUTAS                    -->
-
-<!-- ════════════════════════════════════════ -->
+<!-- APP ADMIN -->
 
 <div id="app-admin">
   <div class="toolbar">
-    <button style="background:#3b82f6" onclick="openModalGlobal('modalCargarAdmin')">📂 Cargar JSON</button>
-    <button style="background:#8b5cf6" onclick="sortNearest()">⚡ Cercanía</button>
+    <button style="background:#3b82f6" onclick="openMG('modalCargarAdmin')">&#128194; Cargar JSON</button>
+    <button style="background:#8b5cf6" onclick="sortNearest()">&#9889; Cercan&#237;a</button>
     <button style="background:#10b981" onclick="abrirNuevoCliente()">+ Cliente</button>
   </div>
   <div class="search-bar">
     <div class="search-wrap">
-      <span class="lupa">🔍</span>
-      <input type="text" id="busqueda" placeholder="Buscar por nombre o teléfono..." oninput="renderAdmin()">
+      <span class="lupa">&#128269;</span>
+      <input type="text" id="busqueda" placeholder="Buscar por nombre o tel&#233;fono..." oninput="renderAdmin()">
     </div>
   </div>
   <div class="tabs" id="admin-tabs">
     <div class="tab active" onclick="switchTabAdmin('pendientes')">Pendientes</div>
-    <div class="tab" onclick="switchTabAdmin('sin_ubicacion')">Sin Ubicación</div>
+    <div class="tab" onclick="switchTabAdmin('sin_ubicacion')">Sin Ubicaci&#243;n</div>
     <div class="tab" onclick="switchTabAdmin('completados')">Completados</div>
-    <div class="tab" onclick="switchTabAdmin('exportar')">📤 Exportar</div>
+    <div class="tab" onclick="switchTabAdmin('exportar')">&#128228; Exportar</div>
   </div>
   <div id="list-admin"></div>
-
-  <!-- FAB Admin -->
-
   <div class="fab" id="fab-admin">
-    <button style="background:#475569" onclick="openModalGlobal('modalConfigAdmin')">⚙️</button>
+    <button style="background:#475569" onclick="openMG('modalConfigAdmin')">&#9881;</button>
   </div>
 </div>
 
-<!-- ════════════════════════════════════════ -->
-
-<!-- APP 2: REPARTIDOR / ENTREGAS           -->
-
-<!-- ════════════════════════════════════════ -->
+<!-- APP REPARTIDOR -->
 
 <div id="app-repartidor">
-  <div class="rep-header-ext">
-    <div class="logo-block">
-      <div class="logo-icon-r">🛵</div>
-      <div class="logo-text-r">
+  <div id="rep-sticky">
+    <div class="rep-logo-row">
+      <div class="rep-logo-icon">&#128757;</div>
+      <div class="rep-logo-text">
         <span class="brand">Llega YA</span>
-        <span class="sub">ENTREGAS RÁPIDAS</span>
-        <span class="phone">📱 +1 849-343-8658</span>
+        <span class="sub">ENTREGAS R&#193;PIDAS</span>
+        <span class="phone">&#128241; +1 849-343-8658</span>
       </div>
     </div>
-    <div class="fecha-line" id="fechaDisplay">Sin fecha cargada</div>
-    <div class="header-badges">
+    <div class="rep-fecha" id="fechaDisplay">Sin fecha cargada</div>
+    <div class="rep-badges">
       <span class="hbadge hb-blue" id="badgeTotal">Total: 0</span>
       <span class="hbadge hb-green" id="badgeEnviados">Enviados: 0</span>
       <span class="hbadge hb-yellow" id="badgePendientes">Pendientes: 0</span>
       <span class="hbadge hb-yellow" id="badgeCodTotal">RD$ 0</span>
-      <span class="hbadge hb-green" id="badgeRecaudado">✅ RD$ 0</span>
-      <span class="hbadge hb-red" id="badgePendCod">⏳ RD$ 0</span>
+      <span class="hbadge hb-green" id="badgeRecaudado">&#9989; RD$ 0</span>
+      <span class="hbadge hb-red" id="badgePendCod">&#8987; RD$ 0</span>
     </div>
-  </div>
-  <div class="toolbar">
-    <button style="background:#1d4ed8" onclick="openModalGlobal('modalCargarRep')">📂 Cargar JSON</button>
-    <button style="background:#475569" onclick="openModalGlobal('modalFecha')">📅 Fecha</button>
-    <button style="background:#475569" onclick="openModalGlobal('modalConfigRep')">⚙️</button>
-  </div>
-  <div class="tabs" id="rep-tabs">
-    <div class="tab active" onclick="switchTabRep('pendientes')">Pendientes</div>
-    <div class="tab" onclick="switchTabRep('contactados')">Ya Contacté</div>
-  </div>
-  <div class="search-bar">
-    <div class="search-wrap">
-      <span class="lupa">🔍</span>
-      <input type="text" id="searchRep" placeholder="Buscar por nombre o teléfono..." oninput="renderRep()">
+    <div class="rep-toolbar">
+      <button style="background:#1d4ed8" onclick="openMG('modalCargarRep')">&#128194; Cargar JSON</button>
+      <button style="background:#475569" onclick="openMG('modalFecha')">&#128197; Fecha</button>
+      <button style="background:#475569" onclick="openMG('modalConfigRep')">&#9881;</button>
+    </div>
+    <div class="rep-tabs">
+      <div class="rep-tab active" id="rtab-pendientes" onclick="switchTabRep('pendientes')">Pendientes</div>
+      <div class="rep-tab" id="rtab-contactados" onclick="switchTabRep('contactados')">Ya Contact&#233;</div>
+    </div>
+    <div class="rep-search">
+      <div class="rep-search-wrap">
+        <span class="lupa">&#128269;</span>
+        <input type="text" id="searchRep" placeholder="Buscar por nombre o tel&#233;fono..." oninput="renderRep()">
+      </div>
     </div>
   </div>
   <div id="list-rep"><div class="empty">Carga un archivo JSON para comenzar</div></div>
 </div>
 
-<!-- ════════════════════════════════════════ -->
-
-<!-- MODALS ADMIN                            -->
-
-<!-- ════════════════════════════════════════ -->
+<!-- MODALS ADMIN -->
 
 <div class="overlay" id="modalCargarAdmin">
   <div class="modal">
-    <h2>📂 Cargar Archivo JSON</h2>
+    <h2>&#128194; Cargar Archivo JSON</h2>
     <div class="field"><label>Selecciona tu archivo .json</label><input type="file" id="fileInputAdmin" accept=".json" onchange="cargarArchivoAdmin(event)"></div>
-    <div class="field"><label>O pega el contenido JSON aquí</label><textarea id="jsonPasteAdmin" placeholder='{ "clientes": [...] }'></textarea></div>
+    <div class="field"><label>O pega el contenido JSON aqu&#237;</label><textarea id="jsonPasteAdmin" placeholder='{ "clientes": [...] }'></textarea></div>
     <div class="modal-btns">
       <button style="background:#10b981" onclick="cargarPegadoAdmin()">CARGAR</button>
-      <button style="background:#334155" onclick="closeModalGlobal('modalCargarAdmin')">CANCELAR</button>
+      <button style="background:#334155" onclick="closeMG('modalCargarAdmin')">CANCELAR</button>
     </div>
   </div>
 </div>
 
 <div class="overlay" id="modalCliente">
   <div class="modal">
-    <h2 id="modalClienteTitulo">➕ Nuevo Cliente</h2>
+    <h2 id="modalClienteTitulo">&#10133; Nuevo Cliente</h2>
     <input type="hidden" id="editId">
     <div class="field"><label>Nombre</label><input type="text" id="cNombre" placeholder="Nombre completo"></div>
-    <div class="field"><label>Teléfono / WhatsApp</label><input type="tel" id="cTel" placeholder="8093334444"></div>
+    <div class="field"><label>Tel&#233;fono / WhatsApp</label><input type="tel" id="cTel" placeholder="8093334444"></div>
     <div class="field"><label>Monto (RD$)</label><input type="number" id="cCod" placeholder="0"></div>
     <div class="field"><label>Coordenadas</label><input type="text" id="cCoords" placeholder="19.2917, -70.2558"></div>
     <div class="modal-btns">
       <button style="background:#10b981" onclick="guardarCliente()">GUARDAR</button>
-      <button style="background:#334155" onclick="closeModalGlobal('modalCliente')">CANCELAR</button>
+      <button style="background:#334155" onclick="closeMG('modalCliente')">CANCELAR</button>
     </div>
   </div>
 </div>
 
 <div class="overlay" id="modalUbi">
   <div class="modal">
-    <h2>📍 Actualizar Ubicación</h2>
+    <h2>&#128205; Actualizar Ubicaci&#243;n</h2>
     <input type="hidden" id="ubiId">
     <p style="font-size:0.85rem;color:#94a3b8;margin-bottom:12px;">Pega las coordenadas o un link de Google Maps</p>
     <div class="field"><textarea id="ubiInput" placeholder="19.2917, -70.2558&#10;o&#10;https://maps.google.com/?q=19.2917,-70.2558"></textarea></div>
     <div class="modal-btns">
       <button style="background:#10b981" onclick="guardarUbicacion()">GUARDAR</button>
-      <button style="background:#334155" onclick="closeModalGlobal('modalUbi')">CANCELAR</button>
+      <button style="background:#334155" onclick="closeMG('modalUbi')">CANCELAR</button>
     </div>
   </div>
 </div>
 
 <div class="overlay" id="modalConfigAdmin">
   <div class="modal">
-    <h2>⚙️ Opciones — Rutas</h2><br>
-    <button class="btn" style="background:#ef4444" onclick="if(confirm('¿Borrar todos los clientes de Rutas?')){localStorage.removeItem('llega_ya_clientes');adminClientes=[];adminExportados=[];guardarAdmin();closeModalGlobal('modalConfigAdmin');}">🗑️ Borrar Todo (fin del día)</button>
-    <button class="btn" style="background:#475569;margin-top:8px" onclick="closeModalGlobal('modalConfigAdmin')">CERRAR</button>
+    <h2>&#9881; Opciones &#8212; Rutas</h2><br>
+    <button class="btn" style="background:#ef4444" onclick="if(confirm('Borrar todos los clientes?')){localStorage.removeItem('llega_ya_clientes');localStorage.removeItem('llega_ya_exportados');clientes=[];exportados=[];guardar();closeMG('modalConfigAdmin');}">&#128465; Borrar Todo (fin del d&#237;a)</button>
+    <button class="btn" style="background:#475569;margin-top:8px" onclick="closeMG('modalConfigAdmin')">CERRAR</button>
   </div>
 </div>
 
-<!-- ════════════════════════════════════════ -->
-
-<!-- MODALS REPARTIDOR                       -->
-
-<!-- ════════════════════════════════════════ -->
+<!-- MODALS REPARTIDOR -->
 
 <div class="overlay" id="modalCargarRep">
   <div class="modal">
-    <h2>📂 Cargar Clientes</h2>
+    <h2>&#128194; Cargar Clientes</h2>
     <div class="field"><label>Selecciona archivo .json</label><input type="file" id="fileInputRep" accept=".json" onchange="cargarArchivoRep(event)"></div>
-    <div class="field"><label>O pega el JSON aquí</label><textarea id="jsonPasteRep" placeholder='{ "clientes": [...] }'></textarea></div>
+    <div class="field"><label>O pega el JSON aqu&#237;</label><textarea id="jsonPasteRep" placeholder='{ "clientes": [...] }'></textarea></div>
     <div class="modal-btns">
       <button style="background:#10b981" onclick="cargarPegadoRep()">CARGAR</button>
-      <button style="background:#334155" onclick="closeModalGlobal('modalCargarRep')">CANCELAR</button>
+      <button style="background:#334155" onclick="closeMG('modalCargarRep')">CANCELAR</button>
     </div>
   </div>
 </div>
 
 <div class="overlay" id="modalFecha">
   <div class="modal">
-    <h2>📅 Fecha de Entrega</h2>
+    <h2>&#128197; Fecha de Entrega</h2>
     <div class="field"><label>Fecha</label><input type="date" id="inputFecha"></div>
     <div class="modal-btns">
       <button style="background:#10b981" onclick="guardarFecha()">GUARDAR</button>
-      <button style="background:#334155" onclick="closeModalGlobal('modalFecha')">CANCELAR</button>
+      <button style="background:#334155" onclick="closeMG('modalFecha')">CANCELAR</button>
     </div>
   </div>
 </div>
 
 <div class="overlay" id="modalConfigRep">
   <div class="modal">
-    <h2>⚙️ Opciones — Entregas</h2><br>
-    <button style="width:100%;padding:12px;border-radius:8px;border:none;font-weight:bold;cursor:pointer;color:white;background:#ef4444;font-size:0.9rem" onclick="borrarPestanaRep()">🗑️ Borrar <span id="labelBorrar">Pendientes</span></button>
-    <button style="width:100%;padding:12px;border-radius:8px;border:none;font-weight:bold;cursor:pointer;color:white;background:#7f1d1d;font-size:0.9rem;margin-top:8px" onclick="borrarTodoRep()">🗑️ Borrar Todo (fin del día)</button>
-    <button style="width:100%;padding:12px;border-radius:8px;border:none;font-weight:bold;cursor:pointer;color:white;background:#475569;font-size:0.9rem;margin-top:8px" onclick="closeModalGlobal('modalConfigRep')">CERRAR</button>
+    <h2>&#9881; Opciones &#8212; Entregas</h2><br>
+    <button style="width:100%;padding:12px;border-radius:8px;border:none;font-weight:bold;cursor:pointer;color:white;background:#ef4444;font-size:0.9rem" onclick="borrarPestanaRep()">&#128465; Borrar <span id="labelBorrar">Pendientes</span></button>
+    <button style="width:100%;padding:12px;border-radius:8px;border:none;font-weight:bold;cursor:pointer;color:white;background:#7f1d1d;font-size:0.9rem;margin-top:8px" onclick="borrarTodoRep()">&#128465; Borrar Todo (fin del d&#237;a)</button>
+    <button style="width:100%;padding:12px;border-radius:8px;border:none;font-weight:bold;cursor:pointer;color:white;background:#475569;font-size:0.9rem;margin-top:8px" onclick="closeMG('modalConfigRep')">CERRAR</button>
   </div>
 </div>
 
 <script>
-/* ══════════════════════════════════════════ */
-/* DRAWER                                     */
-/* ══════════════════════════════════════════ */
-let appActual = 'admin';
+var LS_KEY='llega_ya_clientes',LS_EXP='llega_ya_exportados',LS_FECHA='llegaya_fecha';
+var clientes=[],exportados=[],repFecha=localStorage.getItem(LS_FECHA)||'';
+var adminTabActual='pendientes',repTabActual='pendientes';
 
-function openDrawer() {
-  document.getElementById('drawer').classList.add('open');
-  document.getElementById('drawer-overlay').classList.add('open');
-}
-function closeDrawer() {
-  document.getElementById('drawer').classList.remove('open');
-  document.getElementById('drawer-overlay').classList.remove('open');
-}
-function switchApp(app) {
-  appActual = app;
-  document.getElementById('app-admin').style.display = app === 'admin' ? 'block' : 'none';
-  document.getElementById('app-repartidor').style.display = app === 'repartidor' ? 'block' : 'none';
-  document.getElementById('fab-admin').style.display = app === 'admin' ? 'flex' : 'none';
-  document.getElementById('nav-admin').classList.toggle('active', app === 'admin');
-  document.getElementById('nav-repartidor').classList.toggle('active', app === 'repartidor');
-  document.getElementById('headerTitle').textContent =
-    app === 'admin' ? '🛵 LLEGA YA — Rutas' : '🛵 LLEGA YA — Entregas';
-  closeDrawer();
-  if (app === 'admin') renderAdmin();
-  else renderRep();
+function generarId(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5);}
+function normTel(t){return(t||'').replace(/\D/g,'');}
+
+function syncFromStorage(){
+  clientes=JSON.parse(localStorage.getItem(LS_KEY)||'[]').map(function(c){return c._uid?c:Object.assign({},c,{_uid:generarId()});});
+  exportados=JSON.parse(localStorage.getItem(LS_EXP)||'[]');
 }
 
-function openModalGlobal(id) {
-  if (id === 'modalConfigRep') {
-    document.getElementById('labelBorrar').textContent = repTabActual === 'pendientes' ? 'Pendientes' : 'Ya Contacté';
-  }
-  document.getElementById(id).classList.add('open');
-}
-function closeModalGlobal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => {
-  if (e.target === o) o.classList.remove('open');
-}));
-
-/* ══════════════════════════════════════════ */
-/* APP ADMIN                                  */
-/* ══════════════════════════════════════════ */
-let adminClientes = JSON.parse(localStorage.getItem('llega_ya_clientes') || '[]');
-let adminExportados = JSON.parse(localStorage.getItem('llega_ya_exportados') || '[]');
-let adminTabActual = 'pendientes';
-
-function generarId() { return Date.now().toString(36) + Math.random().toString(36).substr(2,5); }
-function normTel(tel) { return (tel||'').replace(/\D/g,''); }
-
-adminClientes = adminClientes.map(c => c._uid ? c : {...c, _uid: generarId()});
-
-function guardarAdmin() {
-  localStorage.setItem('llega_ya_clientes', JSON.stringify(adminClientes));
-  localStorage.setItem('llega_ya_exportados', JSON.stringify(adminExportados));
+function guardar(){
+  localStorage.setItem(LS_KEY,JSON.stringify(clientes));
+  localStorage.setItem(LS_EXP,JSON.stringify(exportados));
   renderAdmin();
-}
-
-function calcCodAdmin(c) {
-  return c.pedidos ? c.pedidos.reduce((s,p) => s+(parseFloat(p.cod)||0),0) : (parseFloat(c.cod)||0);
-}
-
-function getDatosAdmin() {
-  if (adminTabActual==='pendientes') return adminClientes.filter(c=>c.estado==='pendiente'&&c.lat&&c.lng);
-  if (adminTabActual==='sin_ubicacion') return adminClientes.filter(c=>(!c.lat||!c.lng)&&c.estado==='pendiente');
-  if (adminTabActual==='completados') return adminClientes.filter(c=>c.estado==='completado');
-  return [];
-}
-
-function moverAdmin(uid, dir) {
-  const datos = getDatosAdmin();
-  const pos = datos.findIndex(x=>x._uid===uid);
-  const newPos = pos+dir;
-  if (newPos<0||newPos>=datos.length) return;
-  const ia = adminClientes.findIndex(x=>x._uid===datos[pos]._uid);
-  const ib = adminClientes.findIndex(x=>x._uid===datos[newPos]._uid);
-  [adminClientes[ia],adminClientes[ib]] = [adminClientes[ib],adminClientes[ia]];
-  guardarAdmin();
-}
-
-function renderAdmin() {
-  if (adminTabActual==='exportar') { renderExportarAdmin(); return; }
-  const list = document.getElementById('list-admin');
-  const busqueda = (document.getElementById('busqueda')||{value:''}).value.toLowerCase().trim();
-  let datos = getDatosAdmin();
-  if (busqueda) datos = datos.filter(c=>(c.nombre||'').toLowerCase().includes(busqueda)||(c.telefono||'').includes(busqueda));
-  if (datos.length===0) { list.innerHTML='<div class="empty">No hay clientes en esta sección</div>'; return; }
-
-  list.innerHTML = datos.map((c,idx) => {
-    const mapsUrl = c.lat&&c.lng ? `https://www.google.com/maps?q=${c.lat},${c.lng}` : null;
-    const waUrl = c.telefono ? `https://wa.me/${c.telefono.replace(/\D/g,'')}` : null;
-    const sinUbi = !c.lat||!c.lng;
-    const uid = c._uid;
-    const esMulti = c.pedidos&&c.pedidos.length>1;
-    const cod = calcCodAdmin(c);
-
-    const btnC = c.estado==='completado'
-      ? `<button class="btn-sm" style="background:#065f46" onclick="devolverPendienteAdmin('${uid}')">↩️ Pendiente</button>`
-      : `<button class="btn-sm" style="background:#10b981" onclick="completarAdmin('${uid}')">✅ Completado</button>`;
-
-    let notasHtml = '';
-    if (esMulti) {
-      notasHtml = `<div class="notas-multi">${c.pedidos.map((p,i)=>
-        `<div class="nota-item">📦 <strong>Pedido ${i+1}:</strong> ${p.nota||'—'}${p.cod?` <span style="color:#f59e0b">· RD$ ${parseFloat(p.cod).toLocaleString()}</span>`:''}</div>`
-      ).join('')}</div>`;
-    }
-
-    return `<div class="card ${sinUbi?'sin-ubi':''} ${c.estado==='completado'?'completado':''} ${esMulti?'multi':''}">
-<div class="card-header"><div class="info">
-<div class="nombre"><span style="color:#94a3b8;font-size:0.85rem;margin-right:6px">#${idx+1}</span>${c.nombre||'Sin nombre'}${sinUbi?`<span class="badge-orange" style="margin-left:6px">Sin GPS</span>`:''}${esMulti?`<span class="badge-pedidos">📦 ${c.pedidos.length} pedidos</span>`:''}</div>
-<div class="cod">RD$ ${cod.toLocaleString()} · Tel: ${c.telefono||'—'}</div>
-${notasHtml}
-</div>
-<div class="order-btns"><button onclick="moverAdmin('${uid}',-1)">▲</button><button onclick="moverAdmin('${uid}',1)">▼</button></div>
-</div>
-<div class="card-body">
-<div class="btn-row">
-${mapsUrl?`<a class="btn-sm" style="background:#3b82f6" href="${mapsUrl}" target="_blank">🗺️ Mapa</a>`:''}
-${waUrl?`<a class="btn-sm" style="background:#25d366" href="${waUrl}" target="_blank">💬 WhatsApp</a>`:''}
-</div>
-<div class="btn-row">
-<button class="btn-sm" style="background:#8b5cf6" onclick="abrirUbiAdmin('${uid}')">📍 Ubicación</button>
-<button class="btn-sm" style="background:#334155" onclick="editarClienteAdmin('${uid}')">✏️ Editar</button>
-</div>
-<div class="btn-row">${btnC}</div>
-<div class="btn-row">
-<button class="btn-sm" style="background:#f59e0b;color:black" onclick="enviarExportarAdmin('${uid}')">📤 Exportar</button>
-<button class="btn-sm" style="background:#ef4444" onclick="eliminarClienteAdmin('${uid}')">🗑️ Eliminar</button>
-</div>
-</div></div>`;
-  }).join('');
-}
-
-function renderExportarAdmin() {
-  const list = document.getElementById('list-admin');
-  if (adminExportados.length===0) { list.innerHTML='<div class="empty">No hay contactos en la lista de exportar.<br><br>Usa el botón 📤 Exportar en cada tarjeta para añadirlos aquí.</div>'; return; }
-  list.innerHTML = `<div style="padding:10px">
-<button class="btn" style="background:#10b981;margin-bottom:12px" onclick="descargarJSONAdmin()">⬇️ Descargar JSON (${adminExportados.length} contactos)</button>
-<button class="btn" style="background:#475569;margin-bottom:16px" onclick="if(confirm('¿Limpiar lista de exportar?')){adminExportados=[];guardarAdmin()}">🗑️ Limpiar lista</button>
-${adminExportados.map(c=>`<div class="export-card">
-<div><div class="ec-info">${c.nombre||'Sin nombre'}</div><div class="ec-sub">RD$ ${calcCodAdmin(c).toLocaleString()} · ${c.telefono||'—'}</div></div>
-<button class="ec-btn" onclick="quitarExportarAdmin('${c._uid}')">✕ Quitar</button>
-</div>`).join('')}
-</div>`;
-}
-
-function descargarJSONAdmin() {
-  const data = { clientes: adminExportados.map(c=>({_uid:c._uid,nombre:c.nombre||'',telefono:c.telefono||'',cod:calcCodAdmin(c),lat:c.lat||null,lng:c.lng||null,estado:'pendiente'})) };
-  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download=`llega_ya_${new Date().toISOString().slice(0,10)}.json`; a.click();
-}
-
-function enviarExportarAdmin(uid) {
-  const c = adminClientes.find(x=>x._uid===uid);
-  if (!c) return;
-  if (adminExportados.find(x=>x._uid===uid)) return alert('Este contacto ya está en la lista de exportar.');
-  adminExportados.push({...c});
-  c.estado='completado';
-  const idx = adminClientes.findIndex(x=>x._uid===uid);
-  const [r] = adminClientes.splice(idx,1);
-  adminClientes.push(r);
-  guardarAdmin();
-  alert(`✅ ${c.nombre} exportado y movido a Completados`);
-}
-
-function quitarExportarAdmin(uid) {
-  adminExportados = adminExportados.filter(x=>x._uid!==uid);
-  const c = adminClientes.find(x=>x._uid===uid);
-  if (c) c.estado='pendiente';
-  guardarAdmin();
-}
-
-function eliminarClienteAdmin(uid) {
-  if (!confirm('¿Eliminar este cliente?')) return;
-  adminClientes = adminClientes.filter(x=>x._uid!==uid);
-  adminExportados = adminExportados.filter(x=>x._uid!==uid);
-  guardarAdmin();
-}
-
-function switchTabAdmin(tab) {
-  adminTabActual = tab;
-  document.getElementById('busqueda').value='';
-  document.querySelectorAll('#admin-tabs .tab').forEach((t,i)=>{
-    t.classList.toggle('active',['pendientes','sin_ubicacion','completados','exportar'][i]===tab);
-  });
-  renderAdmin();
-}
-
-function completarAdmin(uid) {
-  const c = adminClientes.find(x=>x._uid===uid);
-  if (!c) return;
-  c.estado='completado';
-  const idx = adminClientes.findIndex(x=>x._uid===uid);
-  const [r] = adminClientes.splice(idx,1);
-  adminClientes.push(r);
-  guardarAdmin();
-}
-
-function devolverPendienteAdmin(uid) {
-  const c = adminClientes.find(x=>x._uid===uid);
-  if (c) { c.estado='pendiente'; guardarAdmin(); }
-}
-
-function sortNearest() {
-  const pendientes = adminClientes.filter(c=>c.estado==='pendiente'&&c.lat&&c.lng);
-  const resto = adminClientes.filter(c=>!(c.estado==='pendiente'&&c.lat&&c.lng));
-  if (pendientes.length===0) return alert('No hay clientes con ubicación pendientes.');
-  if (!navigator.geolocation) return alert('Tu dispositivo no soporta GPS.');
-  const hav=(a,b,c,d)=>{const R=6371,dL=(c-a)*Math.PI/180,dG=(d-b)*Math.PI/180,x=Math.sin(dL/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dG/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));};
-  const ord=(origen)=>{let la=origen.lat,ln=origen.lng,p=[...pendientes],r=[];while(p.length){let i=0,m=Infinity;p.forEach((c,j)=>{const d=hav(la,ln,c.lat,c.lng);if(d<m){m=d;i=j;}});const n=p.splice(i,1)[0];r.push(n);la=n.lat;ln=n.lng;}return r;};
-  navigator.geolocation.getCurrentPosition(
-    pos=>{adminClientes=[...ord({lat:pos.coords.latitude,lng:pos.coords.longitude}),...resto];switchTabAdmin('pendientes');guardarAdmin();},
-    ()=>alert('No se pudo obtener tu ubicación.'),
-    {timeout:10000,enableHighAccuracy:true}
-  );
-}
-
-function cargarArchivoAdmin(e) {
-  const f=e.target.files[0]; if(!f) return;
-  const r=new FileReader(); r.onload=ev=>procesarJSONAdmin(ev.target.result); r.readAsText(f);
-}
-function cargarPegadoAdmin() {
-  const t=document.getElementById('jsonPasteAdmin').value.trim();
-  if(!t) return alert('Pega el contenido JSON primero');
-  procesarJSONAdmin(t);
-}
-function procesarJSONAdmin(txt) {
-  try {
-    const data=JSON.parse(txt);
-    let lista=Array.isArray(data)?data:[...(data.clientes||[]),...(data.sin_ubicacion||[])];
-    const mapaArchivo=new Map();
-    lista.forEach(n=>{
-      const tel=normTel(n.telefono);
-      const key=tel||('_sin_tel_'+generarId());
-      if(!tel||!mapaArchivo.has(tel)){mapaArchivo.set(key,{...n,_uid:n._uid||generarId(),estado:n.estado||'pendiente'});}
-      else{const base=mapaArchivo.get(tel);if(!base.pedidos){base.pedidos=[{nota:base.nota||'',cod:base.cod||0}];delete base.nota;delete base.cod;}base.pedidos.push({nota:n.nota||'',cod:n.cod||0});}
-    });
-    const telExistentes=new Map(adminClientes.filter(c=>normTel(c.telefono)).map(c=>[normTel(c.telefono),c]));
-    let agregados=0,actualizados=0,omitidos=0;
-    mapaArchivo.forEach((nuevo,key)=>{
-      const tel=key.startsWith('_sin_tel_')?'':key;
-      if(!tel){adminClientes.push(nuevo);agregados++;return;}
-      if(telExistentes.has(tel)){const ex=telExistentes.get(tel);if((!ex.lat||!ex.lng)&&nuevo.lat&&nuevo.lng){ex.lat=nuevo.lat;ex.lng=nuevo.lng;actualizados++;}else{omitidos++;}}
-      else{adminClientes.push(nuevo);telExistentes.set(tel,nuevo);agregados++;}
-    });
-    adminClientes=adminClientes.map(c=>c._uid?c:{...c,_uid:generarId()});
-    guardarAdmin();closeModalGlobal('modalCargarAdmin');
-    let msg=`✅ ${agregados} clientes agregados`;
-    if(actualizados>0) msg+=`\n📍 ${actualizados} ubicaciones actualizadas`;
-    if(omitidos>0) msg+=`\n⚠️ ${omitidos} duplicados omitidos`;
-    alert(msg);
-  } catch(e){alert('Error: JSON no válido');}
-}
-
-function abrirNuevoCliente() {
-  document.getElementById('editId').value='';
-  document.getElementById('modalClienteTitulo').textContent='➕ Nuevo Cliente';
-  ['cNombre','cTel','cCod','cCoords'].forEach(id=>document.getElementById(id).value='');
-  openModalGlobal('modalCliente');
-}
-function editarClienteAdmin(uid) {
-  const c=adminClientes.find(x=>x._uid===uid); if(!c) return;
-  document.getElementById('editId').value=uid;
-  document.getElementById('modalClienteTitulo').textContent='✏️ Editar Cliente';
-  ['cNombre','cTel','cCod','cCoords'].forEach(id=>document.getElementById(id).value='');
-  openModalGlobal('modalCliente');
-}
-function guardarCliente() {
-  const editId=document.getElementById('editId').value;
-  const nombre=document.getElementById('cNombre').value.trim();
-  const telefono=document.getElementById('cTel').value.trim();
-  const codVal=document.getElementById('cCod').value.trim();
-  const coordsVal=document.getElementById('cCoords').value.trim();
-  if(editId){
-    const c=adminClientes.find(x=>x._uid===editId);
-    if(c){if(nombre)c.nombre=nombre;if(telefono)c.telefono=telefono;if(codVal)c.cod=parseFloat(codVal);if(coordsVal){const m=coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);if(m){c.lat=parseFloat(m[1]);c.lng=parseFloat(m[2]);}}}
-  } else {
-    if(!nombre) return alert('El nombre es requerido');
-    const cm=coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
-    adminClientes.push({_uid:generarId(),nombre,telefono,cod:parseFloat(codVal)||0,lat:cm?parseFloat(cm[1]):null,lng:cm?parseFloat(cm[2]):null,estado:'pendiente'});
-  }
-  guardarAdmin();closeModalGlobal('modalCliente');
-}
-function abrirUbiAdmin(uid) {
-  document.getElementById('ubiId').value=uid;
-  document.getElementById('ubiInput').value='';
-  openModalGlobal('modalUbi');
-}
-function guardarUbicacion() {
-  const uid=document.getElementById('ubiId').value;
-  const txt=document.getElementById('ubiInput').value;
-  const m=txt.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
-  if(!m) return alert('No se encontraron coordenadas.');
-  const c=adminClientes.find(x=>x._uid===uid);
-  if(c){c.lat=parseFloat(m[1]);c.lng=parseFloat(m[2]);guardarAdmin();closeModalGlobal('modalUbi');}
-}
-
-/* ══════════════════════════════════════════ */
-/* APP REPARTIDOR                             */
-/* ══════════════════════════════════════════ */
-let repClientes = JSON.parse(localStorage.getItem('llegaya_clientes')||'[]');
-let repFecha = localStorage.getItem('llegaya_fecha')||'';
-let repTabActual = 'pendientes';
-
-repClientes = repClientes.map(c=>c._uid?c:{...c,_uid:generarId()});
-
-const variantesUbicacion=[
-  (n,t)=>`%C2%A1Hola%20${encodeURIComponent(n)}!%20%F0%9F%91%8B%20Le%20contacta%20*Llega%20Ya*.%0A%0ASu%20pedido%20est%C3%A1%20listo%20y%20nuestro%20motorista%20est%C3%A1%20en%20espera%20para%20salir%20en%20cuanto%20recibamos%20su%20ubicaci%C3%B3n.%20%F0%9F%9B%B5%0A%0APor%20favor%20comp%C3%A1rtanos%20su%20*ubicaci%C3%B3n%20actual*%20por%20aqu%C3%AD.%20%F0%9F%93%8D%0A%0A%C2%A1Gracias!`,
-  (n,t)=>`%C2%A1Buenas!%20%F0%9F%8C%9F%20Le%20saluda%20el%20equipo%20de%20*Llega%20Ya*.%0A%0A${encodeURIComponent(t)}%20${encodeURIComponent(n)}%2C%20su%20pedido%20est%C3%A1%20listo%20y%20nuestro%20motorista%20est%C3%A1%20pendiente%20para%20hacer%20la%20entrega.%0A%0ASolo%20necesitamos%20su%20*ubicaci%C3%B3n%20actual*%20para%20llegar%20donde%20usted.%20%F0%9F%93%A6%F0%9F%93%8D`,
-  (n,t)=>`${encodeURIComponent(t)}%2Fa%20${encodeURIComponent(n)}%2C%20buen%20d%C3%ADa%20%F0%9F%99%8F%0A%0ADesde%20*Llega%20Ya*%20le%20recordamos%20que%20su%20pedido%20est%C3%A1%20pr%C3%B3ximo%20a%20ser%20entregado.%0A%0APor%20favor%20comp%C3%A1rtanos%20su%20*ubicaci%C3%B3n%20actual*%20haciendo%20clic%20en%20el%20clip%20%F0%9F%93%8E.%0A%0A%C2%A1Gracias!`
-];
-const variantesUltimoAviso=[
-  (n,t)=>`${encodeURIComponent(t)}%20${encodeURIComponent(n)}%2C%20buen%20d%C3%ADa.%20%F0%9F%99%8F%0A%0ALe%20contactamos%20desde%20*Llega%20Ya*.%20Si%20no%20recibimos%20respuesta%20hoy%2C%20este%20ser%C3%A1%20nuestro%20*%C3%BAltimo%20intento%20de%20contacto*%20y%20el%20pedido%20ser%C3%A1%20devuelto.%0A%0AQuedamos%20atentos.`,
-  (n,t)=>`%C2%A1Buenas!%20Le%20escribe%20el%20equipo%20de%20*Llega%20Ya*.%20%F0%9F%9B%B5%0A%0A${encodeURIComponent(t)}%20${encodeURIComponent(n)}%2C%20hemos%20intentado%20comunicarnos%20sin%20%C3%A9xito.%0A%0AEste%20es%20un%20*aviso%20final*%3A%20si%20no%20logramos%20concretar%20hoy%2C%20devolveremos%20el%20paquete.%0A%0AResp%C3%B3ndanos%20a%20la%20brevedad.%20%F0%9F%99%8F`,
-  (n,t)=>`${encodeURIComponent(t)}%2Fa%20${encodeURIComponent(n)}%20%F0%9F%91%8B%0A%0AEste%20ser%C3%A1%20nuestro%20*%C3%BAltimo%20intento%20de%20entrega*%20del%20d%C3%ADa.%20De%20no%20recibir%20respuesta%2C%20el%20pedido%20ser%C3%A1%20retornado.%0A%0AAun%20estamos%20a%20tiempo%20%E2%80%94%20esc%C3%ADbanos%20ahora.%20%F0%9F%93%A6`
-];
-
-function guardarRep() {
-  localStorage.setItem('llegaya_clientes',JSON.stringify(repClientes));
   renderRep();
 }
 
-function calcCodRep(c) {
-  return c.pedidos?c.pedidos.reduce((s,p)=>s+(parseFloat(p.cod)||0),0):(parseFloat(c.cod)||0);
+function calcCod(c){
+  return c.pedidos?c.pedidos.reduce(function(s,p){return s+(parseFloat(p.cod)||0);},0):(parseFloat(c.cod)||0);
 }
 
-function switchTabRep(tab) {
+syncFromStorage();
+
+/* DRAWER */
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');}
+
+function switchApp(app){
+  document.getElementById('app-admin').style.display=app==='admin'?'block':'none';
+  document.getElementById('app-repartidor').style.display=app==='repartidor'?'block':'none';
+  document.getElementById('fab-admin').style.display=app==='admin'?'flex':'none';
+  document.getElementById('nav-admin').classList.toggle('active',app==='admin');
+  document.getElementById('nav-repartidor').classList.toggle('active',app==='repartidor');
+  document.getElementById('headerTitle').textContent=app==='admin'?'\uD83D\uDEF5 LLEGA YA \u2014 Rutas':'\uD83D\uDEF5 LLEGA YA \u2014 Entregas';
+  closeDrawer();
+  if(app==='admin')renderAdmin();else renderRep();
+}
+
+function openMG(id){
+  if(id==='modalConfigRep')document.getElementById('labelBorrar').textContent=repTabActual==='pendientes'?'Pendientes':'Ya Contact\u00E9';
+  document.getElementById(id).classList.add('open');
+}
+function closeMG(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.overlay').forEach(function(o){o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('open');});});
+
+/* ADMIN RENDER */
+function getDatosAdmin(){
+  if(adminTabActual==='pendientes')return clientes.filter(function(c){return c.estado==='pendiente'&&c.lat&&c.lng;});
+  if(adminTabActual==='sin_ubicacion')return clientes.filter(function(c){return(!c.lat||!c.lng)&&c.estado==='pendiente';});
+  if(adminTabActual==='completados')return clientes.filter(function(c){return c.estado==='completado';});
+  return[];
+}
+
+function moverAdmin(uid,dir){
+  var datos=getDatosAdmin();
+  var pos=datos.findIndex(function(x){return x._uid===uid;});
+  var newPos=pos+dir;
+  if(newPos<0||newPos>=datos.length)return;
+  var ia=clientes.findIndex(function(x){return x._uid===datos[pos]._uid;});
+  var ib=clientes.findIndex(function(x){return x._uid===datos[newPos]._uid;});
+  var tmp=clientes[ia];clientes[ia]=clientes[ib];clientes[ib]=tmp;
+  guardar();
+}
+
+function renderAdmin(){
+  if(adminTabActual==='exportar'){renderExportarAdmin();return;}
+  var list=document.getElementById('list-admin');
+  var busqueda=(document.getElementById('busqueda')||{value:''}).value.toLowerCase().trim();
+  var datos=getDatosAdmin();
+  if(busqueda)datos=datos.filter(function(c){return(c.nombre||'').toLowerCase().includes(busqueda)||(c.telefono||'').includes(busqueda);});
+  if(datos.length===0){list.innerHTML='<div class="empty">No hay clientes en esta secci\u00F3n</div>';return;}
+  list.innerHTML=datos.map(function(c,idx){
+    var mapsUrl=c.lat&&c.lng?'https://www.google.com/maps?q='+c.lat+','+c.lng:null;
+    var waUrl=c.telefono?'https://wa.me/'+c.telefono.replace(/\D/g,''):null;
+    var sinUbi=!c.lat||!c.lng;
+    var uid=c._uid;
+    var esMulti=c.pedidos&&c.pedidos.length>1;
+    var cod=calcCod(c);
+    var btnC=c.estado==='completado'
+      ?'<button class="btn-sm" style="background:#065f46" onclick="devolverPendiente(\''+uid+'\')">&#8617;&#65039; Pendiente</button>'
+      :'<button class="btn-sm" style="background:#10b981" onclick="completarAdmin(\''+uid+'\')">&#9989; Completado</button>';
+    var notasHtml='';
+    if(esMulti)notasHtml='<div class="notas-multi">'+c.pedidos.map(function(p,i){return'<div class="nota-item">&#128230; <strong>Pedido '+(i+1)+':</strong> '+(p.nota||'\u2014')+(p.cod?' <span style="color:#f59e0b">\u00B7 RD$ '+parseFloat(p.cod).toLocaleString()+'</span>':'')+'</div>';}).join('')+'</div>';
+    return'<div class="card'+(sinUbi?' sin-ubi':'')+(c.estado==='completado'?' completado':'')+(esMulti?' multi':'')+'">'+
+'<div class="card-header"><div class="info">'+
+'<div class="nombre"><span style="color:#94a3b8;font-size:0.85rem;margin-right:6px">#'+(idx+1)+'</span>'+(c.nombre||'Sin nombre')+(sinUbi?'<span class="badge-orange">Sin GPS</span>':'')+(esMulti?'<span class="badge-pedidos">&#128230; '+c.pedidos.length+' pedidos</span>':'')+'</div>'+
+'<div class="subcod">RD$ '+cod.toLocaleString()+' \u00B7 Tel: '+(c.telefono||'\u2014')+'</div>'+
+notasHtml+
+'</div>'+
+'<div class="order-btns"><button onclick="moverAdmin(\''+uid+'\',-1)">&#9650;</button><button onclick="moverAdmin(\''+uid+'\',1)">&#9660;</button></div>'+
+'</div>'+
+'<div class="card-body">'+
+'<div class="btn-row">'+(mapsUrl?'<a class="btn-sm" style="background:#3b82f6" href="'+mapsUrl+'" target="_blank">&#128506; Mapa</a>':'')+(waUrl?'<a class="btn-sm" style="background:#25d366" href="'+waUrl+'" target="_blank">&#128172; WhatsApp</a>':'')+'</div>'+
+'<div class="btn-row"><button class="btn-sm" style="background:#8b5cf6" onclick="abrirUbi(\''+uid+'\')">&#128205; Ubicaci\u00F3n</button><button class="btn-sm" style="background:#334155" onclick="editarCliente(\''+uid+'\')">&#9999;&#65039; Editar</button></div>'+
+'<div class="btn-row">'+btnC+'</div>'+
+'<div class="btn-row"><button class="btn-sm" style="background:#f59e0b;color:black" onclick="enviarExportar(\''+uid+'\')">&#128228; Exportar</button><button class="btn-sm" style="background:#ef4444" onclick="eliminarCliente(\''+uid+'\')">&#128465; Eliminar</button></div>'+
+'</div></div>';
+  }).join('');
+}
+
+function renderExportarAdmin(){
+  var list=document.getElementById('list-admin');
+  if(exportados.length===0){list.innerHTML='<div class="empty">No hay contactos en la lista de exportar.<br><br>Usa el bot\u00F3n &#128228; Exportar en cada tarjeta.</div>';return;}
+  list.innerHTML='<div style="padding:10px">'+
+'<button class="btn" style="background:#10b981;margin-bottom:12px" onclick="descargarJSON()">&#11015;&#65039; Descargar JSON ('+exportados.length+' contactos)</button>'+
+'<button class="btn" style="background:#475569;margin-bottom:16px" onclick="if(confirm(\'Limpiar lista?\')){exportados=[];guardar()}">&#128465; Limpiar lista</button>'+
+exportados.map(function(c){return'<div class="export-card"><div><div class="ec-info">'+(c.nombre||'Sin nombre')+'</div><div class="ec-sub">RD$ '+calcCod(c).toLocaleString()+' \u00B7 '+(c.telefono||'\u2014')+'</div></div><button class="ec-btn" onclick="quitarExportar(\''+c._uid+'\')">&#10005; Quitar</button></div>';}).join('')+
+'</div>';
+}
+
+function descargarJSON(){
+  var data={clientes:exportados.map(function(c){return{_uid:c._uid,nombre:c.nombre||'',telefono:c.telefono||'',cod:calcCod(c),lat:c.lat||null,lng:c.lng||null,estado:'pendiente'};})};
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='llega_ya_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+}
+
+function enviarExportar(uid){
+  var c=clientes.find(function(x){return x._uid===uid;});if(!c)return;
+  if(exportados.find(function(x){return x._uid===uid;}))return alert('Ya est\u00E1 en la lista de exportar.');
+  exportados.push(Object.assign({},c));
+  c.estado='completado';
+  var idx=clientes.findIndex(function(x){return x._uid===uid;});
+  var r=clientes.splice(idx,1)[0];clientes.push(r);
+  guardar();alert('\u2705 '+c.nombre+' exportado y movido a Completados');
+}
+
+function quitarExportar(uid){
+  exportados=exportados.filter(function(x){return x._uid!==uid;});
+  var c=clientes.find(function(x){return x._uid===uid;});if(c)c.estado='pendiente';
+  guardar();
+}
+
+function eliminarCliente(uid){
+  if(!confirm('\u00BFEliminar este cliente?'))return;
+  clientes=clientes.filter(function(x){return x._uid!==uid;});
+  exportados=exportados.filter(function(x){return x._uid!==uid;});
+  guardar();
+}
+
+function switchTabAdmin(tab){
+  adminTabActual=tab;
+  document.getElementById('busqueda').value='';
+  document.querySelectorAll('#admin-tabs .tab').forEach(function(t,i){t.classList.toggle('active',['pendientes','sin_ubicacion','completados','exportar'][i]===tab);});
+  renderAdmin();
+}
+
+function completarAdmin(uid){
+  var c=clientes.find(function(x){return x._uid===uid;});if(!c)return;
+  c.estado='completado';
+  var idx=clientes.findIndex(function(x){return x._uid===uid;});
+  var r=clientes.splice(idx,1)[0];clientes.push(r);guardar();
+}
+
+function devolverPendiente(uid){
+  var c=clientes.find(function(x){return x._uid===uid;});if(c){c.estado='pendiente';guardar();}
+}
+
+function sortNearest(){
+  var pendientes=clientes.filter(function(c){return c.estado==='pendiente'&&c.lat&&c.lng;});
+  var resto=clientes.filter(function(c){return!(c.estado==='pendiente'&&c.lat&&c.lng);});
+  if(pendientes.length===0)return alert('No hay clientes con ubicaci\u00F3n pendientes.');
+  if(!navigator.geolocation)return alert('Tu dispositivo no soporta GPS.');
+  function hav(a,b,c,d){var R=6371,dL=(c-a)*Math.PI/180,dG=(d-b)*Math.PI/180,x=Math.pow(Math.sin(dL/2),2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.pow(Math.sin(dG/2),2);return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
+  function ord(o){var la=o.lat,ln=o.lng,p=pendientes.slice(),r=[];while(p.length){var mi=0,mm=Infinity;p.forEach(function(c,j){var d=hav(la,ln,c.lat,c.lng);if(d<mm){mm=d;mi=j;}});var n=p.splice(mi,1)[0];r.push(n);la=n.lat;ln=n.lng;}return r;}
+  navigator.geolocation.getCurrentPosition(
+    function(pos){clientes=ord({lat:pos.coords.latitude,lng:pos.coords.longitude}).concat(resto);switchTabAdmin('pendientes');guardar();},
+    function(){alert('No se pudo obtener tu ubicaci\u00F3n.');},{timeout:10000,enableHighAccuracy:true}
+  );
+}
+
+function cargarArchivoAdmin(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){procesarJSON(ev.target.result,'admin');};r.readAsText(f);}
+function cargarPegadoAdmin(){var t=document.getElementById('jsonPasteAdmin').value.trim();if(!t)return alert('Pega el contenido JSON primero');procesarJSON(t,'admin');}
+
+function abrirNuevoCliente(){
+  document.getElementById('editId').value='';
+  document.getElementById('modalClienteTitulo').textContent='\u2795 Nuevo Cliente';
+  ['cNombre','cTel','cCod','cCoords'].forEach(function(id){document.getElementById(id).value='';});
+  openMG('modalCliente');
+}
+function editarCliente(uid){
+  var c=clientes.find(function(x){return x._uid===uid;});if(!c)return;
+  document.getElementById('editId').value=uid;
+  document.getElementById('modalClienteTitulo').textContent='\u270F\uFE0F Editar Cliente';
+  ['cNombre','cTel','cCod','cCoords'].forEach(function(id){document.getElementById(id).value='';});
+  openMG('modalCliente');
+}
+function guardarCliente(){
+  var editId=document.getElementById('editId').value;
+  var nombre=document.getElementById('cNombre').value.trim();
+  var telefono=document.getElementById('cTel').value.trim();
+  var codVal=document.getElementById('cCod').value.trim();
+  var coordsVal=document.getElementById('cCoords').value.trim();
+  if(editId){
+    var c=clientes.find(function(x){return x._uid===editId;});
+    if(c){if(nombre)c.nombre=nombre;if(telefono)c.telefono=telefono;if(codVal)c.cod=parseFloat(codVal);if(coordsVal){var m=coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);if(m){c.lat=parseFloat(m[1]);c.lng=parseFloat(m[2]);}}}
+  }else{
+    if(!nombre)return alert('El nombre es requerido');
+    var cm=coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
+    clientes.push({_uid:generarId(),nombre:nombre,telefono:telefono,cod:parseFloat(codVal)||0,lat:cm?parseFloat(cm[1]):null,lng:cm?parseFloat(cm[2]):null,estado:'pendiente'});
+  }
+  guardar();closeMG('modalCliente');
+}
+function abrirUbi(uid){document.getElementById('ubiId').value=uid;document.getElementById('ubiInput').value='';openMG('modalUbi');}
+function guardarUbicacion(){
+  var uid=document.getElementById('ubiId').value;
+  var txt=document.getElementById('ubiInput').value;
+  var m=txt.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
+  if(!m)return alert('No se encontraron coordenadas.');
+  var c=clientes.find(function(x){return x._uid===uid;});
+  if(c){c.lat=parseFloat(m[1]);c.lng=parseFloat(m[2]);guardar();closeMG('modalUbi');}
+}
+
+/* REP RENDER */
+var variantesUbicacion=[
+  function(n,t){return'%C2%A1Hola%20'+encodeURIComponent(n)+'!%20%F0%9F%91%8B%20Le%20contacta%20*Llega%20Ya*.%0A%0ASu%20pedido%20est%C3%A1%20listo.%20%F0%9F%9B%B5%0A%0APor%20favor%20comp%C3%A1rtanos%20su%20*ubicaci%C3%B3n%20actual*.%20%F0%9F%93%8D%0A%0A%C2%A1Gracias!';},
+  function(n,t){return'%C2%A1Buenas!%20Le%20saluda%20*Llega%20Ya*.%0A%0A'+encodeURIComponent(t)+'%20'+encodeURIComponent(n)+'%2C%20su%20pedido%20est%C3%A1%20listo.%0A%0ANecesitamos%20su%20*ubicaci%C3%B3n%20actual*.%20%F0%9F%93%A6%F0%9F%93%8D';},
+  function(n,t){return encodeURIComponent(t)+'%2Fa%20'+encodeURIComponent(n)+'%2C%20buen%20d%C3%ADa%20%F0%9F%99%8F%0A%0ADesde%20*Llega%20Ya*%20su%20pedido%20est%C3%A1%20pr%C3%B3ximo.%0A%0AComp%C3%A1rtanos%20su%20*ubicaci%C3%B3n%20actual*.%20%C2%A1Gracias!';}
+];
+var variantesUltimoAviso=[
+  function(n,t){return encodeURIComponent(t)+'%20'+encodeURIComponent(n)+'%2C%20buen%20d%C3%ADa.%20%F0%9F%99%8F%0A%0ASi%20no%20recibimos%20respuesta%20hoy%2C%20este%20ser%C3%A1%20nuestro%20*%C3%BAltimo%20intento*%20y%20el%20pedido%20ser%C3%A1%20devuelto.';},
+  function(n,t){return'%C2%A1Buenas!%20*Llega%20Ya*.%0A%0A'+encodeURIComponent(t)+'%20'+encodeURIComponent(n)+'%2C%20*aviso%20final*%3A%20si%20no%20logramos%20concretar%20hoy%2C%20devolveremos%20el%20paquete.';},
+  function(n,t){return encodeURIComponent(t)+'%2Fa%20'+encodeURIComponent(n)+'%20%F0%9F%91%8B%0A%0AEste%20ser%C3%A1%20nuestro%20*%C3%BAltimo%20intento%20de%20entrega*%20del%20d%C3%ADa.%20De%20no%20recibir%20respuesta%2C%20el%20pedido%20ser%C3%A1%20retornado.';}
+];
+
+function switchTabRep(tab){
   repTabActual=tab;
-  document.querySelectorAll('#rep-tabs .tab').forEach((t,i)=>{
-    t.classList.toggle('active',['pendientes','contactados'][i]===tab);
-  });
+  document.getElementById('rtab-pendientes').classList.toggle('active',tab==='pendientes');
+  document.getElementById('rtab-contactados').classList.toggle('active',tab==='contactados');
   document.getElementById('searchRep').value='';
   renderRep();
 }
 
-function guardarFecha() {
+function guardarFecha(){
   repFecha=document.getElementById('inputFecha').value;
-  localStorage.setItem('llegaya_fecha',repFecha);
-  closeModalGlobal('modalFecha');
-  renderRep();
+  localStorage.setItem(LS_FECHA,repFecha);
+  closeMG('modalFecha');renderRep();
 }
 
-function borrarPestanaRep() {
-  const label=repTabActual==='pendientes'?'los clientes pendientes':'los clientes ya contactados';
-  if(!confirm(`¿Borrar ${label}?`)) return;
-  if(repTabActual==='pendientes') repClientes=repClientes.filter(c=>c.contactado);
-  else repClientes=repClientes.filter(c=>!c.contactado);
-  guardarRep();closeModalGlobal('modalConfigRep');
+function borrarPestanaRep(){
+  var label=repTabActual==='pendientes'?'los clientes pendientes':'los ya contact\u00E9';
+  if(!confirm('\u00BFBorrar '+label+'?'))return;
+  if(repTabActual==='pendientes')clientes=clientes.filter(function(c){return c.contactado;});
+  else clientes=clientes.filter(function(c){return!c.contactado;});
+  guardar();closeMG('modalConfigRep');
 }
 
-function borrarTodoRep() {
-  if(!confirm('¿Borrar TODOS los clientes?')) return;
-  localStorage.removeItem('llegaya_clientes');repClientes=[];guardarRep();closeModalGlobal('modalConfigRep');
+function borrarTodoRep(){
+  if(!confirm('\u00BFBorrar TODOS los clientes?'))return;
+  clientes=[];exportados=[];
+  localStorage.removeItem(LS_KEY);localStorage.removeItem(LS_EXP);
+  guardar();closeMG('modalConfigRep');
 }
 
-function renderRep() {
-  const fechaFmt=repFecha?new Date(repFecha+'T12:00:00').toLocaleDateString('es-DO',{weekday:'long',year:'numeric',month:'long',day:'numeric'}):'Sin fecha';
-  document.getElementById('fechaDisplay').textContent='📅 '+fechaFmt;
-  const total=repClientes.length;
-  const enviados=repClientes.filter(c=>c.estado==='enviado').length;
-  const entregados=repClientes.filter(c=>c.estado==='entregado').length;
-  const pendientes=repClientes.filter(c=>!c.estado||c.estado==='pendiente').length;
-  const codTotal=repClientes.reduce((s,c)=>s+calcCodRep(c),0);
-  const recaudado=repClientes.filter(c=>c.estado==='entregado').reduce((s,c)=>s+calcCodRep(c),0);
-  document.getElementById('badgeTotal').textContent=`Total: ${total}`;
-  document.getElementById('badgeEnviados').textContent=`Enviados: ${enviados+entregados}`;
-  document.getElementById('badgePendientes').textContent=`Pendientes: ${pendientes}`;
-  document.getElementById('badgeCodTotal').textContent=`RD$ ${codTotal.toLocaleString()}`;
-  document.getElementById('badgeRecaudado').textContent=`✅ RD$ ${recaudado.toLocaleString()}`;
-  document.getElementById('badgePendCod').textContent=`⏳ RD$ ${(codTotal-recaudado).toLocaleString()}`;
+function renderRep(){
+  var fechaFmt=repFecha?new Date(repFecha+'T12:00:00').toLocaleDateString('es-DO',{weekday:'long',year:'numeric',month:'long',day:'numeric'}):'Sin fecha';
+  document.getElementById('fechaDisplay').textContent='\uD83D\uDCC5 '+fechaFmt;
+  var total=clientes.length;
+  var enviados=clientes.filter(function(c){return c.estado==='enviado';}).length;
+  var entregados=clientes.filter(function(c){return c.estado==='entregado';}).length;
+  var pendientes=clientes.filter(function(c){return!c.estado||c.estado==='pendiente';}).length;
+  var codTotal=clientes.reduce(function(s,c){return s+calcCod(c);},0);
+  var recaudado=clientes.filter(function(c){return c.estado==='entregado';}).reduce(function(s,c){return s+calcCod(c);},0);
+  document.getElementById('badgeTotal').textContent='Total: '+total;
+  document.getElementById('badgeEnviados').textContent='Enviados: '+(enviados+entregados);
+  document.getElementById('badgePendientes').textContent='Pendientes: '+pendientes;
+  document.getElementById('badgeCodTotal').textContent='RD$ '+codTotal.toLocaleString();
+  document.getElementById('badgeRecaudado').textContent='\u2705 RD$ '+recaudado.toLocaleString();
+  document.getElementById('badgePendCod').textContent='\u231B RD$ '+(codTotal-recaudado).toLocaleString();
 
-  const list=document.getElementById('list-rep');
-  if(repClientes.length===0){list.innerHTML='<div class="empty">Carga un archivo JSON para comenzar</div>';return;}
+  var list=document.getElementById('list-rep');
+  if(clientes.length===0){list.innerHTML='<div class="empty">Carga un archivo JSON para comenzar</div>';return;}
 
-  let datos=repTabActual==='pendientes'
-    ?repClientes.filter(c=>(!c.estado||c.estado==='pendiente'||c.estado==='enviado')&&!c.contactado)
-    :repClientes.filter(c=>c.contactado);
+  var datos=repTabActual==='pendientes'
+    ?clientes.filter(function(c){return(!c.estado||c.estado==='pendiente'||c.estado==='enviado')&&!c.contactado;})
+    :clientes.filter(function(c){return c.contactado;});
 
-  const query=(document.getElementById('searchRep')?.value||'').toLowerCase().trim();
-  if(query) datos=datos.filter(c=>(c.nombre||'').toLowerCase().includes(query)||(c.telefono||'').includes(query));
+  var query=(document.getElementById('searchRep').value||'').toLowerCase().trim();
+  if(query)datos=datos.filter(function(c){return(c.nombre||'').toLowerCase().includes(query)||(c.telefono||'').includes(query);});
 
   if(datos.length===0){list.innerHTML='<div class="empty">No se encontraron clientes</div>';return;}
 
-  list.innerHTML=datos.map(c=>{
-    const globalIdx=repClientes.indexOf(c);
-    const nombre1=(c.nombre||'').split(' ')[0];
-    const esFemenino=['a','ia','na','ra','la','da','sa','ca'].some(s=>nombre1.toLowerCase().endsWith(s));
-    const tratamiento=esFemenino?'Estimada':'Estimado';
-    const fechaFmt2=repFecha?new Date(repFecha+'T12:00:00').toLocaleDateString('es-DO',{weekday:'long',year:'numeric',month:'long',day:'numeric'}):'[fecha por confirmar]';
-    const esMulti=c.pedidos&&c.pedidos.length>1;
-    const pedidosTexto=esMulti?c.pedidos.map((p,i)=>`Pedido ${i+1}: ${p.nota||'—'}`).join('%0A'):encodeURIComponent(c.nota||'');
-    const msgPrincipal=`Muy buenos días.%0A%0AReciba un cordial saludo de parte de Llega Ya.%0A%0A${tratamiento} ${nombre1},%0A%0AEs un placer confirmarle que su pedido fue procesado y está listo para entrega.%0A%0ADetalle de su pedido:%0A${pedidosTexto}%0A%0ALa entrega está programada para ${encodeURIComponent(fechaFmt2)}.%0A%0ANos encantaría que nos comparta su ubicación para coordinar la entrega. Quedamos atentos a su amable respuesta. 📦`;
-    const varIdx=(c._uid||"").split("").reduce((a,ch)=>a+ch.charCodeAt(0),0);
-    const msgUbicacion=variantesUbicacion[varIdx%3](nombre1,tratamiento);
-    const msgUltimo=variantesUltimoAviso[varIdx%3](nombre1,tratamiento);
-    const tel=(c.telefono||'').replace(/\D/g,'');
-    const waUrl=tel?`https://wa.me/${tel}?text=${msgPrincipal}`:null;
-    const waUbicacion=tel?`https://wa.me/${tel}?text=${msgUbicacion}`:null;
-    const waUltimo=tel?`https://wa.me/${tel}?text=${msgUltimo}`:null;
-    const codMostrar=calcCodRep(c);
+  list.innerHTML=datos.map(function(c,idx){
+    var uid=c._uid;
+    var nombre1=(c.nombre||'').split(' ')[0];
+    var esFem=['a','ia','na','ra','la','da','sa','ca'].some(function(s){return nombre1.toLowerCase().endsWith(s);});
+    var trato=esFem?'Estimada':'Estimado';
+    var fechaFmt2=repFecha?new Date(repFecha+'T12:00:00').toLocaleDateString('es-DO',{weekday:'long',year:'numeric',month:'long',day:'numeric'}):'[fecha por confirmar]';
+    var esMulti=c.pedidos&&c.pedidos.length>1;
+    var pedidosTexto=esMulti?c.pedidos.map(function(p,i){return'Pedido '+(i+1)+': '+(p.nota||'\u2014');}).join('%0A'):encodeURIComponent(c.nota||'');
+    var msgP='Muy buenos d\u00EDas.%0A%0AReciba un cordial saludo de parte de Llega Ya.%0A%0A'+trato+' '+nombre1+',%0A%0AEs un placer confirmarle que su pedido fue procesado y est\u00E1 listo para entrega.%0A%0ADetalle de su pedido:%0A'+pedidosTexto+'%0A%0ALa entrega est\u00E1 programada para '+encodeURIComponent(fechaFmt2)+'.%0A%0ANos encantar\u00EDa que nos comparta su ubicaci\u00F3n para coordinar la entrega. Quedamos atentos. \uD83D\uDCE6';
+    var vi=(uid||'').split('').reduce(function(a,ch){return a+ch.charCodeAt(0);},0);
+    var msgU=variantesUbicacion[vi%3](nombre1,trato);
+    var msgL=variantesUltimoAviso[vi%3](nombre1,trato);
+    var tel=(c.telefono||'').replace(/\D/g,'');
+    var waUrl=tel?'https://wa.me/'+tel+'?text='+msgP:null;
+    var waUbi=tel?'https://wa.me/'+tel+'?text='+msgU:null;
+    var waUlt=tel?'https://wa.me/'+tel+'?text='+msgL:null;
+    var cod=calcCod(c);
+    var notasHtml='';
+    if(esMulti)notasHtml='<div class="notas-multi">'+c.pedidos.map(function(p,i){return'<div class="nota-item">\uD83D\uDCE6 <strong>Pedido '+(i+1)+':</strong> '+(p.nota||'\u2014')+(p.cod?' <span style="color:#f59e0b">\u00B7 RD$ '+parseFloat(p.cod).toLocaleString()+'</span>':'')+'</div>';}).join('')+'</div>';
+    else if(c.nota)notasHtml='<div class="nota-simple">\uD83D\uDCE6 '+c.nota+'</div>';
 
-    let notasHtml='';
-    if(esMulti){notasHtml=`<div class="notas-multi">${c.pedidos.map((p,i)=>`<div class="nota-item">📦 <strong>Pedido ${i+1}:</strong> ${p.nota||'—'}${p.cod?` <span style="color:#f59e0b">· RD$ ${parseFloat(p.cod).toLocaleString()}</span>`:''}</div>`).join('')}</div>`;}
-    else if(c.nota){notasHtml=`<div class="nota-simple">📦 ${c.nota}</div>`;}
-
-    return `<div class="card ${c.estado&&c.estado!=='pendiente'?c.estado:''} ${esMulti?'multi':''}">
-<div class="card-header">
-<div class="nombre">${c.nombre||'Sin nombre'}${esMulti?`<span class="badge-pedidos">📦 ${c.pedidos.length} pedidos</span>`:''}</div>
-<div class="tel">📞 ${c.telefono||'—'}</div>
-${notasHtml}
-${!esMulti&&codMostrar?`<div class="cod-yellow">💰 RD$ ${codMostrar.toLocaleString()}</div>`:''}
-${esMulti?`<div class="cod-yellow">💰 Total: RD$ ${codMostrar.toLocaleString()}</div>`:''}
-</div>
-<div class="card-body">
-<div class="btn-row">
-${waUrl?`<a class="btn-sm" style="background:#25d366" href="${waUrl}" target="_blank">💬 Enviar</a>`:''}
-${waUbicacion?`<a class="btn-sm" style="background:#0e7490" href="${waUbicacion}" target="_blank">📍 Ubicación</a>`:''}
-</div>
-<div class="btn-row">
-${waUltimo?`<a class="btn-sm" style="background:#b91c1c" href="${waUltimo}" target="_blank">⚠️ Último Aviso</a>`:''}
-</div>
-<div class="btn-row">
-${c.contactado
-  ?`<button class="btn-sm" style="background:#334155" onclick="toggleContactadoRep(${globalIdx})">↩️ Mover a Pendientes</button>`
-  :`<button class="btn-sm" style="background:#0f766e" onclick="toggleContactadoRep(${globalIdx})">🔄 Ya Contacté</button>`}
-</div>
-</div>
-</div>`;
+    return'<div class="card'+(c.estado&&c.estado!=='pendiente'?' '+c.estado:'')+(esMulti?' multi':'')+'">'+
+'<div class="card-header"><div class="info">'+
+'<div class="nombre"><span style="color:#94a3b8;font-size:0.85rem;margin-right:6px">#'+(idx+1)+'</span>'+(c.nombre||'Sin nombre')+(esMulti?'<span class="badge-pedidos">\uD83D\uDCE6 '+c.pedidos.length+' pedidos</span>':'')+'</div>'+
+'<div class="tel">\uD83D\uDCDE '+(c.telefono||'\u2014')+'</div>'+
+notasHtml+
+(cod?'<div class="cod-yellow">\uD83D\uDCB0 RD$ '+cod.toLocaleString()+'</div>':'')+
+'</div></div>'+
+'<div class="card-body">'+
+'<div class="btn-row">'+(waUrl?'<a class="btn-sm" style="background:#25d366" href="'+waUrl+'" target="_blank">\uD83D\uDCAC Enviar</a>':'')+(waUbi?'<a class="btn-sm" style="background:#0e7490" href="'+waUbi+'" target="_blank">\uD83D\uDCCD Ubicaci\u00F3n</a>':'')+'</div>'+
+'<div class="btn-row">'+(waUlt?'<a class="btn-sm" style="background:#b91c1c" href="'+waUlt+'" target="_blank">\u26A0\uFE0F \u00DAltimo Aviso</a>':'')+'</div>'+
+'<div class="btn-row">'+(c.contactado
+  ?'<button class="btn-sm" style="background:#334155" onclick="toggleContactado(\''+uid+'\')">&#8617;&#65039; Mover a Pendientes</button>'
+  :'<button class="btn-sm" style="background:#0f766e" onclick="toggleContactado(\''+uid+'\')">&#128260; Ya Contact\u00E9</button>')+
+'</div></div></div>';
   }).join('');
 }
 
-function toggleContactadoRep(idx) {
-  repClientes[idx].contactado=!repClientes[idx].contactado;
-  guardarRep();
+function toggleContactado(uid){
+  var c=clientes.find(function(x){return x._uid===uid;});
+  if(c){c.contactado=!c.contactado;guardar();}
 }
 
-function cargarArchivoRep(e) {
-  const f=e.target.files[0];if(!f) return;
-  const r=new FileReader();r.onload=ev=>procesarJSONRep(ev.target.result);r.readAsText(f);
-}
-function cargarPegadoRep() {
-  const t=document.getElementById('jsonPasteRep').value.trim();
-  if(!t) return alert('Pega el JSON primero');
-  procesarJSONRep(t);
-}
-function procesarJSONRep(txt) {
-  try {
-    const data=JSON.parse(txt);
-    let lista=Array.isArray(data)?data:[...(data.clientes||[]),...(data.sin_ubicacion||[])];
-    const mapaArchivo=new Map();
-    lista.forEach(n=>{
-      const tel=normTel(n.telefono);const key=tel||('_sin_tel_'+generarId());
-      if(!tel||!mapaArchivo.has(tel)){mapaArchivo.set(key,{...n,_uid:n._uid||generarId(),estado:n.estado||'pendiente'});}
-      else{const base=mapaArchivo.get(tel);if(!base.pedidos){base.pedidos=[{nota:base.nota||'',cod:base.cod||0}];delete base.nota;delete base.cod;}base.pedidos.push({nota:n.nota||'',cod:n.cod||0});}
+function cargarArchivoRep(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){procesarJSON(ev.target.result,'rep');};r.readAsText(f);}
+function cargarPegadoRep(){var t=document.getElementById('jsonPasteRep').value.trim();if(!t)return alert('Pega el JSON primero');procesarJSON(t,'rep');}
+
+/* JSON UNIFICADO */
+function procesarJSON(txt,origen){
+  try{
+    var data=JSON.parse(txt);
+    var lista=Array.isArray(data)?data:(data.clientes||[]).concat(data.sin_ubicacion||[]);
+    var mapaArchivo=new Map();
+    lista.forEach(function(n){
+      var tel=normTel(n.telefono);var key=tel||('_sin_tel_'+generarId());
+      if(!tel||!mapaArchivo.has(tel))mapaArchivo.set(key,Object.assign({},n,{_uid:n._uid||generarId(),estado:n.estado||'pendiente'}));
+      else{var base=mapaArchivo.get(tel);if(!base.pedidos){base.pedidos=[{nota:base.nota||'',cod:base.cod||0}];delete base.nota;delete base.cod;}base.pedidos.push({nota:n.nota||'',cod:n.cod||0});}
     });
-    const telExistentes=new Map(repClientes.filter(c=>normTel(c.telefono)).map(c=>[normTel(c.telefono),c]));
-    let agregados=0,omitidos=0;
-    mapaArchivo.forEach((nuevo,key)=>{
-      const tel=key.startsWith('_sin_tel_')?'':key;
-      if(!tel){repClientes.push(nuevo);agregados++;return;}
-      if(telExistentes.has(tel)){omitidos++;}else{repClientes.push(nuevo);telExistentes.set(tel,nuevo);agregados++;}
+    var telExistentes=new Map(clientes.filter(function(c){return normTel(c.telefono);}).map(function(c){return[normTel(c.telefono),c];}));
+    var agregados=0,actualizados=0,omitidos=0;
+    mapaArchivo.forEach(function(nuevo,key){
+      var tel=key.startsWith('_sin_tel_')?'':key;
+      if(!tel){clientes.push(nuevo);agregados++;return;}
+      if(telExistentes.has(tel)){var ex=telExistentes.get(tel);if((!ex.lat||!ex.lng)&&nuevo.lat&&nuevo.lng){ex.lat=nuevo.lat;ex.lng=nuevo.lng;actualizados++;}else omitidos++;}
+      else{clientes.push(nuevo);telExistentes.set(tel,nuevo);agregados++;}
     });
-    repClientes=repClientes.map(c=>c._uid?c:{...c,_uid:generarId()});
-    guardarRep();closeModalGlobal('modalCargarRep');
-    let msg=`✅ ${agregados} clientes agregados`;
-    if(omitidos>0) msg+=`\n⚠️ ${omitidos} duplicados omitidos`;
+    clientes=clientes.map(function(c){return c._uid?c:Object.assign({},c,{_uid:generarId()});});
+    guardar();
+    closeMG(origen==='admin'?'modalCargarAdmin':'modalCargarRep');
+    var msg='\u2705 '+agregados+' clientes agregados';
+    if(actualizados>0)msg+='\n\uD83D\uDCCD '+actualizados+' ubicaciones actualizadas';
+    if(omitidos>0)msg+='\n\u26A0\uFE0F '+omitidos+' duplicados omitidos';
     alert(msg);
-  } catch(e){alert('Error: JSON no válido');}
+  }catch(e){alert('Error: JSON no v\u00E1lido');}
 }
 
-/* INIT */
 renderAdmin();
 </script>
 
