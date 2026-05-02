@@ -107,6 +107,7 @@ header h1{font-size:1.05rem;font-weight:900;}
 .export-card .ec-sub{font-size:0.78rem;color:#94a3b8;margin-top:2px;}
 .export-card .ec-btn{background:#ef4444;border:none;color:white;border-radius:6px;padding:6px 10px;font-size:0.75rem;cursor:pointer;font-weight:bold;}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -150,10 +151,11 @@ header h1{font-size:1.05rem;font-weight:900;}
 
 <div id="app-admin">
   <div class="admin-toolbar">
-    <button style="background:#3b82f6 !important" onclick="openModal('modalCargarAdmin')">📂 Cargar JSON</button>
+    <button style="background:#3b82f6 !important" onclick="document.getElementById('fileInputAdminXlsx').click()">📊 Cargar Excel</button>
     <button style="background:#8b5cf6 !important" onclick="sortNearest()">⚡ Cercanía</button>
     <button style="background:#10b981 !important" onclick="abrirNuevoCliente()">+ Cliente</button>
   </div>
+  <input type="file" id="fileInputAdminXlsx" accept=".xlsx,.xls" style="display:none" onchange="cargarExcelAdmin(event)">
   <div class="admin-search">
     <div class="search-wrap">
       <span class="lupa">🔍</span>
@@ -194,7 +196,8 @@ header h1{font-size:1.05rem;font-weight:900;}
       <span class="hbadge hb-red" id="badgePendCod">⏳ RD$ 0</span>
     </div>
     <div class="rep-toolbar">
-      <button style="background:#1d4ed8 !important" onclick="openModal('modalCargarRep')">📂 Cargar JSON</button>
+      <button style="background:#1d4ed8 !important" onclick="document.getElementById('fileInputRepXlsx').click()">📊 Cargar Excel</button>
+      <input type="file" id="fileInputRepXlsx" accept=".xlsx,.xls" style="display:none" onchange="cargarExcelRep(event)">
       <button style="background:#475569 !important" onclick="openModal('modalFecha')">📅 Fecha</button>
       <button style="background:#475569 !important" onclick="openModal('modalConfigRep')">⚙️</button>
     </div>
@@ -213,12 +216,6 @@ header h1{font-size:1.05rem;font-weight:900;}
 </div>
 
 <!-- MODALS ADMIN -->
-
-<div class="overlay" id="modalCargarAdmin"><div class="modal"><h2>📂 Cargar Archivo JSON</h2>
-  <div class="field"><label>Selecciona tu archivo .json</label><input type="file" id="fileInputAdmin" accept=".json" onchange="cargarArchivoAdmin(event)"></div>
-  <div class="field"><label>O pega el contenido JSON aquí</label><textarea id="jsonPasteAdmin" placeholder='{ "clientes": [...] }'></textarea></div>
-  <div class="modal-btns"><button style="background:#10b981" onclick="cargarPegadoAdmin()">CARGAR</button><button style="background:#334155" onclick="closeModal('modalCargarAdmin')">CANCELAR</button></div>
-</div></div>
 
 <div class="overlay" id="modalCliente"><div class="modal"><h2 id="modalClienteTitulo">➕ Nuevo Cliente</h2>
   <input type="hidden" id="editId">
@@ -242,12 +239,6 @@ header h1{font-size:1.05rem;font-weight:900;}
 </div></div>
 
 <!-- MODALS REP -->
-
-<div class="overlay" id="modalCargarRep"><div class="modal"><h2>📂 Cargar Clientes</h2>
-  <div class="field"><label>Selecciona archivo .json</label><input type="file" id="fileInputRep" accept=".json" onchange="cargarArchivoRep(event)"></div>
-  <div class="field"><label>O pega el JSON aquí</label><textarea id="jsonPasteRep" placeholder='{ "clientes": [...] }'></textarea></div>
-  <div class="modal-btns"><button style="background:#10b981" onclick="cargarPegadoRep()">CARGAR</button><button style="background:#334155" onclick="closeModal('modalCargarRep')">CANCELAR</button></div>
-</div></div>
 
 <div class="overlay" id="modalFecha"><div class="modal"><h2>📅 Fecha de Entrega</h2>
   <div class="field"><label>Fecha</label><input type="date" id="inputFecha"></div>
@@ -434,9 +425,55 @@ function sortNearest(){
   );
 }
 
-function cargarArchivoAdmin(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){procesarJSON(ev.target.result,'admin');};r.readAsText(f);}
-function cargarPegadoAdmin(){var t=document.getElementById('jsonPasteAdmin').value.trim();if(!t)return alert('Pega el JSON primero');procesarJSON(t,'admin');}
+function cargarExcelAdmin(e){var f=e.target.files[0];if(!f)return;e.target.value='';leerExcel(f,'admin');}
+function cargarExcelRep(e){var f=e.target.files[0];if(!f)return;e.target.value='';leerExcel(f,'rep');}
 
+function leerExcel(file, origen){
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var wb=XLSX.read(ev.target.result,{type:'binary'});
+      var ws=wb.Sheets[wb.SheetNames[0]];
+      var rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+      if(!rows.length)return alert('El archivo está vacío o no tiene datos.');
+
+      // Detect header row — skip title row if first row has no "Dropoff contact"
+      // XLSX already skips the title row when using sheet_to_json with header detection
+      var lista=rows.map(function(r){
+        var nombre=(r['Dropoff Contact Name']||r['dropoff contact name']||r['Nombre']||'').toString().trim();
+        var tel=(r['Dropoff contact']||r['Dropoff Contact']||r['Teléfono']||r['Telefono']||'').toString().trim();
+        var cod=parseFloat((r['COD']||r['cod']||r['Monto']||'0').toString().replace(/[^0-9.]/g,''))||0;
+        var nota=(r['Note']||r['Nota']||r['note']||'').toString().trim();
+        var direccion=(r['Drop off address']||r['Direccion']||r['Dirección']||'').toString().trim();
+        if(!nombre&&!tel)return null;
+        // Clean phone: ensure it has country code
+        tel=tel.replace(/\D/g,'');
+        if(tel.startsWith('1')&&tel.length===11){}
+        else if(tel.length===10)tel='1'+tel;
+        return{nombre:nombre,telefono:tel,cod:cod,nota:nota,direccion:direccion,lat:null,lng:null,estado:'pendiente',_uid:generarId()};
+      }).filter(function(r){return r!==null;});
+
+      if(!lista.length)return alert('No se encontraron clientes válidos. Verifica que el archivo tenga las columnas correctas.');
+
+      // Merge into unified clientes — skip duplicates by phone
+      var telEx=new Map(clientes.filter(function(c){return normTel(c.telefono);}).map(function(c){return [normTel(c.telefono),c];}));
+      var agregados=0,omitidos=0;
+      lista.forEach(function(nuevo){
+        var tel=normTel(nuevo.telefono);
+        if(!tel){clientes.push(nuevo);agregados++;return;}
+        if(telEx.has(tel)){omitidos++;}
+        else{clientes.push(nuevo);telEx.set(tel,nuevo);agregados++;}
+      });
+
+      guardar();
+      var msg='✅ '+agregados+' clientes agregados desde Excel';
+      if(omitidos>0)msg+='\n⚠️ '+omitidos+' duplicados omitidos';
+      msg+='\n\n📍 Los clientes sin coordenadas GPS aparecen en "Sin Ubicación".';
+      alert(msg);
+    }catch(err){alert('Error al leer el Excel: '+err.message);}
+  };
+  reader.readAsBinaryString(file);
+}
 function abrirNuevoCliente(){
   document.getElementById('editId').value='';
   document.getElementById('modalClienteTitulo').textContent='➕ Nuevo Cliente';
@@ -581,39 +618,6 @@ function renderRep(){
 }
 
 function toggleContactado(idx){clientes[idx].contactado=!clientes[idx].contactado;guardar();}
-
-function cargarArchivoRep(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){procesarJSON(ev.target.result,'rep');};r.readAsText(f);}
-function cargarPegadoRep(){var t=document.getElementById('jsonPasteRep').value.trim();if(!t)return alert('Pega el JSON primero');procesarJSON(t,'rep');}
-
-/* SHARED JSON PROCESSOR */
-function procesarJSON(txt,origen){
-  try{
-    var data=JSON.parse(txt);
-    var lista=Array.isArray(data)?data:(data.clientes||[]).concat(data.sin_ubicacion||[]);
-    var mapa=new Map();
-    lista.forEach(function(n){
-      var tel=normTel(n.telefono);
-      var key=tel||('_sin_tel_'+generarId());
-      if(!tel||!mapa.has(tel)){mapa.set(key,Object.assign({},n,{_uid:n._uid||generarId(),estado:n.estado||'pendiente'}));}
-      else{var base=mapa.get(tel);if(!base.pedidos){base.pedidos=[{nota:base.nota||'',cod:base.cod||0}];delete base.nota;delete base.cod;}base.pedidos.push({nota:n.nota||'',cod:n.cod||0});}
-    });
-    var telEx=new Map(clientes.filter(function(c){return normTel(c.telefono);}).map(function(c){return [normTel(c.telefono),c];}));
-    var agregados=0,actualizados=0,omitidos=0;
-    mapa.forEach(function(nuevo,key){
-      var tel=key.startsWith('_sin_tel_')?'':key;
-      if(!tel){clientes.push(nuevo);agregados++;return;}
-      if(telEx.has(tel)){var ex=telEx.get(tel);if((!ex.lat||!ex.lng)&&nuevo.lat&&nuevo.lng){ex.lat=nuevo.lat;ex.lng=nuevo.lng;actualizados++;}else{omitidos++;}}
-      else{clientes.push(nuevo);telEx.set(tel,nuevo);agregados++;}
-    });
-    clientes=clientes.map(function(c){return c._uid?c:Object.assign({},c,{_uid:generarId()});});
-    guardar();
-    closeModal(origen==='admin'?'modalCargarAdmin':'modalCargarRep');
-    var msg='✅ '+agregados+' clientes agregados';
-    if(actualizados>0)msg+='\n📍 '+actualizados+' ubicaciones actualizadas';
-    if(omitidos>0)msg+='\n⚠️ '+omitidos+' duplicados omitidos';
-    alert(msg);
-  }catch(e){alert('Error: JSON no válido');}
-}
 
 renderAdmin();
 </script>
