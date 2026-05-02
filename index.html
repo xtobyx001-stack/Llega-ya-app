@@ -298,7 +298,7 @@ function openModal(id){
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.overlay').forEach(function(o){o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('open');});});
 
-/* ── ADMIN ── */
+/* == ADMIN == */
 var adminTab='pendientes';
 
 function getDatosAdmin(){
@@ -434,28 +434,43 @@ function leerExcel(file, origen){
     try{
       var wb=XLSX.read(ev.target.result,{type:'binary'});
       var ws=wb.Sheets[wb.SheetNames[0]];
-      var rows=XLSX.utils.sheet_to_json(ws,{defval:''});
-      if(!rows.length)return alert('El archivo está vacío o no tiene datos.');
 
-      // Detect header row — skip title row if first row has no "Dropoff contact"
-      // XLSX already skips the title row when using sheet_to_json with header detection
+      // Read as array of arrays to find the real header row
+      var raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+      if(!raw.length)return alert('El archivo está vacío.');
+
+      // Find the row that contains "Dropoff contact" or "COD" — that's the header
+      var headerIdx=-1;
+      for(var i=0;i<Math.min(raw.length,6);i++){
+        var rowStr=raw[i].join('|').toLowerCase();
+        if(rowStr.indexOf('dropoff contact')!==-1||rowStr.indexOf('cod')!==-1){
+          headerIdx=i;break;
+        }
+      }
+      if(headerIdx===-1)return alert('No se encontró la fila de encabezados. Verifica que el archivo sea el correcto.');
+
+      var headers=raw[headerIdx];
+      var rows=[];
+      for(var j=headerIdx+1;j<raw.length;j++){
+        var obj={};
+        headers.forEach(function(h,k){obj[h]=raw[j][k]||'';});
+        rows.push(obj);
+      }
+
       var lista=rows.map(function(r){
-        var nombre=(r['Dropoff Contact Name']||r['dropoff contact name']||r['Nombre']||'').toString().trim();
+        var nombre=(r['Dropoff Contact Name']||r['Nombre']||'').toString().trim();
         var tel=(r['Dropoff contact']||r['Dropoff Contact']||r['Teléfono']||r['Telefono']||'').toString().trim();
         var cod=parseFloat((r['COD']||r['cod']||r['Monto']||'0').toString().replace(/[^0-9.]/g,''))||0;
-        var nota=(r['Note']||r['Nota']||r['note']||'').toString().trim();
-        var direccion=(r['Drop off address']||r['Direccion']||r['Dirección']||'').toString().trim();
+        var nota=(r['Note']||r['Nota']||'').toString().trim();
+        if(nota==='-')nota='';
+        var direccion=(r['Drop off address']||r['Direccion']||'').toString().trim();
         if(!nombre&&!tel)return null;
-        // Clean phone: ensure it has country code
         tel=tel.replace(/\D/g,'');
-        if(tel.startsWith('1')&&tel.length===11){}
-        else if(tel.length===10)tel='1'+tel;
         return{nombre:nombre,telefono:tel,cod:cod,nota:nota,direccion:direccion,lat:null,lng:null,estado:'pendiente',_uid:generarId()};
       }).filter(function(r){return r!==null;});
 
-      if(!lista.length)return alert('No se encontraron clientes válidos. Verifica que el archivo tenga las columnas correctas.');
+      if(!lista.length)return alert('No se encontraron clientes válidos en el archivo.');
 
-      // Merge into unified clientes — skip duplicates by phone
       var telEx=new Map(clientes.filter(function(c){return normTel(c.telefono);}).map(function(c){return [normTel(c.telefono),c];}));
       var agregados=0,omitidos=0;
       lista.forEach(function(nuevo){
@@ -468,7 +483,7 @@ function leerExcel(file, origen){
       guardar();
       var msg='✅ '+agregados+' clientes agregados desde Excel';
       if(omitidos>0)msg+='\n⚠️ '+omitidos+' duplicados omitidos';
-      msg+='\n\n📍 Los clientes sin coordenadas GPS aparecen en "Sin Ubicación".';
+      msg+='\n\n📍 Los clientes aparecen en "Sin Ubicación" hasta que se agregue su GPS.';
       alert(msg);
     }catch(err){alert('Error al leer el Excel: '+err.message);}
   };
@@ -513,7 +528,7 @@ function guardarUbicacion(){
   if(c){c.lat=parseFloat(m[1]);c.lng=parseFloat(m[2]);guardar();closeModal('modalUbi');}
 }
 
-/* ── REPARTIDOR ── */
+/* == REPARTIDOR == */
 var repTabActual='pendientes';
 
 var varUbi=[
