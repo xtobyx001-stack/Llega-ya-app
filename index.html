@@ -5,9 +5,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>LLEGA YA</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
-body{background:#0f172a;color:#f1f5f9;min-height:100vh;padding-bottom:80px;overflow-x:hidden;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:#0f172a;color:#f1f5f9;min-height:100vh;padding-bottom:80px;overflow-x:hidden;font-family:sans-serif;}
+
+/* DRAWER */
 #drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0);z-index:200;pointer-events:none;transition:background 0.3s;}
 #drawer-overlay.open{background:rgba(0,0,0,0.6);pointer-events:all;}
 #drawer{position:fixed;top:0;left:-300px;width:280px;height:100%;background:#fff;z-index:201;transition:left 0.3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;border-radius:0 20px 20px 0;overflow:hidden;}
@@ -29,9 +32,13 @@ body{background:#0f172a;color:#f1f5f9;min-height:100vh;padding-bottom:80px;overf
 .drawer-user-info{display:flex;flex-direction:column;}
 .drawer-user-name{font-size:0.85rem;font-weight:bold;color:#1e293b;}
 .drawer-user-role{font-size:0.72rem;color:#94a3b8;}
+
+/* SHARED HEADER */
 header{background:#1e293b;padding:14px 16px;border-bottom:1px solid #334155;position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;}
 header h1{font-size:1.05rem;font-weight:900;}
 .hamburger{background:none;border:none;color:#f1f5f9;font-size:1.4rem;cursor:pointer;padding:4px 6px;line-height:1;}
+
+/* ADMIN */
 .admin-toolbar{display:flex;gap:8px;padding:10px;background:#0f172a;border-bottom:1px solid #334155;position:sticky;top:53px;z-index:49;}
 .admin-toolbar button{flex:1;padding:10px 6px;border-radius:8px;border:none;font-weight:bold;font-size:0.8rem;cursor:pointer;color:white;}
 .admin-search{padding:8px 10px;background:#0f172a;border-bottom:1px solid #334155;position:sticky;top:106px;z-index:48;}
@@ -41,6 +48,8 @@ header h1{font-size:1.05rem;font-weight:900;}
 .admin-tabs{display:flex;border-bottom:1px solid #334155;background:#1e293b;position:sticky;top:159px;z-index:47;}
 .admin-tabs .tab{flex:1;padding:10px;text-align:center;font-size:0.78rem;font-weight:bold;cursor:pointer;border-bottom:3px solid transparent;color:#94a3b8;}
 .admin-tabs .tab.active{color:#3b82f6;border-bottom-color:#3b82f6;}
+
+/* REPARTIDOR */
 .rep-sticky{position:sticky;top:53px;z-index:49;background:#111827;border-bottom:2px solid #f59e0b;}
 .rep-logo-block{display:flex;align-items:center;gap:10px;padding:10px 16px 6px;}
 .rep-logo-icon{width:44px;height:44px;background:#1d4ed8;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
@@ -62,13 +71,23 @@ header h1{font-size:1.05rem;font-weight:900;}
 .rep-search{padding:8px 10px;background:#0f172a;border-bottom:1px solid #334155;}
 .rep-search input{width:100%;padding:9px 14px 9px 36px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#f1f5f9;font-size:0.88rem;outline:none;}
 .rep-search input:focus{border-color:#f59e0b;}
+
+/* INVENTARIO */
+.inv-header-ext{background:#0a0a0f;border-bottom:1px solid #2a2a3a;position:sticky;top:53px;z-index:49;}
+.inv-tabs-bar{display:flex;border-bottom:1px solid #2a2a3a;background:#0a0a0f;}
+.inv-tab{flex:1;padding:12px 8px;text-align:center;font-size:0.78rem;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:#707085;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;}
+.inv-tab.active{color:#f0c040;border-bottom-color:#f0c040;}
+.inv-badge-count{background:#f0c040;color:#000;font-size:0.7rem;font-weight:700;padding:3px 8px;border-radius:20px;}
+
+/* SEARCH WRAP */
 .search-wrap{position:relative;}
 .search-wrap .lupa{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:1rem;pointer-events:none;}
+
+/* SHARED CARDS */
 #list-admin,#list-rep{padding:10px;}
 .card{background:#1e293b;border-radius:12px;margin-bottom:12px;border-left:4px solid #3b82f6;overflow:hidden;}
 .card.completado{border-left-color:#10b981;opacity:0.6;}
 .card.sin-ubi{border-left-color:#f59e0b;}
-.card.sin-ubi.completado{border-left-color:#10b981;opacity:0.4;}
 .card.multi{border-left-color:#8b5cf6;}
 .card.enviado{border-left-color:#0f766e;opacity:0.8;}
 .card-header{padding:12px 14px 4px;display:flex;align-items:flex-start;justify-content:space-between;}
@@ -89,6 +108,94 @@ header h1{font-size:1.05rem;font-weight:900;}
 .btn-row{display:flex;gap:6px;}
 .btn{padding:10px;border-radius:8px;border:none;font-weight:bold;font-size:0.82rem;cursor:pointer;color:white;text-align:center;text-decoration:none;display:block;width:100%;}
 .btn-sm{flex:1;padding:9px 4px;border-radius:8px;border:none;font-weight:bold;font-size:0.78rem;cursor:pointer;color:white;text-align:center;text-decoration:none;display:inline-block;}
+
+/* INVENTARIO STYLES */
+.inv-view{display:none;padding:16px;}
+.inv-view.active{display:block;}
+.upload-zone{border:2px dashed #2a2a3a;border-radius:16px;padding:32px 20px;text-align:center;cursor:pointer;position:relative;overflow:hidden;background:#0a0a0f;}
+.upload-zone input[type=file]{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px;}
+.upload-icon{font-size:2.2rem;margin-bottom:10px;display:block;}
+.upload-zone h3{font-size:0.95rem;font-weight:700;margin-bottom:4px;color:#e8e8f0;}
+.upload-zone p{font-size:0.78rem;color:#707085;margin:0;}
+.file-info-box{background:#13131a;border:1px solid #2a2a3a;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-top:12px;}
+.file-info-text strong{font-size:0.85rem;display:block;color:#e8e8f0;}
+.file-info-text span{font-size:0.72rem;color:#707085;}
+.btn-clear-inv{background:none;border:none;color:#f04060;font-size:1.1rem;cursor:pointer;padding:4px;}
+.mapping-card{background:#13131a;border:1px solid #2a2a3a;border-radius:14px;padding:16px;margin-top:14px;}
+.mapping-card h4{font-size:0.8rem;font-weight:700;margin-bottom:12px;color:#f0c040;text-transform:uppercase;letter-spacing:1px;}
+.map-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.map-label{font-size:0.75rem;color:#707085;width:85px;flex-shrink:0;}
+.map-select{flex:1;background:#1c1c27;border:1px solid #2a2a3a;color:#e8e8f0;padding:6px 8px;border-radius:8px;font-size:0.75rem;}
+.map-select:focus{outline:none;border-color:#f0c040;}
+.btn-inv{display:block;width:100%;padding:13px;border-radius:12px;font-size:0.88rem;font-weight:700;cursor:pointer;border:none;text-align:center;margin-top:12px;}
+.btn-inv-primary{background:#f0c040;color:#000;}
+.btn-inv-secondary{background:#1c1c27;color:#e8e8f0;border:1px solid #2a2a3a;}
+.btn-inv-danger{background:#f04060;color:#fff;}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;}
+.stat-card{background:#13131a;border:1px solid #2a2a3a;border-radius:12px;padding:12px 8px;text-align:center;}
+.stat-num{font-size:1.5rem;font-weight:800;}
+.stat-label{font-size:0.65rem;color:#707085;text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;}
+.num-total{color:#40c0f0;}
+.num-ok{color:#40f0a0;}
+.num-fail{color:#f04060;}
+.filter-tabs{display:flex;border-bottom:1px solid #2a2a3a;margin-bottom:12px;overflow-x:auto;scrollbar-width:none;}
+.filter-tabs::-webkit-scrollbar{display:none;}
+.ftab{flex-shrink:0;padding:10px 8px;font-size:0.65rem;font-weight:700;cursor:pointer;border:none;border-bottom:2px solid transparent;background:none;color:#707085;text-transform:uppercase;letter-spacing:0.3px;transition:all .2s;white-space:nowrap;}
+.ftab.active{color:#f0c040;border-bottom-color:#f0c040;}
+.ftab-count{display:inline-block;background:#2a2a3a;color:#e8e8f0;border-radius:20px;font-size:0.6rem;font-weight:700;padding:1px 6px;margin-left:3px;vertical-align:middle;}
+.record-item{background:#13131a;border:1px solid #2a2a3a;border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer;}
+.record-item.scanned{border-left:3px solid #40f0a0;}
+.record-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+.record-order{font-size:0.88rem;color:#f0c040;font-weight:700;}
+.record-customer{font-size:0.88rem;font-weight:700;color:#e8e8f0;}
+.record-meta{font-size:0.72rem;color:#707085;margin-top:3px;}
+.status-pill{font-size:0.65rem;font-weight:700;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;}
+.pill-entregado{background:rgba(64,240,160,.15);color:#40f0a0;}
+.pill-no-entregado{background:rgba(240,64,96,.15);color:#f04060;}
+.pill-pendiente{background:rgba(112,112,133,.2);color:#909090;}
+.pill-devolucion{background:rgba(255,140,0,.15);color:#ff8c00;}
+.scanned-badge{display:inline-flex;align-items:center;background:rgba(64,240,160,.15);border:1px solid rgba(64,240,160,.35);border-radius:20px;padding:2px 7px;font-size:0.6rem;font-weight:700;color:#40f0a0;text-transform:uppercase;}
+.btn-quick-del{background:rgba(240,64,96,.12);color:#f04060;border:1px solid rgba(240,64,96,.35);border-radius:8px;font-size:0.72rem;font-weight:700;padding:4px 8px;cursor:pointer;}
+.quick-move-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid #2a2a3a;}
+.btn-move{background:#1c1c27;border:1px solid #2a2a3a;color:#b0b0c0;border-radius:8px;font-size:0.7rem;font-weight:700;padding:5px 9px;cursor:pointer;}
+.pkg-card{background:#13131a;border:1px solid #2a2a3a;border-radius:14px;padding:16px;margin-bottom:12px;}
+.pkg-order{font-size:1.05rem;font-weight:700;color:#f0c040;margin-bottom:3px;}
+.pkg-customer{font-size:0.95rem;font-weight:700;margin-bottom:10px;color:#e8e8f0;}
+.pkg-details{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;}
+.pkg-detail{background:#1c1c27;border-radius:8px;padding:7px 9px;}
+.pkg-detail-label{font-size:0.65rem;color:#707085;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;}
+.pkg-detail-value{font-size:0.82rem;font-weight:600;color:#e8e8f0;}
+.pkg-note{grid-column:1/-1;}
+.status-buttons{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
+.status-btn{flex:1;padding:9px;border-radius:10px;font-size:0.78rem;font-weight:700;cursor:pointer;border:2px solid transparent;transition:all .15s;}
+.status-btn.entregado{background:rgba(64,240,160,.1);color:#40f0a0;border-color:rgba(64,240,160,.3);}
+.status-btn.entregado.active{background:#40f0a0;color:#000;border-color:#40f0a0;}
+.status-btn.no-entregado{background:rgba(240,64,96,.1);color:#f04060;border-color:rgba(240,64,96,.3);}
+.status-btn.no-entregado.active{background:#f04060;color:#fff;border-color:#f04060;}
+.status-btn.pendiente-prog{background:rgba(64,192,240,.1);color:#40c0f0;border-color:rgba(64,192,240,.3);}
+.status-btn.pendiente-prog.active{background:#40c0f0;color:#000;border-color:#40c0f0;}
+.status-btn.devolucion{background:rgba(255,140,0,.1);color:#ff8c00;border-color:rgba(255,140,0,.3);}
+.status-btn.devolucion.active{background:#ff8c00;color:#000;border-color:#ff8c00;}
+.motivo-row{margin-bottom:10px;display:none;}
+.motivo-row.show{display:block;}
+.extra-row{margin-bottom:10px;display:none;}
+.extra-row.show{display:block;}
+.motivo-select{width:100%;background:#1c1c27;border:1px solid #2a2a3a;color:#e8e8f0;padding:9px 11px;border-radius:10px;font-size:0.83rem;margin-bottom:7px;}
+.motivo-select:focus{outline:none;border-color:#f04060;}
+.inv-input{width:100%;background:#13131a;border:1px solid #2a2a3a;color:#e8e8f0;padding:11px 13px;border-radius:10px;font-size:0.88rem;resize:none;}
+.inv-input:focus{outline:none;border-color:#f0c040;}
+.scanner-container{position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:4/3;margin-bottom:14px;}
+.scan-overlay{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+.scan-frame{width:65%;aspect-ratio:3/1;border:2px solid #f0c040;border-radius:8px;box-shadow:0 0 0 9999px rgba(0,0,0,.5);position:relative;}
+.scan-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#f0c040,transparent);animation:scan 2s ease-in-out infinite;}
+@keyframes scan{0%,100%{top:0}50%{top:calc(100% - 2px)}}
+.manual-row{display:flex;gap:8px;margin-bottom:12px;}
+.btn-icon-inv{background:#f0c040;color:#000;border:none;border-radius:10px;padding:11px 13px;font-size:1rem;cursor:pointer;}
+#quagga-viewport,#quick-quagga-viewport{position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;}
+#quagga-viewport video,#quick-quagga-viewport video{width:100%;height:100%;object-fit:cover;}
+#quagga-viewport canvas,#quick-quagga-viewport canvas{display:none;}
+
+/* MODALS */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;}
 .overlay.open{display:flex;}
 .modal{background:#1e293b;border-radius:16px;padding:24px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
@@ -99,6 +206,14 @@ header h1{font-size:1.05rem;font-weight:900;}
 .field textarea{resize:vertical;min-height:80px;}
 .modal-btns{display:flex;gap:8px;margin-top:16px;}
 .modal-btns button{flex:1;padding:12px;border-radius:8px;border:none;font-weight:bold;cursor:pointer;color:white;font-size:0.9rem;}
+.inv-modal-backdrop{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:300;align-items:flex-end;justify-content:center;}
+.inv-modal-backdrop.open{display:flex;}
+.inv-modal{background:#13131a;border:1px solid #2a2a3a;border-radius:20px 20px 0 0;padding:20px;width:100%;max-height:85vh;overflow-y:auto;}
+.inv-modal-handle{width:40px;height:4px;background:#2a2a3a;border-radius:2px;margin:0 auto 14px;}
+.inv-modal h3{font-size:0.95rem;font-weight:800;margin-bottom:12px;color:#e8e8f0;}
+.inv-modal-field{margin-bottom:8px;}
+.inv-modal-field label{font-size:0.68rem;color:#707085;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:2px;}
+.inv-modal-field .val{font-size:0.87rem;font-weight:600;color:#e8e8f0;}
 .fab{position:fixed;bottom:20px;right:16px;display:flex;flex-direction:column;gap:10px;z-index:49;}
 .fab button{width:56px;height:56px;border-radius:50%;border:none;font-size:1.5rem;cursor:pointer;color:white;box-shadow:0 4px 12px rgba(0,0,0,0.4);}
 .empty{text-align:center;padding:40px 20px;color:#64748b;}
@@ -106,10 +221,19 @@ header h1{font-size:1.05rem;font-weight:900;}
 .export-card .ec-info{font-size:0.9rem;font-weight:bold;}
 .export-card .ec-sub{font-size:0.78rem;color:#94a3b8;margin-top:2px;}
 .export-card .ec-btn{background:#ef4444;border:none;color:white;border-radius:6px;padding:6px 10px;font-size:0.75rem;cursor:pointer;font-weight:bold;}
+.toast-inv{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1c1c27;border:1px solid #2a2a3a;padding:11px 18px;border-radius:40px;font-size:0.83rem;font-weight:600;z-index:400;transition:transform .3s ease;white-space:nowrap;color:#e8e8f0;}
+.toast-inv.show{transform:translateX(-50%) translateY(0);}
+.toast-inv.success{border-color:#40f0a0;color:#40f0a0;}
+.toast-inv.error{border-color:#f04060;color:#f04060;}
+.toast-inv.info{border-color:#f0c040;color:#f0c040;}
+.divider{height:1px;background:#2a2a3a;margin:14px 0;}
+.record-position-badge{display:inline-block;font-size:0.68rem;font-weight:700;color:#3a3a55;background:#1a1a28;border:1px solid #2a2a3a;border-radius:6px;padding:1px 6px;vertical-align:middle;flex-shrink:0;}
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 </head>
 <body>
+
+<!-- DRAWER -->
 
 <div id="drawer-overlay" onclick="closeDrawer()"></div>
 <div id="drawer">
@@ -118,19 +242,22 @@ header h1{font-size:1.05rem;font-weight:900;}
       <div class="drawer-logo-icon">LY</div>
       <div class="drawer-logo-text">LLEGA YA</div>
     </div>
-    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <button class="drawer-close" onclick="closeDrawer()">&#10005;</button>
   </div>
   <nav class="drawer-nav">
     <div class="drawer-item active" id="nav-admin" onclick="switchApp('admin')">
-      <span class="di-icon">🗺️</span> Rutas (Admin)
+      <span class="di-icon">&#128506;</span> Rutas (Admin)
     </div>
     <div class="drawer-item" id="nav-rep" onclick="switchApp('rep')">
-      <span class="di-icon">🛵</span> Entregas (Repartidor)
+      <span class="di-icon">&#128757;</span> Entregas (Repartidor)
+    </div>
+    <div class="drawer-item" id="nav-inv" onclick="switchApp('inv')">
+      <span class="di-icon">&#128230;</span> Inventario
     </div>
   </nav>
   <div class="drawer-footer">
     <div class="drawer-footer-item" onclick="openModal('modalConfigAdmin');closeDrawer();">
-      <span style="font-size:1.1rem">⚙️</span> Ajustes
+      <span style="font-size:1.1rem">&#9881;</span> Ajustes
     </div>
     <div class="drawer-user">
       <div class="drawer-user-avatar">J</div>
@@ -142,48 +269,50 @@ header h1{font-size:1.05rem;font-weight:900;}
   </div>
 </div>
 
+<!-- SHARED HEADER -->
+
 <header>
-  <h1 id="headerTitle">🛵 LLEGA YA — Rutas</h1>
-  <button class="hamburger" onclick="openDrawer()">☰</button>
+  <h1 id="headerTitle">&#128757; LLEGA YA &mdash; Rutas</h1>
+  <button class="hamburger" onclick="openDrawer()">&#9776;</button>
 </header>
 
-<!-- APP ADMIN -->
+<!-- ======================== APP ADMIN ======================== -->
 
 <div id="app-admin">
   <div class="admin-toolbar">
-    <button style="background:#3b82f6 !important" onclick="document.getElementById('fileInputAdminXlsx').click()">📊 Cargar Excel</button>
-    <button style="background:#8b5cf6 !important" onclick="sortNearest()">⚡ Cercanía</button>
+    <button style="background:#3b82f6 !important" onclick="document.getElementById('fileInputAdminXlsx').click()">&#128202; Cargar Excel</button>
+    <button style="background:#8b5cf6 !important" onclick="sortNearest()">&#9889; Cercan&#237;a</button>
     <button style="background:#10b981 !important" onclick="abrirNuevoCliente()">+ Cliente</button>
   </div>
   <input type="file" id="fileInputAdminXlsx" accept=".xlsx,.xls" style="display:none" onchange="cargarExcelAdmin(event)">
   <div class="admin-search">
     <div class="search-wrap">
-      <span class="lupa">🔍</span>
-      <input type="text" id="busqueda" placeholder="Buscar por nombre o teléfono..." oninput="renderAdmin()">
+      <span class="lupa">&#128269;</span>
+      <input type="text" id="busqueda" placeholder="Buscar por nombre o tel&#233;fono..." oninput="renderAdmin()">
     </div>
   </div>
   <div class="admin-tabs" id="admin-tabs">
     <div class="tab active" onclick="switchTabAdmin('pendientes')">Pendientes</div>
-    <div class="tab" onclick="switchTabAdmin('sin_ubicacion')">Sin Ubicación</div>
+    <div class="tab" onclick="switchTabAdmin('sin_ubicacion')">Sin Ubicaci&#243;n</div>
     <div class="tab" onclick="switchTabAdmin('completados')">Completados</div>
-    <div class="tab" onclick="switchTabAdmin('exportar')">📤 Exportar</div>
+    <div class="tab" onclick="switchTabAdmin('exportar')">&#128228; Exportar</div>
   </div>
   <div id="list-admin"></div>
   <div class="fab" id="fab-admin">
-    <button style="background:#475569 !important" onclick="openModal('modalConfigAdmin')">⚙️</button>
+    <button style="background:#475569 !important" onclick="openModal('modalConfigAdmin')">&#9881;</button>
   </div>
 </div>
 
-<!-- APP REPARTIDOR -->
+<!-- ======================== APP REPARTIDOR ======================== -->
 
 <div id="app-rep" style="display:none">
   <div class="rep-sticky">
     <div class="rep-logo-block">
-      <div class="rep-logo-icon">🛵</div>
+      <div class="rep-logo-icon">&#128757;</div>
       <div class="rep-logo-text">
         <span class="brand">Llega YA</span>
-        <span class="sub">ENTREGAS RÁPIDAS</span>
-        <span class="phone">📱 +1 849-343-8658</span>
+        <span class="sub">ENTREGAS R&#193;PIDAS</span>
+        <span class="phone">&#128241; +1 849-343-8658</span>
       </div>
     </div>
     <div class="rep-fecha" id="fechaDisplay">Sin fecha cargada</div>
@@ -192,120 +321,345 @@ header h1{font-size:1.05rem;font-weight:900;}
       <span class="hbadge hb-green" id="badgeEnviados">Enviados: 0</span>
       <span class="hbadge hb-yellow" id="badgePendientes">Pendientes: 0</span>
       <span class="hbadge hb-yellow" id="badgeCodTotal">RD$ 0</span>
-      <span class="hbadge hb-green" id="badgeRecaudado">✅ RD$ 0</span>
-      <span class="hbadge hb-red" id="badgePendCod">⏳ RD$ 0</span>
+      <span class="hbadge hb-green" id="badgeRecaudado">&#10003; RD$ 0</span>
+      <span class="hbadge hb-red" id="badgePendCod">&#8987; RD$ 0</span>
     </div>
     <div class="rep-toolbar">
-      <button style="background:#1d4ed8 !important" onclick="document.getElementById('fileInputRepXlsx').click()">📊 Cargar Excel</button>
+      <button style="background:#1d4ed8 !important" onclick="document.getElementById('fileInputRepXlsx').click()">&#128202; Cargar Excel</button>
       <input type="file" id="fileInputRepXlsx" accept=".xlsx,.xls" style="display:none" onchange="cargarExcelRep(event)">
-      <button style="background:#475569 !important" onclick="openModal('modalFecha')">📅 Fecha</button>
-      <button style="background:#475569 !important" onclick="openModal('modalConfigRep')">⚙️</button>
+      <button style="background:#475569 !important" onclick="openModal('modalFecha')">&#128197; Fecha</button>
+      <button style="background:#475569 !important" onclick="openModal('modalConfigRep')">&#9881;</button>
     </div>
     <div class="rep-tabs" id="rep-tabs">
       <div class="tab active" onclick="switchTabRep('pendientes')">Pendientes</div>
-      <div class="tab" onclick="switchTabRep('contactados')">Ya Contacté</div>
+      <div class="tab" onclick="switchTabRep('contactados')">Ya Contact&#233;</div>
     </div>
   </div>
   <div class="rep-search">
     <div class="search-wrap">
-      <span class="lupa">🔍</span>
-      <input type="text" id="searchRep" placeholder="Buscar por nombre o teléfono..." oninput="renderRep()">
+      <span class="lupa">&#128269;</span>
+      <input type="text" id="searchRep" placeholder="Buscar por nombre o tel&#233;fono..." oninput="renderRep()">
     </div>
   </div>
   <div id="list-rep"><div class="empty">Carga un archivo JSON para comenzar</div></div>
 </div>
 
-<!-- MODALS ADMIN -->
+<!-- ======================== APP INVENTARIO ======================== -->
 
-<div class="overlay" id="modalCliente"><div class="modal"><h2 id="modalClienteTitulo">➕ Nuevo Cliente</h2>
+<div id="app-inv" style="display:none">
+  <div class="inv-header-ext">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px 8px;">
+      <span style="font-size:0.95rem;font-weight:800;color:#e8e8f0;">LLEGA<span style="color:#f0c040;">YA</span> &middot; Inventario</span>
+      <div class="inv-badge-count" id="inv-total-badge">0 pkgs</div>
+    </div>
+    <div class="inv-tabs-bar">
+      <div class="inv-tab active" id="itab-cargar" onclick="switchInvTab('cargar')">Cargar</div>
+      <div class="inv-tab" id="itab-escanear" onclick="switchInvTab('escanear')">Escanear</div>
+      <div class="inv-tab" id="itab-registros" onclick="switchInvTab('registros')">Registros</div>
+    </div>
+  </div>
+
+  <!-- CARGAR -->
+
+  <div class="inv-view active" id="itab-view-cargar" style="background:#0a0a0f;min-height:100vh;">
+    <div class="upload-zone" id="inv-upload-zone">
+      <input type="file" id="inv-file-input" accept=".xlsx,.xls,.csv">
+      <span class="upload-icon">&#128202;</span>
+      <h3>Cargar archivo del dia</h3>
+      <p>Excel (.xlsx / .xls) &middot; Toca para seleccionar</p>
+    </div>
+    <div id="inv-file-info-box" style="display:none" class="file-info-box">
+      <span style="font-size:1.3rem;">&#128196;</span>
+      <div class="file-info-text" style="flex:1;">
+        <strong id="inv-file-name">-</strong>
+        <span id="inv-file-rows">-</span>
+      </div>
+      <button class="btn-clear-inv" onclick="invClearFile()">&#10005;</button>
+    </div>
+    <div class="mapping-card" id="inv-mapping-card" style="display:none">
+      <h4>Mapear columnas</h4>
+      <div class="map-row"><span class="map-label">OrderNo *</span><select class="map-select" id="imap-order"></select></div>
+      <div class="map-row"><span class="map-label">Customer</span><select class="map-select" id="imap-customer"></select></div>
+      <div class="map-row"><span class="map-label">Receiver</span><select class="map-select" id="imap-receiver"></select></div>
+      <div class="map-row"><span class="map-label">Telefono</span><select class="map-select" id="imap-phone"></select></div>
+      <div class="map-row"><span class="map-label">Zone</span><select class="map-select" id="imap-zone"></select></div>
+      <div class="map-row"><span class="map-label">COD</span><select class="map-select" id="imap-cod"></select></div>
+      <div class="map-row"><span class="map-label">Note</span><select class="map-select" id="imap-note"></select></div>
+    </div>
+    <button class="btn-inv btn-inv-primary" id="inv-btn-load" style="display:none" onclick="invLoadPackages()">Cargar paquetes</button>
+    <div id="inv-loaded-summary" style="display:none;margin-top:14px;">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-num num-total" id="is-total">0</div><div class="stat-label">Total</div></div>
+        <div class="stat-card"><div class="stat-num num-ok" id="is-ok">0</div><div class="stat-label">Entregados</div></div>
+        <div class="stat-card"><div class="stat-num num-fail" id="is-fail">0</div><div class="stat-label">No entregados</div></div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-inv btn-inv-secondary" style="flex:1;margin-top:0" onclick="invExportExcel()">Exportar Excel</button>
+        <button class="btn-inv btn-inv-danger" style="flex:1;margin-top:0" onclick="invClearAll()">Limpiar todo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ESCANEAR -->
+
+  <div class="inv-view" id="itab-view-escanear" style="background:#0a0a0f;min-height:100vh;">
+    <div class="manual-row">
+      <input type="text" class="inv-input" id="inv-manual-code" placeholder="OrderNo manual..." inputmode="numeric" style="flex:1;">
+      <button class="btn-icon-inv" onclick="invProcessCode(document.getElementById('inv-manual-code').value.trim())">&#128269;</button>
+    </div>
+    <div class="scanner-container" id="inv-scanner-container">
+      <div id="quagga-viewport"></div>
+      <div class="scan-overlay"><div class="scan-frame"><div class="scan-line"></div></div></div>
+    </div>
+    <button class="btn-inv btn-inv-secondary" id="btn-toggle-cam" onclick="invToggleCamera()" style="margin-top:0;">Activar camara</button>
+    <div class="divider"></div>
+    <div id="inv-pkg-form" style="display:none">
+      <div class="pkg-card">
+        <div class="pkg-order" id="if-order">-</div>
+        <div class="pkg-customer" id="if-customer">-</div>
+        <div class="pkg-details">
+          <div class="pkg-detail"><div class="pkg-detail-label">Receiver</div><div class="pkg-detail-value" id="if-receiver">-</div></div>
+          <div class="pkg-detail"><div class="pkg-detail-label">Telefono</div><div class="pkg-detail-value" id="if-phone">-</div></div>
+          <div class="pkg-detail"><div class="pkg-detail-label">Zone</div><div class="pkg-detail-value" id="if-zone">-</div></div>
+          <div class="pkg-detail"><div class="pkg-detail-label">COD</div><div class="pkg-detail-value" id="if-cod">-</div></div>
+          <div class="pkg-detail pkg-note"><div class="pkg-detail-label">Producto</div><div class="pkg-detail-value" id="if-note">-</div></div>
+        </div>
+        <div class="status-buttons">
+          <button class="status-btn entregado" id="ibtn-entregado" onclick="invSetStatus('entregado')">Entregado</button>
+          <button class="status-btn no-entregado" id="ibtn-no-entregado" onclick="invSetStatus('no-entregado')">No entregado</button>
+          <button class="status-btn pendiente-prog" id="ibtn-pendiente-prog" onclick="invSetStatus('pendiente-prog')">Pendiente</button>
+          <button class="status-btn devolucion" id="ibtn-devolucion" onclick="invSetStatus('devolucion')">Devolucion</button>
+        </div>
+        <div class="motivo-row" id="inv-motivo-row">
+          <select class="motivo-select" id="inv-motivo-select">
+            <option value="">- Motivo -</option>
+            <option>Cliente no estaba</option><option>Direccion incorrecta</option>
+            <option>Cliente rechazo</option><option>No tenia cambio para el COD</option>
+            <option>Acceso restringido</option><option>Paquete danado</option><option>Otro</option>
+          </select>
+          <textarea class="inv-input" id="inv-motivo-custom" placeholder="Nota adicional (opcional)..." rows="2"></textarea>
+        </div>
+        <div class="extra-row" id="inv-pendiente-row">
+          <select class="motivo-select" id="inv-pendiente-dia">
+            <option value="">- Dia para reintentar -</option>
+            <option>Lunes</option><option>Martes</option><option>Miercoles</option>
+            <option>Jueves</option><option>Viernes</option><option>Sabado</option><option>Domingo</option>
+          </select>
+          <textarea class="inv-input" id="inv-pendiente-nota" placeholder="Indicacion del cliente (opcional)..." rows="2"></textarea>
+        </div>
+        <div class="extra-row" id="inv-devolucion-row">
+          <select class="motivo-select" id="inv-devolucion-motivo">
+            <option value="">- Razon de devolucion -</option>
+            <option>No contesto y fuera de alcance</option><option>Cliente rechazo el paquete</option>
+            <option>Direccion no encontrada</option><option>Paquete danado</option>
+            <option>Cliente fuera del pais / zona</option><option>Otro</option>
+          </select>
+          <textarea class="inv-input" id="inv-devolucion-nota" placeholder="Nota adicional (opcional)..." rows="2"></textarea>
+        </div>
+        <button class="btn-inv btn-inv-primary" onclick="invSaveRecord()" style="margin-top:0;">Guardar registro</button>
+      </div>
+    </div>
+    <div id="inv-no-pkg-msg" style="display:none" class="empty">
+      <p>&#128230; Paquete no encontrado. Verifica el OrderNo.</p>
+    </div>
+  </div>
+
+  <!-- REGISTROS -->
+
+  <div class="inv-view" id="itab-view-registros" style="background:#0a0a0f;min-height:100vh;">
+    <input type="text" class="inv-input" id="inv-search-input" placeholder="Buscar OrderNo o cliente..." oninput="invRenderRecords()" style="width:100%;margin-bottom:10px;flex:none;">
+    <div class="filter-tabs">
+      <button class="ftab active" data-val="pendiente" onclick="invSetFilter(this,'pendiente')">Sin escanear <span class="ftab-count" id="icount-pendiente">0</span></button>
+      <button class="ftab" data-val="no-entregado" onclick="invSetFilter(this,'no-entregado')">No entregados <span class="ftab-count" id="icount-no-entregado">0</span></button>
+      <button class="ftab" data-val="pendiente-prog" onclick="invSetFilter(this,'pendiente-prog')">Pendientes <span class="ftab-count" id="icount-pendiente-prog">0</span></button>
+      <button class="ftab" data-val="devolucion" onclick="invSetFilter(this,'devolucion')">Devoluciones <span class="ftab-count" id="icount-devolucion">0</span></button>
+      <button class="ftab" data-val="entregado" onclick="invSetFilter(this,'entregado')">Entregados <span class="ftab-count" id="icount-entregado">0</span></button>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
+      <button onclick="invClearCurrentGroup()" style="background:#1c1c27;border:1px solid #2a2a3a;color:#e8e8f0;border-radius:8px;padding:6px 12px;font-size:1rem;cursor:pointer;">&#9881;</button>
+    </div>
+
+```
+<div id="inv-records-list"></div>
+```
+
+  </div>
+</div>
+
+<!-- ======================== MODALS ADMIN ======================== -->
+
+<div class="overlay" id="modalCliente"><div class="modal"><h2 id="modalClienteTitulo">&#10133; Nuevo Cliente</h2>
   <input type="hidden" id="editId">
   <div class="field"><label>Nombre</label><input type="text" id="cNombre" placeholder="Nombre completo"></div>
-  <div class="field"><label>Teléfono / WhatsApp</label><input type="tel" id="cTel" placeholder="8093334444"></div>
+  <div class="field"><label>Tel&#233;fono / WhatsApp</label><input type="tel" id="cTel" placeholder="8093334444"></div>
   <div class="field"><label>Monto (RD$)</label><input type="number" id="cCod" placeholder="0"></div>
   <div class="field"><label>Coordenadas</label><input type="text" id="cCoords" placeholder="19.2917, -70.2558"></div>
   <div class="modal-btns"><button style="background:#10b981" onclick="guardarCliente()">GUARDAR</button><button style="background:#334155" onclick="closeModal('modalCliente')">CANCELAR</button></div>
 </div></div>
 
-<div class="overlay" id="modalUbi"><div class="modal"><h2>📍 Actualizar Ubicación</h2>
+<div class="overlay" id="modalUbi"><div class="modal"><h2>&#128205; Actualizar Ubicaci&#243;n</h2>
   <input type="hidden" id="ubiId">
   <p style="font-size:0.85rem;color:#94a3b8;margin-bottom:12px;">Pega las coordenadas o un link de Google Maps</p>
-  <div class="field"><textarea id="ubiInput" placeholder="19.2917, -70.2558&#10;o&#10;https://maps.google.com/?q=19.2917,-70.2558"></textarea></div>
+  <div class="field"><textarea id="ubiInput" placeholder="19.2917, -70.2558"></textarea></div>
   <div class="modal-btns"><button style="background:#10b981" onclick="guardarUbicacion()">GUARDAR</button><button style="background:#334155" onclick="closeModal('modalUbi')">CANCELAR</button></div>
 </div></div>
 
-<div class="overlay" id="modalConfigAdmin"><div class="modal"><h2>⚙️ Opciones — Rutas</h2><br>
-  <button class="btn" style="background:#ef4444" onclick="if(confirm('¿Borrar todos los clientes?')){clientes=[];exportados=[];guardar();closeModal('modalConfigAdmin');}">🗑️ Borrar Todo (fin del día)</button>
+<div class="overlay" id="modalConfigAdmin"><div class="modal"><h2>&#9881; Opciones &mdash; Rutas</h2><br>
+  <button class="btn" style="background:#ef4444" onclick="if(confirm('Borrar todos los clientes?')){clientes=[];exportados=[];guardar();closeModal('modalConfigAdmin');}">&#128465; Borrar Todo (fin del d&#237;a)</button>
   <button class="btn" style="background:#475569;margin-top:8px" onclick="closeModal('modalConfigAdmin')">CERRAR</button>
 </div></div>
 
-<!-- MODALS REP -->
+<!-- ======================== MODALS REP ======================== -->
 
-<div class="overlay" id="modalFecha"><div class="modal"><h2>📅 Fecha de Entrega</h2>
+<div class="overlay" id="modalFecha"><div class="modal"><h2>&#128197; Fecha de Entrega</h2>
   <div class="field"><label>Fecha</label><input type="date" id="inputFecha"></div>
   <div class="modal-btns"><button style="background:#10b981" onclick="guardarFecha()">GUARDAR</button><button style="background:#334155" onclick="closeModal('modalFecha')">CANCELAR</button></div>
 </div></div>
 
-<div class="overlay" id="modalConfigRep"><div class="modal"><h2>⚙️ Opciones — Entregas</h2><br>
-  <button style="width:100%;padding:12px;border-radius:8px;border:none;font-weight:bold;cursor:pointer;color:white;background:#ef4444;font-size:0.9rem" onclick="borrarPestanaRep()">🗑️ Borrar <span id="labelBorrar">Pendientes</span></button>
-  <button style="width:100%;padding:12px;border-radius:8px;border:none;font-weight:bold;cursor:pointer;color:white;background:#7f1d1d;font-size:0.9rem;margin-top:8px" onclick="borrarTodoRep()">🗑️ Borrar Todo (fin del día)</button>
+<div class="overlay" id="modalConfigRep"><div class="modal"><h2>&#9881; Opciones &mdash; Entregas</h2><br>
+  <button style="width:100%;padding:12px;border-radius:8px;border:none;font-weight:bold;cursor:pointer;color:white;background:#ef4444;font-size:0.9rem" onclick="borrarPestanaRep()">&#128465; Borrar <span id="labelBorrar">Pendientes</span></button>
+  <button style="width:100%;padding:12px;border-radius:8px;border:none;font-weight:bold;cursor:pointer;color:white;background:#7f1d1d;font-size:0.9rem;margin-top:8px" onclick="borrarTodoRep()">&#128465; Borrar Todo (fin del d&#237;a)</button>
   <button style="width:100%;padding:12px;border-radius:8px;border:none;font-weight:bold;cursor:pointer;color:white;background:#475569;font-size:0.9rem;margin-top:8px" onclick="closeModal('modalConfigRep')">CERRAR</button>
 </div></div>
 
+<!-- INVENTARIO DETAIL MODAL -->
+
+<div class="inv-modal-backdrop" id="inv-detail-modal" onclick="invCloseModal(event)">
+  <div class="inv-modal">
+    <div class="inv-modal-handle"></div>
+    <h3>Detalle del registro</h3>
+    <div id="inv-modal-content"></div>
+    <div style="display:flex;gap:8px;margin-top:14px;">
+      <button class="btn-inv btn-inv-secondary" onclick="invCloseModalDirect()" style="flex:1;margin-top:0;">Cerrar</button>
+      <button class="btn-inv btn-inv-danger" id="inv-btn-delete-record" onclick="invDeleteRecord()" style="flex:1;margin-top:0;">Borrar registro</button>
+    </div>
+    <div style="margin-top:8px;" id="inv-btn-delete-pkg-wrap">
+      <button class="btn-inv" style="background:rgba(240,64,96,.15);border:1px solid #f04060;color:#f04060;margin-top:0;width:100%;padding:12px;border-radius:12px;font-weight:700;cursor:pointer;" onclick="invDeletePackage()">Borrar paquete completo</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-inv" id="inv-toast"></div>
+
 <script>
-var STORAGE_KEY='llega_ya_clientes';
-var EXPORT_KEY='llega_ya_exportados';
-var FECHA_KEY='llegaya_fecha';
-var clientes=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
-var exportados=JSON.parse(localStorage.getItem(EXPORT_KEY)||'[]');
-var repFecha=localStorage.getItem(FECHA_KEY)||'';
+/* ============================================================
+   UNIFIED DATA STORE
+   clientes      = Rutas/Repartidor contacts (llega_ya_clientes)
+   exportados    = Rutas export list (llega_ya_exportados)
+   invPackages   = Inventario packages (llya_packages)
+   invRecords    = Inventario records (llya_records)
 
-function generarId(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5);}
-function normTel(t){return (t||'').replace(/\D/g,'');}
-clientes=clientes.map(function(c){return c._uid?c:Object.assign({},c,{_uid:generarId()});});
+   SYNC LOGIC:
+   - invRecords status in ['entregado','devolucion']
+     => remove from clientes (hide from Rutas/Rep)
+   - invRecords status in ['pendiente','no-entregado','pendiente-prog']
+     => keep in clientes
+   - Changing back to pendiente in Inventario re-adds to clientes if missing
+   ============================================================ */
 
+var STORAGE_KEY = 'llega_ya_clientes';
+var EXPORT_KEY  = 'llega_ya_exportados';
+var FECHA_KEY   = 'llegaya_fecha';
+var STORE_PKGS  = 'llya_packages';
+var STORE_RECS  = 'llya_records';
+
+var clientes   = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+var exportados = JSON.parse(localStorage.getItem(EXPORT_KEY)  || '[]');
+var repFecha   = localStorage.getItem(FECHA_KEY) || '';
+var invPackages = {};
+var invRecords  = {};
+
+try { invPackages = JSON.parse(localStorage.getItem(STORE_PKGS) || '{}'); } catch(e){ invPackages = {}; }
+try { invRecords  = JSON.parse(localStorage.getItem(STORE_RECS) || '{}'); } catch(e){ invRecords = {}; }
+
+function generarId(){ return Date.now().toString(36)+Math.random().toString(36).substr(2,5); }
+function normTel(t){ return (t||'').replace(/\D/g,''); }
+clientes = clientes.map(function(c){ return c._uid ? c : Object.assign({},c,{_uid:generarId()}); });
+
+/* Guardar todo */
 function guardar(){
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(clientes));
-  localStorage.setItem(EXPORT_KEY,JSON.stringify(exportados));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(clientes));
+  localStorage.setItem(EXPORT_KEY,  JSON.stringify(exportados));
   renderAdmin();
   renderRep();
 }
 
-function calcCod(c){
-  return c.pedidos?c.pedidos.reduce(function(s,p){return s+(parseFloat(p.cod)||0);},0):(parseFloat(c.cod)||0);
+function invSave(){
+  try { localStorage.setItem(STORE_PKGS, JSON.stringify(invPackages)); } catch(e){}
+  try { localStorage.setItem(STORE_RECS, JSON.stringify(invRecords));  } catch(e){}
+  invUpdateBadge();
+  invUpdateStats();
+  /* Sync: remove from Rutas/Rep if entregado or devolucion */
+  syncInvToDelivery();
 }
 
-/* DRAWER */
-var appActual='admin';
-function openDrawer(){document.getElementById('drawer').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');}
-function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');}
+function syncInvToDelivery(){
+  var finalStatuses = {'entregado':1,'devolucion':1};
+  Object.keys(invRecords).forEach(function(orderNo){
+    var rec = invRecords[orderNo];
+    if(finalStatuses[rec.status]){
+      /* Remove from clientes by matching orderNo or phone */
+      clientes = clientes.filter(function(c){
+        return normTel(c.telefono) !== normTel(rec.phone) && c._uid !== orderNo;
+      });
+      exportados = exportados.filter(function(c){
+        return normTel(c.telefono) !== normTel(rec.phone);
+      });
+    }
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(clientes));
+  localStorage.setItem(EXPORT_KEY,  JSON.stringify(exportados));
+  if(appActual === 'admin') renderAdmin();
+  if(appActual === 'rep')   renderRep();
+}
+
+function calcCod(c){
+  return c.pedidos ? c.pedidos.reduce(function(s,p){ return s+(parseFloat(p.cod)||0); },0) : (parseFloat(c.cod)||0);
+}
+
+/* ============================================================
+   DRAWER
+   ============================================================ */
+var appActual = 'admin';
+var invTabActual = 'cargar';
+
+function openDrawer(){ document.getElementById('drawer').classList.add('open'); document.getElementById('drawer-overlay').classList.add('open'); }
+function closeDrawer(){ document.getElementById('drawer').classList.remove('open'); document.getElementById('drawer-overlay').classList.remove('open'); }
 
 function switchApp(app){
-  appActual=app;
-  document.getElementById('app-admin').style.display=app==='admin'?'block':'none';
-  document.getElementById('app-rep').style.display=app==='rep'?'block':'none';
-  document.getElementById('fab-admin').style.display=app==='admin'?'flex':'none';
-  document.getElementById('nav-admin').classList.toggle('active',app==='admin');
-  document.getElementById('nav-rep').classList.toggle('active',app==='rep');
-  document.getElementById('headerTitle').textContent=app==='admin'?'🛵 LLEGA YA — Rutas':'🛵 LLEGA YA — Entregas';
+  appActual = app;
+  document.getElementById('app-admin').style.display = app==='admin' ? 'block' : 'none';
+  document.getElementById('app-rep').style.display   = app==='rep'   ? 'block' : 'none';
+  document.getElementById('app-inv').style.display   = app==='inv'   ? 'block' : 'none';
+  document.getElementById('fab-admin').style.display = app==='admin' ? 'flex'  : 'none';
+  document.getElementById('nav-admin').classList.toggle('active', app==='admin');
+  document.getElementById('nav-rep').classList.toggle('active',   app==='rep');
+  document.getElementById('nav-inv').classList.toggle('active',   app==='inv');
+  var titles = {admin:'&#128757; LLEGA YA &mdash; Rutas', rep:'&#128757; LLEGA YA &mdash; Entregas', inv:'&#128230; LLEGA YA &mdash; Inventario'};
+  document.getElementById('headerTitle').innerHTML = titles[app];
   closeDrawer();
-  if(app==='admin')renderAdmin();else renderRep();
+  if(app==='admin') renderAdmin();
+  else if(app==='rep') renderRep();
+  else if(app==='inv'){ invUpdateBadge(); invUpdateStats(); if(invTabActual==='registros') invRenderRecords(); }
 }
 
 function openModal(id){
-  if(id==='modalConfigRep')document.getElementById('labelBorrar').textContent=repTabActual==='pendientes'?'Pendientes':'Ya Contacté';
+  if(id==='modalConfigRep') document.getElementById('labelBorrar').textContent = repTabActual==='pendientes'?'Pendientes':'Ya Contact\u00e9';
   document.getElementById(id).classList.add('open');
 }
-function closeModal(id){document.getElementById(id).classList.remove('open');}
-document.querySelectorAll('.overlay').forEach(function(o){o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('open');});});
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.overlay').forEach(function(o){ o.addEventListener('click',function(e){ if(e.target===o) o.classList.remove('open'); }); });
 
-/* == ADMIN == */
-var adminTab='pendientes';
+/* ============================================================
+   APP ADMIN
+   ============================================================ */
+var adminTab = 'pendientes';
 
 function getDatosAdmin(){
-  if(adminTab==='pendientes')return clientes.filter(function(c){return c.estado==='pendiente'&&c.lat&&c.lng;});
-  if(adminTab==='sin_ubicacion')return clientes.filter(function(c){return (!c.lat||!c.lng)&&c.estado==='pendiente';});
-  if(adminTab==='completados')return clientes.filter(function(c){return c.estado==='completado';});
-  return[];
+  if(adminTab==='pendientes')    return clientes.filter(function(c){ return c.estado==='pendiente'&&c.lat&&c.lng; });
+  if(adminTab==='sin_ubicacion') return clientes.filter(function(c){ return (!c.lat||!c.lng)&&c.estado==='pendiente'; });
+  if(adminTab==='completados')   return clientes.filter(function(c){ return c.estado==='completado'; });
+  return [];
 }
 
 function switchTabAdmin(tab){
@@ -319,21 +673,21 @@ function switchTabAdmin(tab){
 
 function moverAdmin(uid,dir){
   var datos=getDatosAdmin();
-  var pos=datos.findIndex(function(x){return x._uid===uid;});
-  var np=pos+dir;if(np<0||np>=datos.length)return;
-  var ia=clientes.findIndex(function(x){return x._uid===datos[pos]._uid;});
-  var ib=clientes.findIndex(function(x){return x._uid===datos[np]._uid;});
-  var tmp=clientes[ia];clientes[ia]=clientes[ib];clientes[ib]=tmp;
+  var pos=datos.findIndex(function(x){ return x._uid===uid; });
+  var np=pos+dir; if(np<0||np>=datos.length) return;
+  var ia=clientes.findIndex(function(x){ return x._uid===datos[pos]._uid; });
+  var ib=clientes.findIndex(function(x){ return x._uid===datos[np]._uid; });
+  var tmp=clientes[ia]; clientes[ia]=clientes[ib]; clientes[ib]=tmp;
   guardar();
 }
 
 function renderAdmin(){
-  if(adminTab==='exportar'){renderExportarAdmin();return;}
+  if(adminTab==='exportar'){ renderExportarAdmin(); return; }
   var list=document.getElementById('list-admin');
   var q=(document.getElementById('busqueda')||{value:''}).value.toLowerCase().trim();
   var datos=getDatosAdmin();
-  if(q)datos=datos.filter(function(c){return (c.nombre||'').toLowerCase().includes(q)||(c.telefono||'').includes(q);});
-  if(!datos.length){list.innerHTML='<div class="empty">No hay clientes en esta sección</div>';return;}
+  if(q) datos=datos.filter(function(c){ return (c.nombre||'').toLowerCase().includes(q)||(c.telefono||'').includes(q); });
+  if(!datos.length){ list.innerHTML='<div class="empty">No hay clientes en esta secci&#243;n</div>'; return; }
   list.innerHTML=datos.map(function(c,idx){
     var mapsUrl=c.lat&&c.lng?'https://www.google.com/maps?q='+c.lat+','+c.lng:null;
     var waUrl=c.telefono?'https://wa.me/'+c.telefono.replace(/\D/g,''):null;
@@ -342,164 +696,150 @@ function renderAdmin(){
     var esMulti=c.pedidos&&c.pedidos.length>1;
     var cod=calcCod(c);
     var btnC=c.estado==='completado'
-      ?'<button class="btn-sm" style="background:#065f46" onclick="devolverAdmin(\''+uid+'\')">↩️ Pendiente</button>'
-      :'<button class="btn-sm" style="background:#10b981" onclick="completarAdmin(\''+uid+'\')">✅ Completado</button>';
+      ?'<button class="btn-sm" style="background:#065f46" onclick="devolverAdmin(\''+uid+'\')">&#8617; Pendiente</button>'
+      :'<button class="btn-sm" style="background:#10b981" onclick="completarAdmin(\''+uid+'\')">&#9989; Completado</button>';
     var notasHtml='';
-    if(esMulti)notasHtml='<div class="notas-multi">'+c.pedidos.map(function(p,i){return '<div class="nota-item">📦 <strong>Pedido '+(i+1)+':</strong> '+(p.nota||'—')+(p.cod?' <span style="color:#f59e0b">· RD$ '+parseFloat(p.cod).toLocaleString()+'</span>':'')+'</div>';}).join('')+'</div>';
+    if(esMulti) notasHtml='<div class="notas-multi">'+c.pedidos.map(function(p,i){ return '<div class="nota-item">&#128230; <strong>Pedido '+(i+1)+':</strong> '+(p.nota||'&mdash;')+(p.cod?' <span style="color:#f59e0b">&middot; RD$ '+parseFloat(p.cod).toLocaleString()+'</span>':'')+'</div>'; }).join('')+'</div>';
     return '<div class="card '+(sinUbi?'sin-ubi':'')+' '+(c.estado==='completado'?'completado':'')+' '+(esMulti?'multi':'')+'">'+
     '<div class="card-header"><div class="info">'+
-    '<div class="card-nombre"><span class="card-num">#'+(idx+1)+'</span>'+(c.nombre||'Sin nombre')+(sinUbi?'<span class="badge-orange">Sin GPS</span>':'')+(esMulti?'<span class="badge-pedidos">📦 '+c.pedidos.length+' pedidos</span>':'')+'</div>'+
-    '<div class="card-cod-admin">RD$ '+cod.toLocaleString()+' · Tel: '+(c.telefono||'—')+'</div>'+
-    notasHtml+
-    '</div><div class="order-btns"><button onclick="moverAdmin(\''+uid+'\',-1)">▲</button><button onclick="moverAdmin(\''+uid+'\',1)">▼</button></div></div>'+
-    '<div class="card-body">'+
-    '<div class="btn-row">'+(mapsUrl?'<a class="btn-sm" style="background:#3b82f6" href="'+mapsUrl+'" target="_blank">🗺️ Mapa</a>':'')+(waUrl?'<a class="btn-sm" style="background:#25d366" href="'+waUrl+'" target="_blank">💬 WhatsApp</a>':'')+'</div>'+
-    '<div class="btn-row"><button class="btn-sm" style="background:#8b5cf6" onclick="abrirUbi(\''+uid+'\')">📍 Ubicación</button><button class="btn-sm" style="background:#334155" onclick="editarCliente(\''+uid+'\')">✏️ Editar</button></div>'+
+    '<div class="card-nombre"><span class="card-num">#'+(idx+1)+'</span>'+(c.nombre||'Sin nombre')+(sinUbi?'<span class="badge-orange">Sin GPS</span>':'')+(esMulti?'<span class="badge-pedidos">&#128230; '+c.pedidos.length+' pedidos</span>':'')+'</div>'+
+    '<div class="card-cod-admin">RD$ '+cod.toLocaleString()+' &middot; Tel: '+(c.telefono||'&mdash;')+'</div>'+
+    notasHtml+'</div>'+
+    '<div class="order-btns"><button onclick="moverAdmin(\''+uid+'\',-1)">&#9650;</button><button onclick="moverAdmin(\''+uid+'\',1)">&#9660;</button></div>'+
+    '</div><div class="card-body">'+
+    '<div class="btn-row">'+(mapsUrl?'<a class="btn-sm" style="background:#3b82f6" href="'+mapsUrl+'" target="_blank">&#128506; Mapa</a>':'')+(waUrl?'<a class="btn-sm" style="background:#25d366" href="'+waUrl+'" target="_blank">&#128172; WhatsApp</a>':'')+'</div>'+
+    '<div class="btn-row"><button class="btn-sm" style="background:#8b5cf6" onclick="abrirUbi(\''+uid+'\')">&#128205; Ubicaci&#243;n</button><button class="btn-sm" style="background:#334155" onclick="editarCliente(\''+uid+'\')">&#9999; Editar</button></div>'+
     '<div class="btn-row">'+btnC+'</div>'+
-    '<div class="btn-row"><button class="btn-sm" style="background:#f59e0b;color:black" onclick="enviarExportar(\''+uid+'\')">📤 Exportar</button><button class="btn-sm" style="background:#ef4444" onclick="eliminarCliente(\''+uid+'\')">🗑️ Eliminar</button></div>'+
+    '<div class="btn-row"><button class="btn-sm" style="background:#f59e0b;color:black" onclick="enviarExportar(\''+uid+'\')">&#128228; Exportar</button><button class="btn-sm" style="background:#ef4444" onclick="eliminarCliente(\''+uid+'\')">&#128465; Eliminar</button></div>'+
     '</div></div>';
   }).join('');
 }
 
 function renderExportarAdmin(){
   var list=document.getElementById('list-admin');
-  if(!exportados.length){list.innerHTML='<div class="empty">No hay contactos en la lista de exportar.<br><br>Usa el botón 📤 Exportar en cada tarjeta.</div>';return;}
+  if(!exportados.length){ list.innerHTML='<div class="empty">No hay contactos en la lista de exportar.</div>'; return; }
   list.innerHTML='<div style="padding:10px">'+
-    '<button class="btn" style="background:#10b981;margin-bottom:12px" onclick="descargarJSON()">⬇️ Descargar JSON ('+exportados.length+' contactos)</button>'+
-    '<button class="btn" style="background:#475569;margin-bottom:16px" onclick="if(confirm(\'¿Limpiar lista?\')){exportados=[];guardar()}">🗑️ Limpiar lista</button>'+
-    exportados.map(function(c){return '<div class="export-card"><div><div class="ec-info">'+(c.nombre||'Sin nombre')+'</div><div class="ec-sub">RD$ '+calcCod(c).toLocaleString()+' · '+(c.telefono||'—')+'</div></div><button class="ec-btn" onclick="quitarExportar(\''+c._uid+'\')">✕ Quitar</button></div>';}).join('')+
+    '<button class="btn" style="background:#10b981;margin-bottom:12px" onclick="descargarJSON()">&#11015; Descargar JSON ('+exportados.length+' contactos)</button>'+
+    '<button class="btn" style="background:#475569;margin-bottom:16px" onclick="if(confirm(\'Limpiar lista?\')){exportados=[];guardar()}">&#128465; Limpiar lista</button>'+
+    exportados.map(function(c){ return '<div class="export-card"><div><div class="ec-info">'+(c.nombre||'Sin nombre')+'</div><div class="ec-sub">RD$ '+calcCod(c).toLocaleString()+' &middot; '+(c.telefono||'&mdash;')+'</div></div><button class="ec-btn" onclick="quitarExportar(\''+c._uid+'\')">&#10005; Quitar</button></div>'; }).join('')+
     '</div>';
 }
 
 function descargarJSON(){
-  var data={clientes:exportados.map(function(c){return {_uid:c._uid,nombre:c.nombre||'',telefono:c.telefono||'',cod:calcCod(c),lat:c.lat||null,lng:c.lng||null,estado:'pendiente'};})};
+  var data={clientes:exportados.map(function(c){ return {_uid:c._uid,nombre:c.nombre||'',telefono:c.telefono||'',cod:calcCod(c),lat:c.lat||null,lng:c.lng||null,estado:'pendiente'}; })};
   var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='llega_ya_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='llega_ya_'+new Date().toISOString().slice(0,10)+'.json'; a.click();
 }
 
 function enviarExportar(uid){
-  var c=clientes.find(function(x){return x._uid===uid;});if(!c)return;
-  if(exportados.find(function(x){return x._uid===uid;}))return alert('Este contacto ya está en la lista.');
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
+  if(exportados.find(function(x){ return x._uid===uid; })) return alert('Este contacto ya est\u00e1 en la lista.');
   exportados.push(Object.assign({},c));
   c.estado='completado';
-  var idx=clientes.findIndex(function(x){return x._uid===uid;});
-  var r=clientes.splice(idx,1)[0];clientes.push(r);
-  guardar();alert('✅ '+c.nombre+' exportado y movido a Completados');
+  var idx=clientes.findIndex(function(x){ return x._uid===uid; });
+  var r=clientes.splice(idx,1)[0]; clientes.push(r);
+  guardar(); alert('\u2705 '+c.nombre+' exportado y movido a Completados');
 }
 
 function quitarExportar(uid){
-  exportados=exportados.filter(function(x){return x._uid!==uid;});
-  var c=clientes.find(function(x){return x._uid===uid;});if(c)c.estado='pendiente';
+  exportados=exportados.filter(function(x){ return x._uid!==uid; });
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(c) c.estado='pendiente';
   guardar();
 }
 
 function eliminarCliente(uid){
-  if(!confirm('¿Eliminar este cliente?'))return;
-  clientes=clientes.filter(function(x){return x._uid!==uid;});
-  exportados=exportados.filter(function(x){return x._uid!==uid;});
+  if(!confirm('Eliminar este cliente?')) return;
+  clientes=clientes.filter(function(x){ return x._uid!==uid; });
+  exportados=exportados.filter(function(x){ return x._uid!==uid; });
   guardar();
 }
 
 function completarAdmin(uid){
-  var c=clientes.find(function(x){return x._uid===uid;});if(!c)return;
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
   c.estado='completado';
-  var idx=clientes.findIndex(function(x){return x._uid===uid;});
-  var r=clientes.splice(idx,1)[0];clientes.push(r);
-  guardar();
+  var idx=clientes.findIndex(function(x){ return x._uid===uid; });
+  var r=clientes.splice(idx,1)[0]; clientes.push(r); guardar();
 }
 
 function devolverAdmin(uid){
-  var c=clientes.find(function(x){return x._uid===uid;});if(c){c.estado='pendiente';guardar();}
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(c){ c.estado='pendiente'; guardar(); }
 }
 
 function sortNearest(){
-  var pend=clientes.filter(function(c){return c.estado==='pendiente'&&c.lat&&c.lng;});
-  var resto=clientes.filter(function(c){return !(c.estado==='pendiente'&&c.lat&&c.lng);});
-  if(!pend.length)return alert('No hay clientes con ubicación pendientes.');
-  if(!navigator.geolocation)return alert('Tu dispositivo no soporta GPS.');
-  function hav(a,b,c,d){var R=6371,dL=(c-a)*Math.PI/180,dG=(d-b)*Math.PI/180,x=Math.pow(Math.sin(dL/2),2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.pow(Math.sin(dG/2),2);return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
-  function ord(o){var la=o.lat,ln=o.lng,p=pend.slice(),r=[];while(p.length){var bi=0,bm=Infinity;p.forEach(function(c,j){var d=hav(la,ln,c.lat,c.lng);if(d<bm){bm=d;bi=j;}});var n=p.splice(bi,1)[0];r.push(n);la=n.lat;ln=n.lng;}return r;}
+  var pend=clientes.filter(function(c){ return c.estado==='pendiente'&&c.lat&&c.lng; });
+  var resto=clientes.filter(function(c){ return !(c.estado==='pendiente'&&c.lat&&c.lng); });
+  if(!pend.length) return alert('No hay clientes con ubicaci\u00f3n pendientes.');
+  if(!navigator.geolocation) return alert('Tu dispositivo no soporta GPS.');
+  function hav(a,b,c,d){ var R=6371,dL=(c-a)*Math.PI/180,dG=(d-b)*Math.PI/180,x=Math.pow(Math.sin(dL/2),2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.pow(Math.sin(dG/2),2); return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x)); }
+  function ord(o){ var la=o.lat,ln=o.lng,p=pend.slice(),r=[]; while(p.length){ var bi=0,bm=Infinity; p.forEach(function(c,j){ var d=hav(la,ln,c.lat,c.lng); if(d<bm){bm=d;bi=j;} }); var n=p.splice(bi,1)[0]; r.push(n); la=n.lat; ln=n.lng; } return r; }
   navigator.geolocation.getCurrentPosition(
-    function(pos){clientes=ord({lat:pos.coords.latitude,lng:pos.coords.longitude}).concat(resto);switchTabAdmin('pendientes');guardar();},
-    function(){alert('No se pudo obtener tu ubicación.');},{timeout:10000,enableHighAccuracy:true}
+    function(pos){ clientes=ord({lat:pos.coords.latitude,lng:pos.coords.longitude}).concat(resto); switchTabAdmin('pendientes'); guardar(); },
+    function(){ alert('No se pudo obtener tu ubicaci\u00f3n.'); },{timeout:10000,enableHighAccuracy:true}
   );
 }
 
-function cargarExcelAdmin(e){var f=e.target.files[0];if(!f)return;e.target.value='';leerExcel(f,'admin');}
-function cargarExcelRep(e){var f=e.target.files[0];if(!f)return;e.target.value='';leerExcel(f,'rep');}
+function cargarExcelAdmin(e){ var f=e.target.files[0]; if(!f) return; e.target.value=''; leerExcel(f,'admin'); }
+function cargarExcelRep(e){ var f=e.target.files[0]; if(!f) return; e.target.value=''; leerExcel(f,'rep'); }
 
-function leerExcel(file, origen){
+function leerExcel(file,origen){
   var reader=new FileReader();
   reader.onload=function(ev){
     try{
       var wb=XLSX.read(ev.target.result,{type:'binary'});
       var ws=wb.Sheets[wb.SheetNames[0]];
-
-      // Read as array of arrays to find the real header row
       var raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
-      if(!raw.length)return alert('El archivo está vacío.');
-
-      // Find the row that contains "Dropoff contact" or "COD" — that's the header
+      if(!raw.length) return alert('El archivo est\u00e1 vac\u00edo.');
       var headerIdx=-1;
       for(var i=0;i<Math.min(raw.length,6);i++){
         var rowStr=raw[i].join('|').toLowerCase();
-        if(rowStr.indexOf('dropoff contact')!==-1||rowStr.indexOf('cod')!==-1){
-          headerIdx=i;break;
-        }
+        if(rowStr.indexOf('dropoff contact')!==-1||rowStr.indexOf('cod')!==-1){ headerIdx=i; break; }
       }
-      if(headerIdx===-1)return alert('No se encontró la fila de encabezados. Verifica que el archivo sea el correcto.');
-
+      if(headerIdx===-1) return alert('No se encontr\u00f3 la fila de encabezados.');
       var headers=raw[headerIdx];
       var rows=[];
       for(var j=headerIdx+1;j<raw.length;j++){
-        var obj={};
-        headers.forEach(function(h,k){obj[h]=raw[j][k]||'';});
-        rows.push(obj);
+        var obj={}; headers.forEach(function(h,k){ obj[h]=raw[j][k]||''; }); rows.push(obj);
       }
-
       var lista=rows.map(function(r){
         var nombre=(r['Dropoff Contact Name']||r['Nombre']||'').toString().trim();
-        var tel=(r['Dropoff contact']||r['Dropoff Contact']||r['Teléfono']||r['Telefono']||'').toString().trim();
+        var tel=(r['Dropoff contact']||r['Dropoff Contact']||r['Tel\u00e9fono']||r['Telefono']||'').toString().trim();
         var cod=parseFloat((r['COD']||r['cod']||r['Monto']||'0').toString().replace(/[^0-9.]/g,''))||0;
-        var nota=(r['Note']||r['Nota']||'').toString().trim();
-        if(nota==='-')nota='';
-        var direccion=(r['Drop off address']||r['Direccion']||'').toString().trim();
-        if(!nombre&&!tel)return null;
+        var nota=(r['Note']||r['Nota']||'').toString().trim(); if(nota==='-') nota='';
+        if(!nombre&&!tel) return null;
         tel=tel.replace(/\D/g,'');
-        return{nombre:nombre,telefono:tel,cod:cod,nota:nota,direccion:direccion,lat:null,lng:null,estado:'pendiente',_uid:generarId()};
-      }).filter(function(r){return r!==null;});
-
-      if(!lista.length)return alert('No se encontraron clientes válidos en el archivo.');
-
-      var telEx=new Map(clientes.filter(function(c){return normTel(c.telefono);}).map(function(c){return [normTel(c.telefono),c];}));
+        return{nombre:nombre,telefono:tel,cod:cod,nota:nota,lat:null,lng:null,estado:'pendiente',_uid:generarId()};
+      }).filter(function(r){ return r!==null; });
+      if(!lista.length) return alert('No se encontraron clientes v\u00e1lidos.');
+      var telEx=new Map(clientes.filter(function(c){ return normTel(c.telefono); }).map(function(c){ return [normTel(c.telefono),c]; }));
       var agregados=0,omitidos=0;
       lista.forEach(function(nuevo){
         var tel=normTel(nuevo.telefono);
-        if(!tel){clientes.push(nuevo);agregados++;return;}
-        if(telEx.has(tel)){omitidos++;}
-        else{clientes.push(nuevo);telEx.set(tel,nuevo);agregados++;}
+        if(!tel){ clientes.push(nuevo); agregados++; return; }
+        if(telEx.has(tel)){ omitidos++; }
+        else{ clientes.push(nuevo); telEx.set(tel,nuevo); agregados++; }
       });
-
       guardar();
-      var msg='✅ '+agregados+' clientes agregados desde Excel';
-      if(omitidos>0)msg+='\n⚠️ '+omitidos+' duplicados omitidos';
-      msg+='\n\n📍 Los clientes aparecen en "Sin Ubicación" hasta que se agregue su GPS.';
+      var msg='\u2705 '+agregados+' clientes agregados desde Excel';
+      if(omitidos>0) msg+='\n\u26a0\ufe0f '+omitidos+' duplicados omitidos';
+      msg+='\n\n\ud83d\udccd Los clientes aparecen en "Sin Ubicaci\u00f3n" hasta agregar su GPS.';
       alert(msg);
-    }catch(err){alert('Error al leer el Excel: '+err.message);}
+    }catch(err){ alert('Error al leer el Excel: '+err.message); }
   };
   reader.readAsBinaryString(file);
 }
+
 function abrirNuevoCliente(){
   document.getElementById('editId').value='';
-  document.getElementById('modalClienteTitulo').textContent='➕ Nuevo Cliente';
-  ['cNombre','cTel','cCod','cCoords'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('modalClienteTitulo').textContent='Nuevo Cliente';
+  ['cNombre','cTel','cCod','cCoords'].forEach(function(id){ document.getElementById(id).value=''; });
   openModal('modalCliente');
 }
 function editarCliente(uid){
-  var c=clientes.find(function(x){return x._uid===uid;});if(!c)return;
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
   document.getElementById('editId').value=uid;
-  document.getElementById('modalClienteTitulo').textContent='✏️ Editar Cliente';
-  ['cNombre','cTel','cCod','cCoords'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('modalClienteTitulo').textContent='Editar Cliente';
+  ['cNombre','cTel','cCod','cCoords'].forEach(function(id){ document.getElementById(id).value=''; });
   openModal('modalCliente');
 }
 function guardarCliente(){
@@ -509,44 +849,44 @@ function guardarCliente(){
   var codVal=document.getElementById('cCod').value.trim();
   var coordsVal=document.getElementById('cCoords').value.trim();
   if(editId){
-    var c=clientes.find(function(x){return x._uid===editId;});
-    if(c){if(nombre)c.nombre=nombre;if(telefono)c.telefono=telefono;if(codVal)c.cod=parseFloat(codVal);if(coordsVal){var m=coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);if(m){c.lat=parseFloat(m[1]);c.lng=parseFloat(m[2]);}}}
-  }else{
-    if(!nombre)return alert('El nombre es requerido');
+    var c=clientes.find(function(x){ return x._uid===editId; });
+    if(c){ if(nombre) c.nombre=nombre; if(telefono) c.telefono=telefono; if(codVal) c.cod=parseFloat(codVal); if(coordsVal){ var m=coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/); if(m){ c.lat=parseFloat(m[1]); c.lng=parseFloat(m[2]); } } }
+  } else {
+    if(!nombre) return alert('El nombre es requerido');
     var cm=coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
     clientes.push({_uid:generarId(),nombre:nombre,telefono:telefono,cod:parseFloat(codVal)||0,lat:cm?parseFloat(cm[1]):null,lng:cm?parseFloat(cm[2]):null,estado:'pendiente'});
   }
-  guardar();closeModal('modalCliente');
+  guardar(); closeModal('modalCliente');
 }
-function abrirUbi(uid){document.getElementById('ubiId').value=uid;document.getElementById('ubiInput').value='';openModal('modalUbi');}
+function abrirUbi(uid){ document.getElementById('ubiId').value=uid; document.getElementById('ubiInput').value=''; openModal('modalUbi'); }
 function guardarUbicacion(){
   var uid=document.getElementById('ubiId').value;
   var txt=document.getElementById('ubiInput').value;
   var m=txt.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
-  if(!m)return alert('No se encontraron coordenadas.');
-  var c=clientes.find(function(x){return x._uid===uid;});
-  if(c){c.lat=parseFloat(m[1]);c.lng=parseFloat(m[2]);guardar();closeModal('modalUbi');}
+  if(!m) return alert('No se encontraron coordenadas.');
+  var c=clientes.find(function(x){ return x._uid===uid; });
+  if(c){ c.lat=parseFloat(m[1]); c.lng=parseFloat(m[2]); guardar(); closeModal('modalUbi'); }
 }
 
-/* == REPARTIDOR == */
+/* ============================================================
+   APP REPARTIDOR
+   ============================================================ */
 var repTabActual='pendientes';
 
 var varUbi=[
-  function(n,t){return '%C2%A1Hola%20'+encodeURIComponent(n)+'!%20%F0%9F%91%8B%20Le%20contacta%20*Llega%20Ya*.%0A%0ASu%20pedido%20est%C3%A1%20listo.%20Por%20favor%20comp%C3%A1rtanos%20su%20*ubicaci%C3%B3n%20actual*.%20%F0%9F%93%8D%0A%0A%C2%A1Gracias!';},
-  function(n,t){return '%C2%A1Buenas!%20Le%20saluda%20*Llega%20Ya*.%0A%0A'+encodeURIComponent(t)+'%20'+encodeURIComponent(n)+'%2C%20su%20pedido%20est%C3%A1%20listo.%20Solo%20necesitamos%20su%20*ubicaci%C3%B3n%20actual*.%20%F0%9F%93%A6%F0%9F%93%8D';},
-  function(n,t){return encodeURIComponent(t)+'%2Fa%20'+encodeURIComponent(n)+'%2C%20buen%20d%C3%ADa%20%F0%9F%99%8F%0A%0ADesde%20*Llega%20Ya*%20le%20recordamos%20que%20su%20pedido%20est%C3%A1%20pr%C3%B3ximo.%0A%0APor%20favor%20comp%C3%A1rtanos%20su%20*ubicaci%C3%B3n%20actual*.%20%F0%9F%93%8D';}
+  function(n,t){ return '%C2%A1Hola%20'+encodeURIComponent(n)+'!%20Le%20contacta%20*Llega%20Ya*.%0A%0ASu%20pedido%20est%C3%A1%20listo.%20Por%20favor%20comp%C3%A1rtanos%20su%20*ubicaci%C3%B3n%20actual*.%0A%0AGracias!'; },
+  function(n,t){ return '%C2%A1Buenas!%20Le%20saluda%20*Llega%20Ya*.%0A%0A'+encodeURIComponent(t)+'%20'+encodeURIComponent(n)+'%2C%20su%20pedido%20est%C3%A1%20listo.%20Necesitamos%20su%20*ubicaci%C3%B3n%20actual*.'; },
+  function(n,t){ return encodeURIComponent(t)+'%20'+encodeURIComponent(n)+'%2C%20buen%20d%C3%ADa.%0A%0ADesde%20*Llega%20Ya*%20le%20informamos%20que%20su%20pedido%20est%C3%A1%20pr%C3%B3ximo.%20Por%20favor%20comp%C3%A1rtanos%20su%20*ubicaci%C3%B3n%20actual*.'; }
 ];
 var varUltimo=[
-  function(n,t){return encodeURIComponent(t)+'%20'+encodeURIComponent(n)+'%2C%20buen%20d%C3%ADa.%20%F0%9F%99%8F%0A%0AEste%20ser%C3%A1%20nuestro%20*%C3%BAltimo%20intento%20de%20contacto*.%20De%20no%20recibir%20respuesta%2C%20el%20pedido%20ser%C3%A1%20devuelto.';},
-  function(n,t){return '%C2%A1Buenas!%20*Llega%20Ya*.%0A%0A'+encodeURIComponent(t)+'%20'+encodeURIComponent(n)+'%2C%20este%20es%20un%20*aviso%20final*.%20Si%20no%20logramos%20concretar%20hoy%2C%20devolveremos%20el%20paquete.';},
-  function(n,t){return encodeURIComponent(t)+'%2Fa%20'+encodeURIComponent(n)+'%20%F0%9F%91%8B%0A%0AEste%20ser%C3%A1%20nuestro%20*%C3%BAltimo%20intento%20de%20entrega*%20del%20d%C3%ADa.%20De%20no%20recibir%20respuesta%2C%20el%20pedido%20ser%C3%A1%20retornado.';}
+  function(n,t){ return encodeURIComponent(t)+'%20'+encodeURIComponent(n)+'%2C%20buen%20d%C3%ADa.%0A%0AEste%20ser%C3%A1%20nuestro%20*%C3%BAltimo%20intento%20de%20contacto*.%20De%20no%20recibir%20respuesta%2C%20el%20pedido%20ser%C3%A1%20devuelto.'; },
+  function(n,t){ return '%C2%A1Buenas!%20*Llega%20Ya*.%0A%0A'+encodeURIComponent(t)+'%20'+encodeURIComponent(n)+'%2C%20este%20es%20un%20*aviso%20final*.%20Si%20no%20logramos%20concretar%20hoy%2C%20devolveremos%20el%20paquete.'; },
+  function(n,t){ return encodeURIComponent(t)+'%20'+encodeURIComponent(n)+'%2C%20este%20ser%C3%A1%20nuestro%20*%C3%BAltimo%20intento%20de%20entrega*%20del%20d%C3%ADa.%20De%20no%20recibir%20respuesta%2C%20el%20pedido%20ser%C3%A1%20retornado.'; }
 ];
 
 function switchTabRep(tab){
   repTabActual=tab;
-  document.querySelectorAll('#rep-tabs .tab').forEach(function(t,i){
-    t.classList.toggle('active',['pendientes','contactados'][i]===tab);
-  });
+  document.querySelectorAll('#rep-tabs .tab').forEach(function(t,i){ t.classList.toggle('active',['pendientes','contactados'][i]===tab); });
   document.getElementById('searchRep').value='';
   renderRep();
 }
@@ -554,87 +894,565 @@ function switchTabRep(tab){
 function guardarFecha(){
   repFecha=document.getElementById('inputFecha').value;
   localStorage.setItem(FECHA_KEY,repFecha);
-  closeModal('modalFecha');renderRep();
+  closeModal('modalFecha'); renderRep();
 }
 
 function borrarPestanaRep(){
-  if(!confirm('¿Borrar '+(repTabActual==='pendientes'?'pendientes':'ya contactados')+'?'))return;
-  if(repTabActual==='pendientes')clientes=clientes.filter(function(c){return c.contactado;});
-  else clientes=clientes.filter(function(c){return !c.contactado;});
-  guardar();closeModal('modalConfigRep');
+  if(!confirm('Borrar '+(repTabActual==='pendientes'?'pendientes':'ya contactados')+'?')) return;
+  if(repTabActual==='pendientes') clientes=clientes.filter(function(c){ return c.contactado; });
+  else clientes=clientes.filter(function(c){ return !c.contactado; });
+  guardar(); closeModal('modalConfigRep');
 }
 function borrarTodoRep(){
-  if(!confirm('¿Borrar TODOS los clientes?'))return;
-  clientes=[];guardar();closeModal('modalConfigRep');
+  if(!confirm('Borrar TODOS los clientes?')) return;
+  clientes=[]; guardar(); closeModal('modalConfigRep');
 }
 
 function renderRep(){
   var fechaFmt=repFecha?new Date(repFecha+'T12:00:00').toLocaleDateString('es-DO',{weekday:'long',year:'numeric',month:'long',day:'numeric'}):'Sin fecha';
-  document.getElementById('fechaDisplay').textContent='📅 '+fechaFmt;
+  document.getElementById('fechaDisplay').textContent='\ud83d\udcc5 '+fechaFmt;
   var total=clientes.length;
-  var enviados=clientes.filter(function(c){return c.estado==='enviado';}).length;
-  var entregados=clientes.filter(function(c){return c.estado==='entregado';}).length;
-  var pendientes=clientes.filter(function(c){return !c.estado||c.estado==='pendiente';}).length;
-  var codTotal=clientes.reduce(function(s,c){return s+calcCod(c);},0);
-  var recaudado=clientes.filter(function(c){return c.estado==='entregado';}).reduce(function(s,c){return s+calcCod(c);},0);
+  var enviados=clientes.filter(function(c){ return c.estado==='enviado'; }).length;
+  var entregados=clientes.filter(function(c){ return c.estado==='entregado'; }).length;
+  var pendientes=clientes.filter(function(c){ return !c.estado||c.estado==='pendiente'; }).length;
+  var codTotal=clientes.reduce(function(s,c){ return s+calcCod(c); },0);
+  var recaudado=clientes.filter(function(c){ return c.estado==='entregado'; }).reduce(function(s,c){ return s+calcCod(c); },0);
   document.getElementById('badgeTotal').textContent='Total: '+total;
   document.getElementById('badgeEnviados').textContent='Enviados: '+(enviados+entregados);
   document.getElementById('badgePendientes').textContent='Pendientes: '+pendientes;
   document.getElementById('badgeCodTotal').textContent='RD$ '+codTotal.toLocaleString();
-  document.getElementById('badgeRecaudado').textContent='✅ RD$ '+recaudado.toLocaleString();
-  document.getElementById('badgePendCod').textContent='⏳ RD$ '+(codTotal-recaudado).toLocaleString();
+  document.getElementById('badgeRecaudado').textContent='\u2705 RD$ '+recaudado.toLocaleString();
+  document.getElementById('badgePendCod').textContent='\u23f3 RD$ '+(codTotal-recaudado).toLocaleString();
 
   var list=document.getElementById('list-rep');
-  if(!clientes.length){list.innerHTML='<div class="empty">Carga un archivo JSON para comenzar</div>';return;}
+  if(!clientes.length){ list.innerHTML='<div class="empty">Carga un archivo Excel para comenzar</div>'; return; }
 
   var datos=repTabActual==='pendientes'
-    ?clientes.filter(function(c){return (!c.estado||c.estado==='pendiente'||c.estado==='enviado')&&!c.contactado;})
-    :clientes.filter(function(c){return c.contactado;});
+    ?clientes.filter(function(c){ return (!c.estado||c.estado==='pendiente'||c.estado==='enviado')&&!c.contactado; })
+    :clientes.filter(function(c){ return c.contactado; });
 
   var q=(document.getElementById('searchRep')?document.getElementById('searchRep').value:'').toLowerCase().trim();
-  if(q)datos=datos.filter(function(c){return (c.nombre||'').toLowerCase().includes(q)||(c.telefono||'').includes(q);});
+  if(q) datos=datos.filter(function(c){ return (c.nombre||'').toLowerCase().includes(q)||(c.telefono||'').includes(q); });
 
-  if(!datos.length){list.innerHTML='<div class="empty">No se encontraron clientes</div>';return;}
+  if(!datos.length){ list.innerHTML='<div class="empty">No se encontraron clientes</div>'; return; }
 
   list.innerHTML=datos.map(function(c,idx){
     var globalIdx=clientes.indexOf(c);
     var nombre1=(c.nombre||'').split(' ')[0];
-    var esFem=['a','ia','na','ra','la','da','sa','ca'].some(function(s){return nombre1.toLowerCase().endsWith(s);});
+    var esFem=['a','ia','na','ra','la','da','sa','ca'].some(function(s){ return nombre1.toLowerCase().endsWith(s); });
     var trat=esFem?'Estimada':'Estimado';
     var fechaFmt2=repFecha?new Date(repFecha+'T12:00:00').toLocaleDateString('es-DO',{weekday:'long',year:'numeric',month:'long',day:'numeric'}):'[fecha por confirmar]';
     var esMulti=c.pedidos&&c.pedidos.length>1;
-    var pedidosTexto=esMulti?c.pedidos.map(function(p,i){return 'Pedido '+(i+1)+': '+(p.nota||'—');}).join('%0A'):encodeURIComponent(c.nota||'');
-    var msgP='Muy buenos días.%0A%0AReciba un cordial saludo de parte de Llega Ya.%0A%0A'+trat+' '+nombre1+',%0A%0AEs un placer confirmarle que su pedido fue procesado y está listo para entrega.%0A%0ADetalle de su pedido:%0A'+pedidosTexto+'%0A%0ALa entrega está programada para '+encodeURIComponent(fechaFmt2)+'.%0A%0ANos encantaría que nos comparta su ubicación para coordinar la entrega. 📦';
-    var vi=(c._uid||'').split('').reduce(function(a,ch){return a+ch.charCodeAt(0);},0);
+    var pedidosTexto=esMulti?c.pedidos.map(function(p,i){ return 'Pedido '+(i+1)+': '+(p.nota||'---'); }).join('%0A'):encodeURIComponent(c.nota||'');
+    var msgP='Muy buenos d\u00edas.%0A%0AReciba un cordial saludo de parte de Llega Ya.%0A%0A'+trat+' '+nombre1+',%0A%0AEs un placer confirmarle que su pedido fue procesado y est\u00e1 listo para entrega.%0A%0ADetalle de su pedido:%0A'+pedidosTexto+'%0A%0ALa entrega est\u00e1 programada para '+encodeURIComponent(fechaFmt2)+'.%0A%0ANos encantar\u00eda que nos comparta su ubicaci\u00f3n para coordinar la entrega.';
+    var vi=(c._uid||'').split('').reduce(function(a,ch){ return a+ch.charCodeAt(0); },0);
     var tel=(c.telefono||'').replace(/\D/g,'');
     var waUrl=tel?'https://wa.me/'+tel+'?text='+msgP:null;
     var waUbi=tel?'https://wa.me/'+tel+'?text='+varUbi[vi%3](nombre1,trat):null;
     var waUlt=tel?'https://wa.me/'+tel+'?text='+varUltimo[vi%3](nombre1,trat):null;
     var cod=calcCod(c);
     var notasHtml='';
-    if(esMulti)notasHtml='<div class="notas-multi">'+c.pedidos.map(function(p,i){return '<div class="nota-item">📦 <strong>Pedido '+(i+1)+':</strong> '+(p.nota||'—')+(p.cod?' <span style="color:#f59e0b">· RD$ '+parseFloat(p.cod).toLocaleString()+'</span>':'')+'</div>';}).join('')+'</div>';
-    else if(c.nota)notasHtml='<div class="nota-simple">📦 '+c.nota+'</div>';
-
+    if(esMulti) notasHtml='<div class="notas-multi">'+c.pedidos.map(function(p,i){ return '<div class="nota-item">&#128230; <strong>Pedido '+(i+1)+':</strong> '+(p.nota||'&mdash;')+(p.cod?' <span style="color:#f59e0b">&middot; RD$ '+parseFloat(p.cod).toLocaleString()+'</span>':'')+'</div>'; }).join('')+'</div>';
+    else if(c.nota) notasHtml='<div class="nota-simple">&#128230; '+c.nota+'</div>';
     return '<div class="card '+(c.estado&&c.estado!=='pendiente'?c.estado:'')+' '+(esMulti?'multi':'')+'">'+
     '<div class="card-header"><div class="info">'+
-    '<div class="card-nombre"><span class="card-num">#'+(idx+1)+'</span>'+(c.nombre||'Sin nombre')+(esMulti?'<span class="badge-pedidos">📦 '+c.pedidos.length+' pedidos</span>':'')+'</div>'+
-    '<div class="card-sub">📞 '+(c.telefono||'—')+'</div>'+
-    notasHtml+
-    (cod?'<div class="card-cod-rep">💰 RD$ '+cod.toLocaleString()+'</div>':'')+
+    '<div class="card-nombre"><span class="card-num">#'+(idx+1)+'</span>'+(c.nombre||'Sin nombre')+(esMulti?'<span class="badge-pedidos">&#128230; '+c.pedidos.length+' pedidos</span>':'')+'</div>'+
+    '<div class="card-sub">&#128222; '+(c.telefono||'&mdash;')+'</div>'+
+    notasHtml+(cod?'<div class="card-cod-rep">&#128176; RD$ '+cod.toLocaleString()+'</div>':'')+
     '</div></div>'+
     '<div class="card-body">'+
-    '<div class="btn-row">'+(waUrl?'<a class="btn-sm" style="background:#25d366" href="'+waUrl+'" target="_blank">💬 Enviar</a>':'')+(waUbi?'<a class="btn-sm" style="background:#0e7490" href="'+waUbi+'" target="_blank">📍 Ubicación</a>':'')+'</div>'+
-    '<div class="btn-row">'+(waUlt?'<a class="btn-sm" style="background:#b91c1c" href="'+waUlt+'" target="_blank">⚠️ Último Aviso</a>':'')+'</div>'+
+    '<div class="btn-row">'+(waUrl?'<a class="btn-sm" style="background:#25d366" href="'+waUrl+'" target="_blank">&#128172; Enviar</a>':'')+(waUbi?'<a class="btn-sm" style="background:#0e7490" href="'+waUbi+'" target="_blank">&#128205; Ubicaci&#243;n</a>':'')+'</div>'+
+    '<div class="btn-row">'+(waUlt?'<a class="btn-sm" style="background:#b91c1c" href="'+waUlt+'" target="_blank">&#9888; &#218;ltimo Aviso</a>':'')+'</div>'+
     '<div class="btn-row">'+(c.contactado
-      ?'<button class="btn-sm" style="background:#334155" onclick="toggleContactado('+globalIdx+')">↩️ Mover a Pendientes</button>'
-      :'<button class="btn-sm" style="background:#0f766e" onclick="toggleContactado('+globalIdx+')">🔄 Ya Contacté</button>')+
+      ?'<button class="btn-sm" style="background:#334155" onclick="toggleContactado('+globalIdx+')">&#8617; Mover a Pendientes</button>'
+      :'<button class="btn-sm" style="background:#0f766e" onclick="toggleContactado('+globalIdx+')">&#128257; Ya Contact\u00e9</button>')+
     '</div></div></div>';
   }).join('');
 }
 
-function toggleContactado(idx){clientes[idx].contactado=!clientes[idx].contactado;guardar();}
+function toggleContactado(idx){ clientes[idx].contactado=!clientes[idx].contactado; guardar(); }
 
+/* ============================================================
+   APP INVENTARIO
+   ============================================================ */
+var invRawData=[];
+var invColMap={};
+var invCameraOn=false;
+var invCurrentPkg=null;
+var invCurrentRecordId=null;
+var invCurrentStatus=null;
+var invCurrentFilter='pendiente';
+var invToastTimer;
+
+function invUpdateBadge(){
+  document.getElementById('inv-total-badge').textContent=Object.keys(invPackages).length+' pkgs';
+}
+
+function invUpdateStats(){
+  var total=Object.keys(invPackages).length;
+  var ok=Object.values(invRecords).filter(function(r){ return r.status==='entregado'; }).length;
+  var fail=Object.values(invRecords).filter(function(r){ return r.status==='no-entregado'; }).length;
+  document.getElementById('is-total').textContent=total;
+  document.getElementById('is-ok').textContent=ok;
+  document.getElementById('is-fail').textContent=fail;
+}
+
+function switchInvTab(tab){
+  invTabActual=tab;
+  ['cargar','escanear','registros'].forEach(function(t){
+    document.getElementById('itab-'+t).classList.toggle('active',t===tab);
+    document.getElementById('itab-view-'+t).classList.toggle('active',t===tab);
+  });
+  if(tab!=='escanear'&&invCameraOn) invStopCamera();
+  if(tab==='registros') invRenderRecords();
+}
+
+/* FILE UPLOAD */
+document.getElementById('inv-file-input').addEventListener('change',function(){
+  if(this.files[0]) invHandleFile(this.files[0]);
+});
+
+function invHandleFile(file){
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var wb=XLSX.read(e.target.result,{type:'array'});
+      var ws=wb.Sheets[wb.SheetNames[0]];
+      invRawData=XLSX.utils.sheet_to_json(ws,{defval:''});
+      if(!invRawData.length){ invShowToast('El archivo esta vacio','error'); return; }
+      var firstKey=Object.keys(invRawData[0])[0]||'';
+      var looksLikeTitle=firstKey.toLowerCase().indexOf('report')>=0||Object.keys(invRawData[0]).length<=2;
+      if(looksLikeTitle) invRawData=XLSX.utils.sheet_to_json(ws,{defval:'',range:1});
+      if(!invRawData.length){ invShowToast('El archivo esta vacio','error'); return; }
+      document.getElementById('inv-file-name').textContent=file.name;
+      document.getElementById('inv-file-rows').textContent=invRawData.length+' filas';
+      document.getElementById('inv-file-info-box').style.display='flex';
+      document.getElementById('inv-mapping-card').style.display='block';
+      document.getElementById('inv-btn-load').style.display='block';
+      invPopulateMappingSelects(Object.keys(invRawData[0]));
+      invAutoMap(Object.keys(invRawData[0]));
+    }catch(err){ invShowToast('Error leyendo el archivo','error'); }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function invPopulateMappingSelects(cols){
+  ['imap-order','imap-customer','imap-receiver','imap-phone','imap-zone','imap-cod','imap-note'].forEach(function(id){
+    var sel=document.getElementById(id);
+    sel.innerHTML='<option value="">- no mapear -</option>';
+    cols.forEach(function(c){ var o=document.createElement('option'); o.value=c; o.textContent=c; sel.appendChild(o); });
+  });
+}
+
+function invAutoMap(cols){
+  var matches={
+    'imap-order':    ['code','orderno','order_no','order no','orderid','order','codigo','id'],
+    'imap-customer': ['customer name','customer','cliente','shop'],
+    'imap-receiver': ['dropoff contact name','receiver','destinatario','nombre','name'],
+    'imap-phone':    ['dropoff contact','phone','telefono','tel','celular','whatsapp'],
+    'imap-zone':     ['zone','zona','sector','area'],
+    'imap-cod':      ['cod','monto','amount','valor','precio'],
+    'imap-note':     ['note','nota','notas','producto','descripcion']
+  };
+  Object.keys(matches).forEach(function(selId){
+    var keywords=matches[selId];
+    var sel=document.getElementById(selId);
+    var found=cols.find(function(c){ return keywords.some(function(k){ return c.toLowerCase().trim()===k; }); });
+    if(found) sel.value=found;
+  });
+}
+
+function invLoadPackages(){
+  var orderCol=document.getElementById('imap-order').value;
+  if(!orderCol){ invShowToast('Debes mapear la columna OrderNo','error'); return; }
+  invColMap={
+    order:orderCol,
+    customer:document.getElementById('imap-customer').value,
+    receiver:document.getElementById('imap-receiver').value,
+    phone:document.getElementById('imap-phone').value,
+    zone:document.getElementById('imap-zone').value,
+    cod:document.getElementById('imap-cod').value,
+    note:document.getElementById('imap-note').value
+  };
+  invPackages={};
+  invRawData.forEach(function(row){
+    var orderVal=String(row[invColMap.order]||'').trim();
+    if(!orderVal) return;
+    invPackages[orderVal]={
+      customer:invColMap.customer?String(row[invColMap.customer]||'').trim():'',
+      receiver:invColMap.receiver?String(row[invColMap.receiver]||'').trim():'',
+      phone:invColMap.phone?String(row[invColMap.phone]||'').trim():'',
+      zone:invColMap.zone?String(row[invColMap.zone]||'').trim():'',
+      cod:invColMap.cod?String(row[invColMap.cod]||'').trim():'',
+      note:invColMap.note?String(row[invColMap.note]||'').trim():''
+    };
+  });
+  invSave();
+  document.getElementById('inv-loaded-summary').style.display='block';
+  invShowToast(Object.keys(invPackages).length+' paquetes cargados','success');
+  switchInvTab('registros');
+  invCurrentFilter='pendiente';
+  document.querySelectorAll('.ftab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelector('.ftab[data-val="pendiente"]').classList.add('active');
+  invRenderRecords();
+}
+
+function invClearFile(){
+  invRawData=[];
+  document.getElementById('inv-file-info-box').style.display='none';
+  document.getElementById('inv-mapping-card').style.display='none';
+  document.getElementById('inv-btn-load').style.display='none';
+  document.getElementById('inv-file-input').value='';
+}
+
+function invClearAll(){
+  if(!confirm('Eliminar todos los paquetes y registros del dia?')) return;
+  invPackages={}; invRecords={};
+  try{ localStorage.removeItem(STORE_PKGS); localStorage.removeItem(STORE_RECS); }catch(e){}
+  invUpdateBadge(); invUpdateStats();
+  document.getElementById('inv-loaded-summary').style.display='none';
+  invShowToast('Datos eliminados','info');
+  invRenderRecords();
+}
+
+/* CAMERA */
+function invToggleCamera(){ if(invCameraOn) invStopCamera(); else invStartCamera(); }
+
+function invStartCamera(){
+  if(typeof Quagga==='undefined'){ invShowToast('Camara no disponible, usa entrada manual','error'); return; }
+  var viewport=document.getElementById('quagga-viewport');
+  viewport.innerHTML='';
+  Quagga.init({
+    inputStream:{name:'Live',type:'LiveStream',target:viewport,constraints:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}}},
+    decoder:{readers:['code_128_reader','ean_reader','ean_8_reader','code_39_reader','upc_reader']},
+    locate:true
+  },function(err){
+    if(err){ invShowToast('No se pudo acceder a la camara','error'); return; }
+    Quagga.start(); invCameraOn=true;
+    document.getElementById('btn-toggle-cam').textContent='Detener camara';
+  });
+  var lastCode='',lastTime=0;
+  Quagga.onDetected(function(result){
+    var code=result.codeResult.code,now=Date.now();
+    if(code===lastCode&&now-lastTime<2500) return;
+    lastCode=code; lastTime=now;
+    if(navigator.vibrate) navigator.vibrate(80);
+    invProcessCode(code);
+  });
+}
+
+function invStopCamera(){
+  try{ Quagga.stop(); }catch(e){}
+  invCameraOn=false;
+  document.getElementById('btn-toggle-cam').textContent='Activar camara';
+  document.getElementById('quagga-viewport').innerHTML='';
+}
+
+function invProcessCode(code){
+  if(!code) return;
+  document.getElementById('inv-manual-code').value=code;
+  var pkg=invPackages[code];
+  document.getElementById('inv-pkg-form').style.display='none';
+  document.getElementById('inv-no-pkg-msg').style.display='none';
+  if(!pkg){ document.getElementById('inv-no-pkg-msg').style.display='block'; invShowToast('OrderNo '+code+' no encontrado','error'); return; }
+  invCurrentPkg={orderNo:code,customer:pkg.customer,receiver:pkg.receiver,phone:pkg.phone,zone:pkg.zone,cod:pkg.cod,note:pkg.note};
+  invPopulateForm(invCurrentPkg);
+  var existing=invRecords[code];
+  if(existing){
+    invSetStatus(existing.status,true);
+    document.getElementById('inv-motivo-select').value=existing.motivo||'';
+    document.getElementById('inv-motivo-custom').value=existing.motivoCustom||'';
+    document.getElementById('inv-pendiente-dia').value=existing.pendienteDia||'';
+    document.getElementById('inv-pendiente-nota').value=existing.pendienteNota||'';
+    document.getElementById('inv-devolucion-motivo').value=existing.devolucionMotivo||'';
+    document.getElementById('inv-devolucion-nota').value=existing.devolucionNota||'';
+  } else {
+    invClearStatusButtons();
+    ['inv-motivo-row','inv-pendiente-row','inv-devolucion-row'].forEach(function(id){ document.getElementById(id).classList.remove('show'); });
+    ['inv-motivo-select','inv-motivo-custom','inv-pendiente-dia','inv-pendiente-nota','inv-devolucion-motivo','inv-devolucion-nota'].forEach(function(id){ document.getElementById(id).value=''; });
+  }
+  document.getElementById('inv-pkg-form').style.display='block';
+  invShowToast('Paquete encontrado','success');
+}
+
+function invPopulateForm(pkg){
+  document.getElementById('if-order').textContent=pkg.orderNo;
+  document.getElementById('if-customer').textContent=pkg.customer||'-';
+  document.getElementById('if-receiver').textContent=pkg.receiver||'-';
+  document.getElementById('if-phone').textContent=pkg.phone||'-';
+  document.getElementById('if-zone').textContent=pkg.zone||'-';
+  document.getElementById('if-cod').textContent=pkg.cod||'-';
+  document.getElementById('if-note').textContent=pkg.note||'-';
+}
+
+function invClearStatusButtons(){
+  ['ibtn-entregado','ibtn-no-entregado','ibtn-pendiente-prog','ibtn-devolucion'].forEach(function(id){ document.getElementById(id).classList.remove('active'); });
+  invCurrentStatus=null;
+}
+
+function invSetStatus(st){
+  invCurrentStatus=st;
+  invClearStatusButtons();
+  var map={'entregado':'ibtn-entregado','no-entregado':'ibtn-no-entregado','pendiente-prog':'ibtn-pendiente-prog','devolucion':'ibtn-devolucion'};
+  if(map[st]) document.getElementById(map[st]).classList.add('active');
+  document.getElementById('inv-motivo-row').classList.toggle('show',st==='no-entregado');
+  document.getElementById('inv-pendiente-row').classList.toggle('show',st==='pendiente-prog');
+  document.getElementById('inv-devolucion-row').classList.toggle('show',st==='devolucion');
+}
+
+function invSaveRecord(){
+  if(!invCurrentPkg) return;
+  if(!invCurrentStatus){ invShowToast('Selecciona un estado','error'); return; }
+  var motivo=document.getElementById('inv-motivo-select').value;
+  var motivoCustom=document.getElementById('inv-motivo-custom').value.trim();
+  var pendienteDia=document.getElementById('inv-pendiente-dia').value;
+  var pendienteNota=document.getElementById('inv-pendiente-nota').value.trim();
+  var devolucionMotivo=document.getElementById('inv-devolucion-motivo').value;
+  var devolucionNota=document.getElementById('inv-devolucion-nota').value.trim();
+  if(invCurrentStatus==='no-entregado'&&!motivo){ invShowToast('Selecciona un motivo','error'); return; }
+  if(invCurrentStatus==='pendiente-prog'&&!pendienteDia){ invShowToast('Selecciona el dia de reintento','error'); return; }
+  if(invCurrentStatus==='devolucion'&&!devolucionMotivo){ invShowToast('Selecciona la razon de devolucion','error'); return; }
+  invRecords[invCurrentPkg.orderNo]={
+    orderNo:invCurrentPkg.orderNo,customer:invCurrentPkg.customer,receiver:invCurrentPkg.receiver,
+    phone:invCurrentPkg.phone,zone:invCurrentPkg.zone,cod:invCurrentPkg.cod,note:invCurrentPkg.note,
+    status:invCurrentStatus,motivo:motivo,motivoCustom:motivoCustom,
+    pendienteDia:pendienteDia,pendienteNota:pendienteNota,
+    devolucionMotivo:devolucionMotivo,devolucionNota:devolucionNota,
+    ts:new Date().toLocaleString('es-DO')
+  };
+  invSave();
+  document.getElementById('inv-pkg-form').style.display='none';
+  document.getElementById('inv-manual-code').value='';
+  invCurrentPkg=null; invCurrentStatus=null;
+  invShowToast('Registro guardado','success');
+  invRenderRecords();
+}
+
+/* RECORDS */
+function invSetFilter(el,val){
+  invCurrentFilter=val;
+  document.querySelectorAll('.ftab').forEach(function(t){ t.classList.remove('active'); });
+  el.classList.add('active');
+  invRenderRecords();
+}
+
+function invUpdateCounts(){
+  var seen={};
+  var allOrders=[];
+  Object.keys(invRecords).forEach(function(id){ if(!seen[id]){seen[id]=1;allOrders.push(id);} });
+  Object.keys(invPackages).forEach(function(id){ if(!seen[id]){seen[id]=1;allOrders.push(id);} });
+  var counts={'pendiente':0,'no-entregado':0,'pendiente-prog':0,'devolucion':0,'entregado':0};
+  allOrders.forEach(function(id){
+    var st=invRecords[id]?invRecords[id].status:'pendiente';
+    if(counts[st]!==undefined) counts[st]++;
+  });
+  Object.keys(counts).forEach(function(key){
+    var el=document.getElementById('icount-'+key);
+    if(el) el.textContent=counts[key];
+  });
+}
+
+function invRenderRecords(){
+  invUpdateCounts();
+  var search=(document.getElementById('inv-search-input').value||'').trim().toLowerCase();
+  var seen={};
+  var allOrders=[];
+  Object.keys(invRecords).forEach(function(id){ if(!seen[id]){seen[id]=1;allOrders.push(id);} });
+  Object.keys(invPackages).forEach(function(id){ if(!seen[id]){seen[id]=1;allOrders.push(id);} });
+  var items=allOrders.map(function(id){
+    var rec=invRecords[id];
+    var pkg=invPackages[id]||{};
+    if(rec) return rec;
+    return{orderNo:id,customer:pkg.customer||'',receiver:pkg.receiver||'',phone:pkg.phone||'',zone:pkg.zone||'',cod:pkg.cod||'',note:pkg.note||'',status:'pendiente'};
+  });
+  if(search) items=items.filter(function(i){ return i.orderNo.toLowerCase().indexOf(search)>=0||(i.customer||'').toLowerCase().indexOf(search)>=0||(i.receiver||'').toLowerCase().indexOf(search)>=0; });
+  items=items.filter(function(i){ return i.status===invCurrentFilter; });
+  items.sort(function(a,b){ return a.orderNo>b.orderNo?1:-1; });
+  var list=document.getElementById('inv-records-list');
+  if(!items.length){ list.innerHTML='<div class="empty">Sin resultados en este grupo</div>'; return; }
+  var html='';
+  items.forEach(function(item,idx){
+    var hasRecord=!!invRecords[item.orderNo];
+    var pillTxt,pillClass;
+    if(item.status==='entregado'){pillTxt='Entregado';pillClass='pill-entregado';}
+    else if(item.status==='no-entregado'){pillTxt='No entregado';pillClass='pill-no-entregado';}
+    else if(item.status==='pendiente-prog'){pillTxt='Pendiente';pillClass='';}
+    else if(item.status==='devolucion'){pillTxt='Devolucion';pillClass='pill-devolucion';}
+    else{pillTxt='Sin escanear';pillClass='pill-pendiente';}
+    var pillStyle=item.status==='pendiente-prog'?' style="background:rgba(64,192,240,.15);color:#40c0f0;"':'';
+    var pill='<span class="status-pill '+pillClass+'"'+pillStyle+'>'+pillTxt+'</span>';
+    var badge=hasRecord?'<span class="scanned-badge">Escaneado</span>':'';
+    var meta=[item.zone,item.cod?'COD: '+item.cod:''].filter(Boolean).join(' - ');
+    var otherStatuses=[
+      {val:'entregado',label:'Entregar'},{val:'no-entregado',label:'No entregado'},
+      {val:'pendiente-prog',label:'Pendiente'},{val:'devolucion',label:'Devolucion'}
+    ].filter(function(s){ return s.val!==item.status; });
+    var quickBtns=otherStatuses.map(function(s){
+      return '<button class="btn-move" onclick="event.stopPropagation();invQuickChangeStatus(\''+item.orderNo+'\',\''+s.val+'\')">'+s.label+'</button>';
+    }).join('');
+    html+='<div class="record-item'+(hasRecord?' scanned':'')+'" onclick="invOpenModal(\''+item.orderNo+'\')">';
+    html+='<div class="record-top"><div style="flex:1;min-width:0;">';
+    html+='<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:2px;">';
+    html+='<span class="record-position-badge">#'+(idx+1)+'</span>';
+    html+='<div class="record-order">'+item.orderNo+'</div>'+badge;
+    html+='</div>';
+    html+='<div class="record-customer">'+(item.receiver||item.customer||'-')+'</div>';
+    if(item.phone) html+='<div class="record-meta" style="color:#a0a0c0;">Tel: '+item.phone+'</div>';
+    html+='</div>';
+    html+='<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;" onclick="event.stopPropagation()">'+pill;
+    html+='<button class="btn-quick-del" onclick="event.stopPropagation();invQuickDelete(\''+item.orderNo+'\')">Borrar</button>';
+    html+='</div></div>';
+    if(meta) html+='<div class="record-meta">'+meta+'</div>';
+    if(item.motivo) html+='<div class="record-meta" style="color:#f04060;">- '+item.motivo+'</div>';
+    if(item.pendienteDia) html+='<div class="record-meta" style="color:#40c0f0;">- Reintentar el '+item.pendienteDia+'</div>';
+    if(item.devolucionMotivo) html+='<div class="record-meta" style="color:#ff8c00;">- '+item.devolucionMotivo+'</div>';
+    html+='<div class="quick-move-row" onclick="event.stopPropagation()">'+quickBtns+'</div>';
+    html+='</div>';
+  });
+  list.innerHTML=html;
+}
+
+function invOpenModal(orderNo){
+  var rec=invRecords[orderNo];
+  if(!rec){ var pkg=invPackages[orderNo]||{}; rec={orderNo:orderNo,customer:pkg.customer||'',receiver:pkg.receiver||'',phone:pkg.phone||'',zone:pkg.zone||'',cod:pkg.cod||'',note:pkg.note||'',status:'pendiente'}; }
+  invCurrentRecordId=orderNo;
+  var statusLabel=rec.status==='entregado'?'Entregado':rec.status==='no-entregado'?'No entregado':rec.status==='pendiente-prog'?'Pendiente programado':rec.status==='devolucion'?'Devolucion':'Sin escanear';
+  var fields=[
+    ['OrderNo',rec.orderNo],['Customer',rec.customer],['Receiver',rec.receiver],
+    ['Telefono',rec.phone],['Zone',rec.zone],['COD',rec.cod],['Producto',rec.note],
+    ['Estado',statusLabel],['Motivo',rec.motivo],['Nota',rec.motivoCustom],
+    ['Reintentar el',rec.pendienteDia],['Indicacion',rec.pendienteNota],
+    ['Razon devolucion',rec.devolucionMotivo],['Nota devolucion',rec.devolucionNota],
+    ['Fecha/Hora',rec.ts]
+  ].filter(function(f){ return f[1]; });
+  document.getElementById('inv-modal-content').innerHTML=fields.map(function(f){
+    return '<div class="inv-modal-field"><label>'+f[0]+'</label><div class="val">'+f[1]+'</div></div>';
+  }).join('');
+  document.getElementById('inv-btn-delete-record').style.display=invRecords[orderNo]?'block':'none';
+  document.getElementById('inv-btn-delete-pkg-wrap').style.display=invPackages[orderNo]?'block':'none';
+  document.getElementById('inv-detail-modal').classList.add('open');
+}
+
+function invCloseModal(e){ if(e.target===document.getElementById('inv-detail-modal')) invCloseModalDirect(); }
+function invCloseModalDirect(){ document.getElementById('inv-detail-modal').classList.remove('open'); }
+
+function invDeleteRecord(){
+  if(!invCurrentRecordId) return;
+  delete invRecords[invCurrentRecordId];
+  invSave(); invCloseModalDirect(); invRenderRecords();
+  invShowToast('Registro borrado','info');
+}
+
+function invDeletePackage(){
+  if(!invCurrentRecordId) return;
+  if(!confirm('Borrar el paquete #'+invCurrentRecordId+' y su registro?')) return;
+  delete invRecords[invCurrentRecordId]; delete invPackages[invCurrentRecordId];
+  invSave(); invCloseModalDirect(); invRenderRecords();
+  invShowToast('Paquete #'+invCurrentRecordId+' borrado','info');
+}
+
+function invClearCurrentGroup(){
+  var labels={'pendiente':'Sin escanear','no-entregado':'No entregados','pendiente-prog':'Pendientes','devolucion':'Devoluciones','entregado':'Entregados'};
+  if(!confirm('Borrar todos los registros de: '+(labels[invCurrentFilter]||invCurrentFilter)+'?')) return;
+  if(invCurrentFilter==='pendiente'){
+    Object.keys(invPackages).forEach(function(id){ if(!invRecords[id]) delete invPackages[id]; });
+  } else {
+    Object.keys(invRecords).forEach(function(id){
+      if(invRecords[id].status===invCurrentFilter){ delete invRecords[id]; delete invPackages[id]; }
+    });
+  }
+  invSave(); invRenderRecords();
+  invShowToast('Grupo borrado','info');
+}
+
+function invQuickDelete(orderNo){
+  if(!confirm('Borrar #'+orderNo+'?')) return;
+  delete invRecords[orderNo]; delete invPackages[orderNo];
+  invSave(); invRenderRecords();
+  invShowToast('Paquete #'+orderNo+' borrado','info');
+}
+
+function invQuickChangeStatus(orderNo,newStatus){
+  var pkg=invPackages[orderNo]||{};
+  var existing=invRecords[orderNo]||{};
+  invRecords[orderNo]={
+    orderNo:orderNo,customer:pkg.customer||existing.customer||'',receiver:pkg.receiver||existing.receiver||'',
+    phone:pkg.phone||existing.phone||'',zone:pkg.zone||existing.zone||'',
+    cod:pkg.cod||existing.cod||'',note:pkg.note||existing.note||'',
+    status:newStatus,
+    motivo:newStatus==='entregado'?'':(existing.motivo||''),
+    motivoCustom:newStatus==='entregado'?'':(existing.motivoCustom||''),
+    pendienteDia:newStatus==='pendiente-prog'?(existing.pendienteDia||''):'',
+    pendienteNota:newStatus==='pendiente-prog'?(existing.pendienteNota||''):'',
+    devolucionMotivo:newStatus==='devolucion'?(existing.devolucionMotivo||''):'',
+    devolucionNota:newStatus==='devolucion'?(existing.devolucionNota||''):'',
+    ts:new Date().toLocaleString('es-DO')
+  };
+  invSave(); invRenderRecords();
+  var labels={'entregado':'Entregado','no-entregado':'No entregado','pendiente-prog':'Pendiente','devolucion':'Devolucion'};
+  invShowToast('#'+orderNo+' movido a '+(labels[newStatus]||newStatus),'success');
+}
+
+function invQuickMarkEntregado(code){
+  if(!code){ invShowToast('Escribe un OrderNo','error'); return; }
+  var pkg=invPackages[code]||(invRecords[code]?invRecords[code]:null);
+  if(!pkg){ invShowToast('OrderNo '+code+' no encontrado','error'); return; }
+  var base=invPackages[code]||invRecords[code]||{};
+  invRecords[code]={
+    orderNo:code,customer:base.customer||'',receiver:base.receiver||'',
+    phone:base.phone||'',zone:base.zone||'',cod:base.cod||'',note:base.note||'',
+    status:'entregado',motivo:'',motivoCustom:'',pendienteDia:'',pendienteNota:'',
+    devolucionMotivo:'',devolucionNota:'',ts:new Date().toLocaleString('es-DO')
+  };
+  invSave();
+
+  if(navigator.vibrate) navigator.vibrate(80);
+  invShowToast('#'+code+' marcado como entregado','success');
+  invRenderRecords();
+}
+
+function invExportExcel(){
+  var seen={};
+  var allOrders=[];
+  Object.keys(invRecords).forEach(function(id){ if(!seen[id]){seen[id]=1;allOrders.push(id);} });
+  Object.keys(invPackages).forEach(function(id){ if(!seen[id]){seen[id]=1;allOrders.push(id);} });
+  var rows=allOrders.map(function(id){
+    var rec=invRecords[id]||{orderNo:id,status:'pendiente'};
+    var pkg=invPackages[id]||{};
+    return{OrderNo:rec.orderNo,Customer:rec.customer||pkg.customer||'',Receiver:rec.receiver||pkg.receiver||'',
+      Telefono:rec.phone||pkg.phone||'',Zone:rec.zone||pkg.zone||'',COD:rec.cod||pkg.cod||'',
+      Producto:rec.note||pkg.note||'',Estado:rec.status||'pendiente',
+      Motivo:rec.motivo||'',Nota:rec.motivoCustom||'',PendienteDia:rec.pendienteDia||'',
+      DevolucionMotivo:rec.devolucionMotivo||'',FechaHora:rec.ts||''};
+  });
+  var ws=XLSX.utils.json_to_sheet(rows);
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Registros');
+  XLSX.writeFile(wb,'LlegaYa_'+new Date().toLocaleDateString('es-DO').replace(/\//g,'-')+'.xlsx');
+  invShowToast('Exportado','success');
+}
+
+function invShowToast(msg,type){
+  type=type||'info';
+  var t=document.getElementById('inv-toast');
+  t.textContent=msg;
+  t.className='toast-inv '+type+' show';
+  clearTimeout(invToastTimer);
+  invToastTimer=setTimeout(function(){ t.classList.remove('show'); },2800);
+}
+
+/* Load Quagga async */
+(function(){
+  var s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js';
+  s.async=true;
+  document.head.appendChild(s);
+})();
+
+/* INIT */
 renderAdmin();
+invUpdateBadge();
+invUpdateStats();
 </script>
 
 </body>
