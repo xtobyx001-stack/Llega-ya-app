@@ -32,15 +32,49 @@ body{background:#f0f4f8 !important;color:#0f172a !important;min-height:100vh;pad
 .dw-urole{font-size:.68rem;color:#94a3b8 !important;}
 
 /* ── HEADER ── */
-header{background:#ffffff !important;padding:0 16px;height:58px;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.06) !important;}
+header{background:#ffffff !important;padding:0 16px;height:58px;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.05) !important;}
 .header-title{display:flex;align-items:center;gap:8px;}
 .header-title .app-badge{font-size:.65rem;font-weight:700;background:#eff6ff !important;color:#2563eb !important;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;}
 header h1{font-size:.95rem;font-weight:800;color:#0f172a !important;letter-spacing:-.2px;}
 .hamburger{background:#f1f5f9 !important;border:none !important;color:#0f172a !important;font-size:1.1rem;cursor:pointer;padding:9px 11px;line-height:1;border-radius:12px;}
 
-/* ── TOOLBAR BUTTONS (top bar buttons: Excel, Cercanía, +Cliente, etc.) ── */
+/* ════════════════════════════════════
+SISTEMA DE BOTONES UNIFICADO
+Estilo “Completado”: fondo pastel,
+borde del mismo color, texto sólido,
+sin sombra, bien redondeado
+════════════════════════════════════ */
+
+/* Mixin base para todos los botones */
+.btn-pill {
+display:inline-flex; align-items:center; justify-content:center; gap:6px;
+padding:13px 16px; border-radius:18px; font-weight:700; font-size:.85rem;
+cursor:pointer; text-decoration:none; text-align:center;
+border-width:1.5px; border-style:solid; transition:opacity .15s;
+width:100%;
+}
+.btn-pill:active{opacity:.75;}
+
+/* Verde (Completado, WhatsApp, Guardar, +Cliente, Entregado) */
+.btn-green  { background:#e8f5e9 !important; border-color:#81c784 !important; color:#2e7d32 !important; }
+/* Azul (Mapa, Excel, primario) */
+.btn-blue   { background:#e3f0ff !important; border-color:#90bbf5 !important; color:#1a56c4 !important; }
+/* Morado (GPS, Cercanía) */
+.btn-purple { background:#ede7f6 !important; border-color:#b39ddb !important; color:#5e35b1 !important; }
+/* Rojo (Eliminar, No entregado, Borrar) */
+.btn-red    { background:#fce8e8 !important; border-color:#ef9a9a !important; color:#c62828 !important; }
+/* Naranja (Devolución, Último aviso) */
+.btn-orange { background:#fff3e0 !important; border-color:#ffb74d !important; color:#e65100 !important; }
+/* Gris (Cancelar, Pendiente, Contacté) */
+.btn-gray   { background:#f1f5f9 !important; border-color:#cbd5e1 !important; color:#475569 !important; }
+/* Slate/oscuro (Fecha, Config) */
+.btn-slate  { background:#eef2f7 !important; border-color:#b0bec5 !important; color:#37474f !important; }
+/* Amarillo/Exportar */
+.btn-amber  { background:#fffde7 !important; border-color:#ffe082 !important; color:#f57f17 !important; }
+
+/* ── ADMIN STICKY ── */
 .adm-bar{display:flex;gap:8px;padding:12px 14px;background:#ffffff !important;border-bottom:1px solid #e2e8f0;position:sticky;top:58px;z-index:49;}
-.adm-bar button{flex:1;padding:13px 6px;border-radius:16px;border:none !important;font-weight:700;font-size:.82rem;cursor:pointer;color:#fff !important;letter-spacing:.2px;box-shadow:0 2px 8px rgba(0,0,0,.12) !important;}
+.adm-bar button{flex:1;padding:13px 6px;border-radius:18px;font-weight:700;font-size:.82rem;cursor:pointer;border-width:1.5px;border-style:solid;letter-spacing:.1px;}
 .adm-search{padding:10px 14px;background:#f0f4f8 !important;border-bottom:1px solid #e2e8f0;position:sticky;top:113px;z-index:48;}
 .adm-search input{width:100%;padding:12px 14px 12px 40px;border-radius:16px;border:none !important;background:#ffffff !important;color:#0f172a !important;font-size:.88rem;box-shadow:0 1px 4px rgba(0,0,0,.07) !important;-webkit-text-fill-color:#0f172a !important;-webkit-box-shadow:0 0 0 1000px #ffffff inset !important;}
 .adm-search input::placeholder{color:#94a3b8 !important;-webkit-text-fill-color:#94a3b8 !important;}
@@ -50,58 +84,46 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a !important;letter-spaci
 .adm-tabs .tab.active{color:#2563eb !important;border-bottom-color:#2563eb !important;}
 
 /* ── REP STICKY ── */
-.rep-sticky{position:sticky;top:58px;z-index:49;background:#ffffff !important;border-bottom:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,.06) !important;}
+.rep-sticky{position:sticky;top:58px;z-index:49;background:#ffffff !important;border-bottom:1px solid #e2e8f0;}
 .rep-top{display:flex;align-items:center;gap:12px;padding:12px 14px 10px;}
 .rep-logo-circle{width:44px;height:44px;background:linear-gradient(135deg,#2563eb,#1d4ed8) !important;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
-.rep-brand .r-name{font-size:1rem;font-weight:900;color:#0f172a !important;letter-spacing:-.3px;}
+.rep-brand .r-name{font-size:1rem;font-weight:900;color:#0f172a !important;}
 .rep-brand .r-sub{font-size:.58rem;font-weight:700;color:#dc2626 !important;letter-spacing:2px;text-transform:uppercase;}
 .rep-brand .r-phone{font-size:.7rem;color:#94a3b8 !important;margin-top:1px;}
 .rep-actions{display:flex;gap:8px;padding:0 14px 10px;}
-.rep-actions button{flex:1;padding:12px 6px;border-radius:16px;border:none !important;font-weight:700;font-size:.78rem;cursor:pointer;color:#fff !important;box-shadow:0 2px 8px rgba(0,0,0,.12) !important;}
+.rep-actions button{flex:1;padding:12px 6px;border-radius:18px;font-weight:700;font-size:.78rem;cursor:pointer;border-width:1.5px;border-style:solid;}
 .rep-tabs{display:flex;border-top:1px solid #e2e8f0;}
 .rep-tabs .tab{flex:1;padding:12px 8px;text-align:center;font-size:.8rem;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;color:#94a3b8 !important;}
 .rep-tabs .tab.active{color:#2563eb !important;border-bottom-color:#2563eb !important;}
 .rep-search{padding:10px 14px;background:#f0f4f8 !important;border-bottom:1px solid #e2e8f0;}
 .rep-search input{width:100%;padding:12px 14px 12px 40px;border-radius:16px;border:none !important;background:#ffffff !important;color:#0f172a !important;font-size:.88rem;outline:none !important;box-shadow:0 1px 4px rgba(0,0,0,.07) !important;}
-.rep-search input:focus{outline:2px solid #2563eb !important;}
 
 /* ── INV STICKY ── */
-.inv-sticky{position:sticky;top:58px;z-index:49;background:#ffffff !important;border-bottom:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,.06) !important;}
+.inv-sticky{position:sticky;top:58px;z-index:49;background:#ffffff !important;border-bottom:1px solid #e2e8f0;}
 .inv-top-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 10px;}
 .inv-top-bar .ititle{font-size:.95rem;font-weight:800;color:#0f172a !important;}
 .inv-top-bar .ititle span{color:#2563eb !important;}
-.inv-badge-count{background:#2563eb !important;color:#fff !important;font-size:.68rem;font-weight:700;padding:5px 12px;border-radius:20px;}
+.inv-badge-count{background:#e3f0ff !important;color:#1a56c4 !important;border:1.5px solid #90bbf5;font-size:.68rem;font-weight:700;padding:5px 12px;border-radius:20px;}
 .inv-tabs-bar{display:flex;border-top:1px solid #e2e8f0;border-bottom:2px solid #e2e8f0;}
 .inv-tab{flex:1;padding:12px 8px;text-align:center;font-size:.72rem;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:#94a3b8 !important;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;}
 .inv-tab.active{color:#2563eb !important;border-bottom-color:#2563eb !important;}
 
-/* ── SEARCH WRAP ── */
+/* ── SEARCH ── */
 .sw{position:relative;}
 .sw .lupa{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:.9rem;pointer-events:none;color:#94a3b8 !important;}
 
 /* ── UNIVERSAL CARD ── */
-/* Used for Admin cards (card-v2) and Rep cards — white bg, large radius, colored left bar, strong shadow */
 #list-admin,#list-rep{padding:14px;}
-
-.card-v2{
-background:#ffffff !important;
-border-radius:20px;
-margin-bottom:12px;
-border:1px solid #e8edf4 !important;
-box-shadow:0 2px 8px rgba(15,23,42,.07),0 8px 24px rgba(15,23,42,.05) !important;
-display:flex;
-overflow:hidden;
-transition:transform .12s;
-}
+.card-v2{background:#ffffff !important;border-radius:22px;margin-bottom:12px;border:1px solid #e8edf4 !important;box-shadow:0 2px 10px rgba(15,23,42,.07),0 6px 20px rgba(15,23,42,.04) !important;display:flex;overflow:hidden;transition:transform .12s;}
 .card-v2:active{transform:scale(.985);}
 .card-v2-done{opacity:.6;}
 .card-v2-nogps{border-color:#fde68a !important;}
-.cv2-left-bar{width:5px;flex-shrink:0;border-radius:0;}
+.cv2-left-bar{width:5px;flex-shrink:0;}
 .cv2-bar-blue{background:#2563eb !important;}
-.cv2-bar-green{background:#059669 !important;}
+.cv2-bar-green{background:#16a34a !important;}
 .cv2-bar-yellow{background:#d97706 !important;}
 .cv2-bar-purple{background:#7c3aed !important;}
-.cv2-body{flex:1;padding:14px 13px 12px;min-width:0;}
+.cv2-body{flex:1;padding:14px 13px 13px;min-width:0;}
 .cv2-header{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;}
 .cv2-header-left{flex:1;min-width:0;}
 .cv2-num{font-size:.65rem;font-weight:700;color:#94a3b8 !important;margin-bottom:2px;}
@@ -112,139 +134,71 @@ transition:transform .12s;
 .cv2-sub{font-size:.8rem;color:#475569 !important;margin-top:4px;}
 .cv2-sort{display:flex;flex-direction:column;gap:3px;flex-shrink:0;}
 .cv2-sort-btn{background:#f1f5f9 !important;border:none !important;color:#94a3b8 !important;border-radius:9px;width:28px;height:25px;font-size:.65rem;cursor:pointer;}
-
-/* Card notes */
 .card-notes{margin:6px 0 8px;background:#f8fafc !important;border-radius:12px;padding:9px 11px;border:1px solid #e8edf4 !important;}
 .note-line{font-size:.78rem;color:#334155 !important;padding:2px 0;}
 .note-simple{font-size:.78rem;color:#334155 !important;padding:4px 0 8px;}
 
-/* ── UNIVERSAL BUTTON STYLES ── */
-/* Big pill buttons like “Completado”, “WhatsApp”, “GPS” */
+/* Card action buttons — pill style like “Completado” */
 .cv2-actions{display:flex;flex-direction:column;gap:8px;margin-top:10px;}
 .cv2-row-main{display:flex;gap:8px;}
 .cv2-row-secondary{display:flex;align-items:center;gap:7px;}
 
-/* Main action buttons — large rounded pill */
-.cv2-btn{
-flex:1;
-padding:12px 6px;
-border-radius:16px;
-border:none !important;
-font-weight:700;
-font-size:.8rem;
-cursor:pointer;
-text-align:center;
-text-decoration:none;
-display:inline-flex;
-align-items:center;
-justify-content:center;
-gap:5px;
-letter-spacing:.1px;
-box-shadow:0 2px 6px rgba(0,0,0,.1) !important;
-}
-.cv2-btn-blue{background:#2563eb !important;color:#fff !important;}
-.cv2-btn-wa{background:#16a34a !important;color:#fff !important;}
-.cv2-btn-purple{background:#7c3aed !important;color:#fff !important;}
+.cv2-btn{flex:1;padding:12px 6px;border-radius:18px;font-weight:700;font-size:.8rem;cursor:pointer;text-align:center;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:5px;border-width:1.5px;border-style:solid;}
+.cv2-btn-blue  {background:#e3f0ff !important;border-color:#90bbf5 !important;color:#1a56c4 !important;}
+.cv2-btn-wa    {background:#e8f5e9 !important;border-color:#81c784 !important;color:#2e7d32 !important;}
+.cv2-btn-purple{background:#ede7f6 !important;border-color:#b39ddb !important;color:#5e35b1 !important;}
 
-/* Soft pill action buttons (like “✓ Completado” style) */
-.card-action-pill{
-flex:1;
-padding:11px 8px;
-border-radius:16px;
-border:none !important;
-font-weight:700;
-font-size:.78rem;
-cursor:pointer;
-text-align:center;
-transition:all .15s;
-}
-.pill-green{background:#dcfce7 !important;color:#16a34a !important;}
-.pill-green:active{background:#16a34a !important;color:#fff !important;}
-.pill-gray{background:#f1f5f9 !important;color:#475569 !important;}
+.card-action-pill{flex:1;padding:12px 8px;border-radius:18px;border-width:1.5px;border-style:solid;font-weight:700;font-size:.8rem;cursor:pointer;text-align:center;}
+.pill-green{background:#e8f5e9 !important;border-color:#81c784 !important;color:#2e7d32 !important;}
+.pill-gray {background:#f1f5f9 !important;border-color:#cbd5e1 !important;color:#475569 !important;}
 
-/* Square icon buttons */
-.cv2-icon-btn{
-background:#f1f5f9 !important;
-border:none !important;
-color:#475569 !important;
-border-radius:13px;
-width:40px;
-height:38px;
-font-size:.9rem;
-cursor:pointer;
-display:inline-flex;
-align-items:center;
-justify-content:center;
-flex-shrink:0;
-}
-.cv2-icon-btn-amber{background:#fef9c3 !important;color:#92400e !important;}
-.cv2-icon-btn-red{background:#fee2e2 !important;color:#dc2626 !important;}
-
-/* ── STATUS CHIP ── */
-.chip{display:inline-flex;align-items:center;font-size:.68rem;font-weight:700;padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px;}
-.chip-blue{background:#dbeafe !important;color:#1d4ed8 !important;}
-.chip-green{background:#dcfce7 !important;color:#15803d !important;}
-.chip-red{background:#fee2e2 !important;color:#b91c1c !important;}
-.chip-orange{background:#ffedd5 !important;color:#c2410c !important;}
-.chip-gray{background:#f1f5f9 !important;color:#64748b !important;}
+.cv2-icon-btn{background:#f1f5f9 !important;border:1.5px solid #cbd5e1 !important;color:#475569 !important;border-radius:13px;width:40px;height:40px;font-size:.9rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cv2-icon-btn-amber{background:#fffde7 !important;border-color:#ffe082 !important;color:#f57f17 !important;}
+.cv2-icon-btn-red  {background:#fce8e8 !important;border-color:#ef9a9a !important;color:#c62828 !important;}
 
 /* ── INV VIEWS ── */
 .inv-view{display:none;padding:14px;background:#f0f4f8 !important;min-height:calc(100vh - 120px);}
 .inv-view.active{display:block;}
 
-/* Upload zone */
-.upload-zone{border:2px dashed #cbd5e1 !important;border-radius:20px;padding:38px 20px;text-align:center;cursor:pointer;position:relative;overflow:hidden;background:#ffffff !important;transition:border-color .2s;}
-.upload-zone:active{border-color:#2563eb !important;}
+.upload-zone{border:2px dashed #cbd5e1 !important;border-radius:22px;padding:38px 20px;text-align:center;cursor:pointer;position:relative;overflow:hidden;background:#ffffff !important;}
 .upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:16px;}
 .upload-icon{font-size:2.6rem;display:block;margin-bottom:10px;}
 .upload-zone h3{font-size:.95rem;font-weight:700;color:#0f172a !important;margin-bottom:4px;}
 .upload-zone p{font-size:.78rem;color:#94a3b8 !important;}
-.file-pill{background:#eff6ff !important;border:1px solid #bfdbfe !important;border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-top:12px;}
+.file-pill{background:#e3f0ff !important;border:1.5px solid #90bbf5 !important;border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-top:12px;}
 .file-pill strong{font-size:.83rem;color:#0f172a !important;font-weight:700;display:block;}
 .file-pill span{font-size:.7rem;color:#334155 !important;}
 .btn-clear-inv{background:none !important;border:none !important;color:#dc2626 !important;font-size:1.1rem;cursor:pointer;padding:4px;margin-left:auto;}
 
-/* Mapping card */
-.map-card{background:#ffffff !important;border:1px solid #e8edf4 !important;border-radius:20px;padding:16px;margin-top:14px;box-shadow:0 2px 8px rgba(0,0,0,.06) !important;}
+.map-card{background:#ffffff !important;border:1px solid #e8edf4 !important;border-radius:20px;padding:16px;margin-top:14px;}
 .map-card h4{font-size:.72rem;font-weight:700;color:#2563eb !important;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
 .map-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
 .map-lbl{font-size:.72rem;color:#334155 !important;font-weight:600;width:82px;flex-shrink:0;}
 .map-sel{flex:1;background:#f8fafc !important;border:1.5px solid #e2e8f0 !important;color:#0f172a !important;padding:8px 10px;border-radius:10px;font-size:.74rem;}
 .map-sel:focus{outline:none !important;border-color:#2563eb !important;}
 
-/* Inv action buttons — same pill style */
-.ibtn{display:block;width:100%;padding:14px;border-radius:16px;font-size:.9rem;font-weight:700;cursor:pointer;border:none !important;text-align:center;margin-top:12px;letter-spacing:.2px;box-shadow:0 2px 8px rgba(0,0,0,.08) !important;}
-.ibtn-primary{background:#2563eb !important;color:#fff !important;}
-.ibtn-secondary{background:#f1f5f9 !important;color:#334155 !important;}
-.ibtn-danger{background:#fee2e2 !important;color:#dc2626 !important;}
+/* Inv buttons — same pill style */
+.ibtn{display:block;width:100%;padding:14px;border-radius:18px;font-size:.9rem;font-weight:700;cursor:pointer;text-align:center;margin-top:12px;border-width:1.5px;border-style:solid;}
+.ibtn-primary  {background:#e3f0ff !important;border-color:#90bbf5 !important;color:#1a56c4 !important;}
+.ibtn-secondary{background:#f1f5f9 !important;border-color:#cbd5e1 !important;color:#475569 !important;}
+.ibtn-danger   {background:#fce8e8 !important;border-color:#ef9a9a !important;color:#c62828 !important;}
 
-/* Stats */
 .stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;}
-.stat-box{background:#ffffff !important;border:1px solid #e8edf4 !important;border-radius:16px;padding:16px 8px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06) !important;}
+.stat-box{background:#ffffff !important;border:1px solid #e8edf4 !important;border-radius:16px;padding:16px 8px;text-align:center;}
 .stat-n{font-size:1.7rem;font-weight:800;}
 .stat-l{font-size:.62rem;color:#94a3b8 !important;text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-top:3px;}
-.sn-blue{color:#2563eb !important;}
-.sn-green{color:#16a34a !important;}
-.sn-red{color:#dc2626 !important;}
+.sn-blue{color:#1a56c4 !important;}
+.sn-green{color:#2e7d32 !important;}
+.sn-red{color:#c62828 !important;}
 
-/* Filter tabs */
-.ftabs{display:flex;border-bottom:2px solid #e2e8f0;overflow-x:auto;scrollbar-width:none;background:#ffffff !important;border-radius:10px 10px 0 0;margin-bottom:0;}
+.ftabs{display:flex;border-bottom:2px solid #e2e8f0;overflow-x:auto;scrollbar-width:none;background:#ffffff !important;}
 .ftabs::-webkit-scrollbar{display:none;}
 .ftab{flex-shrink:0;padding:11px 10px;font-size:.63rem;font-weight:700;cursor:pointer;border:none !important;border-bottom:2px solid transparent;background:none !important;color:#94a3b8 !important;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;margin-bottom:-2px;}
 .ftab.active{color:#2563eb !important;border-bottom-color:#2563eb !important;}
 .ftab-n{display:inline-block;background:#e2e8f0 !important;color:#334155 !important;border-radius:20px;font-size:.58rem;font-weight:700;padding:1px 6px;margin-left:3px;vertical-align:middle;}
 
-/* ── DARK RECORD CARDS (Inventario > Registros) ── */
-.record-item{
-background:#1c2236 !important;
-border:1px solid #2a3350 !important;
-border-radius:20px;
-padding:15px;
-margin-bottom:11px;
-cursor:pointer;
-box-shadow:0 4px 16px rgba(0,0,0,.18) !important;
-transition:transform .12s;
-}
+/* ── DARK RECORD CARDS ── */
+.record-item{background:#1c2236 !important;border:1px solid #2a3350 !important;border-radius:20px;padding:15px;margin-bottom:11px;cursor:pointer;transition:transform .12s;}
 .record-item:active{transform:scale(.985);}
 .record-item.scanned{border-left:4px solid #16a34a !important;}
 .record-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
@@ -254,23 +208,20 @@ transition:transform .12s;
 .record-meta{font-size:.75rem;color:#8892aa !important;margin-top:2px;}
 .scanned-badge{display:inline-flex;align-items:center;background:rgba(22,163,74,.18) !important;border:1px solid rgba(22,163,74,.4) !important;border-radius:20px;padding:2px 8px;font-size:.58rem;font-weight:700;color:#4ade80 !important;text-transform:uppercase;}
 
-/* Status pills for dark cards */
 .status-pill{display:inline-flex;align-items:center;font-size:.66rem;font-weight:700;padding:4px 11px;border-radius:20px;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;}
-.pill-pendiente{background:rgba(148,163,184,.15) !important;color:#94a3b8 !important;border:1px solid rgba(148,163,184,.25) !important;}
-.pill-entregado{background:rgba(22,163,74,.18) !important;color:#4ade80 !important;border:1px solid rgba(22,163,74,.35) !important;}
+.pill-pendiente   {background:rgba(148,163,184,.15) !important;color:#94a3b8 !important;border:1px solid rgba(148,163,184,.25) !important;}
+.pill-entregado   {background:rgba(22,163,74,.18) !important;color:#4ade80 !important;border:1px solid rgba(22,163,74,.35) !important;}
 .pill-no-entregado{background:rgba(220,38,38,.18) !important;color:#f87171 !important;border:1px solid rgba(220,38,38,.35) !important;}
-.pill-devolucion{background:rgba(234,88,12,.18) !important;color:#fb923c !important;border:1px solid rgba(234,88,12,.35) !important;}
+.pill-devolucion  {background:rgba(234,88,12,.18) !important;color:#fb923c !important;border:1px solid rgba(234,88,12,.35) !important;}
 
-/* Delete button inside dark card */
-.btn-quick-del{background:rgba(220,38,38,.15) !important;border:1px solid rgba(220,38,38,.35) !important;color:#f87171 !important;border-radius:10px;font-size:.68rem;font-weight:700;padding:5px 11px;cursor:pointer;white-space:nowrap;}
-
-/* Quick move row inside dark card */
+/* Buttons inside dark card — keep dark bg, same pill border style */
+.btn-quick-del{background:rgba(220,38,38,.15) !important;border:1px solid rgba(220,38,38,.35) !important;color:#f87171 !important;border-radius:12px;font-size:.68rem;font-weight:700;padding:5px 11px;cursor:pointer;white-space:nowrap;}
 .quick-move-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;padding-top:10px;border-top:1px solid #2a3350 !important;}
-.btn-move{background:#242d42 !important;border:1px solid #323d58 !important;color:#c8cfe0 !important;border-radius:12px;font-size:.7rem;font-weight:600;padding:7px 12px;cursor:pointer;}
+.btn-move{background:rgba(255,255,255,.07) !important;border:1px solid rgba(255,255,255,.14) !important;color:#c8cfe0 !important;border-radius:12px;font-size:.7rem;font-weight:600;padding:7px 12px;cursor:pointer;}
 
-/* Scan form card */
-.pkg-card{background:#ffffff !important;border:1px solid #e8edf4 !important;border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.07),0 8px 24px rgba(0,0,0,.05) !important;}
-.pkg-id{font-size:1rem;font-weight:800;color:#2563eb !important;margin-bottom:2px;}
+/* Scan form */
+.pkg-card{background:#ffffff !important;border:1px solid #e8edf4 !important;border-radius:22px;padding:16px;margin-bottom:12px;}
+.pkg-id{font-size:1rem;font-weight:800;color:#1a56c4 !important;margin-bottom:2px;}
 .pkg-name{font-size:.93rem;font-weight:700;color:#0f172a !important;margin-bottom:12px;}
 .pkg-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
 .pkg-field{background:#f8fafc !important;border:1px solid #e8edf4 !important;border-radius:12px;padding:9px 11px;}
@@ -278,17 +229,17 @@ transition:transform .12s;
 .pkg-field-value{font-size:.84rem;font-weight:600;color:#0f172a !important;}
 .pkg-full{grid-column:1/-1;}
 
-/* Status buttons in scan form — pill style */
+/* Status buttons — pill style */
 .status-btns{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;}
-.sbtn{flex:1;min-width:calc(50% - 4px);padding:11px;border-radius:14px;font-size:.78rem;font-weight:700;cursor:pointer;border:none !important;transition:all .15s;text-align:center;}
-.sbtn.entregado{background:#dcfce7 !important;color:#16a34a !important;}
-.sbtn.entregado.active{background:#16a34a !important;color:#fff !important;}
-.sbtn.no-entregado{background:#fee2e2 !important;color:#dc2626 !important;}
-.sbtn.no-entregado.active{background:#dc2626 !important;color:#fff !important;}
-.sbtn.pendiente-prog{background:#dbeafe !important;color:#2563eb !important;}
-.sbtn.pendiente-prog.active{background:#2563eb !important;color:#fff !important;}
-.sbtn.devolucion{background:#ffedd5 !important;color:#ea580c !important;}
-.sbtn.devolucion.active{background:#ea580c !important;color:#fff !important;}
+.sbtn{flex:1;min-width:calc(50% - 4px);padding:12px;border-radius:16px;font-size:.8rem;font-weight:700;cursor:pointer;border-width:1.5px;border-style:solid;transition:all .15s;text-align:center;}
+.sbtn.entregado     {background:#e8f5e9 !important;border-color:#81c784 !important;color:#2e7d32 !important;}
+.sbtn.entregado.active{background:#2e7d32 !important;border-color:#2e7d32 !important;color:#fff !important;}
+.sbtn.no-entregado  {background:#fce8e8 !important;border-color:#ef9a9a !important;color:#c62828 !important;}
+.sbtn.no-entregado.active{background:#c62828 !important;border-color:#c62828 !important;color:#fff !important;}
+.sbtn.pendiente-prog{background:#e3f0ff !important;border-color:#90bbf5 !important;color:#1a56c4 !important;}
+.sbtn.pendiente-prog.active{background:#1a56c4 !important;border-color:#1a56c4 !important;color:#fff !important;}
+.sbtn.devolucion    {background:#fff3e0 !important;border-color:#ffb74d !important;color:#e65100 !important;}
+.sbtn.devolucion.active{background:#e65100 !important;border-color:#e65100 !important;color:#fff !important;}
 
 .motivo-row{margin-bottom:10px;display:none;}
 .motivo-row.show{display:block;}
@@ -300,11 +251,11 @@ transition:transform .12s;
 .inv-ta:focus{outline:none !important;border-color:#2563eb !important;}
 
 .manual-row{display:flex;gap:9px;margin-bottom:14px;}
-.inv-text-input{flex:1;background:#ffffff !important;border:1.5px solid #e2e8f0 !important;color:#0f172a !important;padding:12px 14px;border-radius:14px;font-size:.9rem;outline:none !important;box-shadow:0 1px 4px rgba(0,0,0,.06) !important;}
+.inv-text-input{flex:1;background:#ffffff !important;border:1.5px solid #e2e8f0 !important;color:#0f172a !important;padding:12px 14px;border-radius:14px;font-size:.9rem;outline:none !important;}
 .inv-text-input:focus{border-color:#2563eb !important;}
-.btn-search-inv{background:#2563eb !important;color:#fff !important;border:none !important;border-radius:14px;padding:12px 16px;font-size:1.1rem;cursor:pointer;box-shadow:0 2px 8px rgba(37,99,235,.3) !important;}
+.btn-search-inv{background:#e3f0ff !important;color:#1a56c4 !important;border:1.5px solid #90bbf5 !important;border-radius:14px;padding:12px 16px;font-size:1.1rem;cursor:pointer;font-weight:700;}
 
-.scanner-box{position:relative;border-radius:20px;overflow:hidden;background:#000 !important;aspect-ratio:4/3;margin-bottom:14px;box-shadow:0 4px 20px rgba(0,0,0,.18) !important;}
+.scanner-box{position:relative;border-radius:20px;overflow:hidden;background:#000 !important;aspect-ratio:4/3;margin-bottom:14px;}
 .scan-ov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
 .scan-frame{width:65%;aspect-ratio:3/1;border:2px solid #2563eb !important;border-radius:10px;box-shadow:0 0 0 9999px rgba(0,0,0,.5) !important;position:relative;}
 .scan-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#2563eb,transparent) !important;animation:scanline 2s ease-in-out infinite;}
@@ -316,10 +267,10 @@ transition:transform .12s;
 .inv-search-input{width:100%;background:#ffffff !important;border:none !important;color:#0f172a !important;padding:12px 14px;border-radius:14px;font-size:.88rem;outline:none !important;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.07) !important;}
 .inv-search-input:focus{outline:2px solid #2563eb !important;}
 
-/* ── MODALS ── */
+/* MODALS */
 .overlay{position:fixed;inset:0;background:rgba(15,23,42,.55) !important;z-index:300;display:none;align-items:center;justify-content:center;padding:20px;}
 .overlay.open{display:flex;}
-.modal{background:#ffffff !important;border-radius:22px;padding:24px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.2) !important;}
+.modal{background:#ffffff !important;border-radius:24px;padding:24px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.2) !important;}
 .modal h2{margin-bottom:16px;font-size:1.05rem;font-weight:800;color:#0f172a !important;}
 .field{margin-bottom:12px;}
 .field label{display:block;font-size:.72rem;color:#334155 !important;margin-bottom:5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
@@ -327,12 +278,11 @@ transition:transform .12s;
 .field input:focus,.field textarea:focus{outline:none !important;border-color:#2563eb !important;}
 .field textarea{resize:vertical;min-height:80px;}
 .modal-btns{display:flex;gap:9px;margin-top:16px;}
-.modal-btns button{flex:1;padding:13px;border-radius:14px;border:none !important;font-weight:700;cursor:pointer;color:#fff !important;font-size:.9rem;box-shadow:0 2px 8px rgba(0,0,0,.1) !important;}
+.modal-btns button{flex:1;padding:13px;border-radius:16px;border-width:1.5px !important;border-style:solid !important;font-weight:700;cursor:pointer;font-size:.9rem;}
 
-/* Bottom sheet */
 .inv-sheet-back{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55) !important;z-index:300;align-items:flex-end;justify-content:center;}
 .inv-sheet-back.open{display:flex;}
-.inv-sheet{background:#ffffff !important;border-radius:24px 24px 0 0;padding:22px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 -10px 40px rgba(0,0,0,.14) !important;}
+.inv-sheet{background:#ffffff !important;border-radius:24px 24px 0 0;padding:22px;width:100%;max-height:85vh;overflow-y:auto;}
 .sheet-handle{width:36px;height:4px;background:#e2e8f0 !important;border-radius:2px;margin:0 auto 18px;}
 .inv-sheet h3{font-size:.95rem;font-weight:800;margin-bottom:14px;color:#0f172a !important;}
 .inv-modal-field{margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #f1f5f9;}
@@ -344,27 +294,24 @@ transition:transform .12s;
 .sheet-field label{font-size:.62rem;color:#94a3b8 !important;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:3px;font-weight:700;}
 .sheet-field .val{font-size:.87rem;font-weight:600;color:#0f172a !important;}
 
-/* FAB */
 .fab{position:fixed;bottom:22px;right:16px;display:flex;flex-direction:column;gap:10px;z-index:49;}
-.fab button{width:52px;height:52px;border-radius:50%;border:none !important;font-size:1.2rem;cursor:pointer;color:#fff !important;box-shadow:0 4px 16px rgba(37,99,235,.35) !important;}
+.fab button{width:52px;height:52px;border-radius:50%;font-size:1.2rem;cursor:pointer;background:#e3f0ff !important;border:1.5px solid #90bbf5 !important;color:#1a56c4 !important;}
 
-/* Misc */
 .empty{text-align:center;padding:52px 20px;color:#94a3b8 !important;}
 .empty p{font-size:.88rem;margin-top:8px;}
 .empty-icon{font-size:2.6rem;display:block;margin-bottom:8px;}
-.export-card{background:#ffffff !important;border-radius:16px;margin-bottom:10px;border-left:4px solid #2563eb;padding:13px 15px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.07) !important;}
+.export-card{background:#ffffff !important;border-radius:16px;margin-bottom:10px;border-left:4px solid #2563eb;padding:13px 15px;display:flex;justify-content:space-between;align-items:center;border:1px solid #e8edf4 !important;}
 .ec-info{font-size:.87rem;font-weight:700;color:#0f172a !important;}
 .ec-sub{font-size:.73rem;color:#334155 !important;margin-top:2px;}
-.ec-btn{background:#fee2e2 !important;border:none !important;color:#dc2626 !important;border-radius:10px;padding:6px 11px;font-size:.71rem;cursor:pointer;font-weight:700;}
+.ec-btn{background:#fce8e8 !important;border:1.5px solid #ef9a9a !important;color:#c62828 !important;border-radius:12px;padding:6px 11px;font-size:.71rem;cursor:pointer;font-weight:700;}
 .divider{height:1px;background:#e2e8f0 !important;margin:12px 0;}
-.scanned-tag{display:inline-flex;align-items:center;background:#dcfce7 !important;border:1px solid #86efac !important;border-radius:20px;padding:2px 8px;font-size:.58rem;font-weight:700;color:#16a34a !important;text-transform:uppercase;margin-left:5px;}
+.scanned-tag{display:inline-flex;align-items:center;background:#e8f5e9 !important;border:1px solid #81c784 !important;border-radius:20px;padding:2px 8px;font-size:.58rem;font-weight:700;color:#2e7d32 !important;text-transform:uppercase;margin-left:5px;}
 
-/* Toast */
-.toast-inv{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);padding:13px 22px;border-radius:40px;font-size:.84rem;font-weight:600;z-index:400;transition:transform .3s ease;white-space:nowrap;color:#fff !important;box-shadow:0 4px 20px rgba(0,0,0,.2) !important;background:#0f172a !important;}
+.toast-inv{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);padding:13px 22px;border-radius:40px;font-size:.84rem;font-weight:700;z-index:400;transition:transform .3s ease;white-space:nowrap;color:#fff !important;}
 .toast-inv.show{transform:translateX(-50%) translateY(0);}
-.toast-inv.success{background:#16a34a !important;}
-.toast-inv.error{background:#dc2626 !important;}
-.toast-inv.info{background:#2563eb !important;}
+.toast-inv.success{background:#2e7d32 !important;}
+.toast-inv.error  {background:#c62828 !important;}
+.toast-inv.info   {background:#1a56c4 !important;}
 
 </style>
 </head>
@@ -406,9 +353,9 @@ transition:transform .12s;
 
 <div id="app-admin">
   <div class="adm-bar">
-    <button style="background:#2563eb" onclick="document.getElementById('fileInputAdminXlsx').click()">&#128202; Excel</button>
-    <button style="background:#7c3aed" onclick="sortNearest()">&#9889; Cercan&#237;a</button>
-    <button style="background:#059669" onclick="abrirNuevoCliente()">&#43; Cliente</button>
+    <button class="btn-blue" onclick="document.getElementById('fileInputAdminXlsx').click()">&#128202; Excel</button>
+    <button class="btn-purple" onclick="sortNearest()">&#9889; Cercan&#237;a</button>
+    <button class="btn-green" onclick="abrirNuevoCliente()">&#43; Cliente</button>
   </div>
   <input type="file" id="fileInputAdminXlsx" accept=".xlsx,.xls" style="display:none" onchange="cargarExcelAdmin(event)">
   <div class="adm-search">
@@ -424,7 +371,7 @@ transition:transform .12s;
   </div>
   <div id="list-admin"></div>
   <div class="fab" id="fab-admin">
-    <button style="background:#475569" onclick="openModal('modalConfigAdmin')">&#9881;&#65039;</button>
+    <button onclick="openModal('modalConfigAdmin')">&#9881;&#65039;</button>
   </div>
 </div>
 
@@ -441,10 +388,10 @@ transition:transform .12s;
       </div>
     </div>
     <div class="rep-actions">
-      <button style="background:#2563eb" onclick="document.getElementById('fileInputRepXlsx').click()">&#128202; Excel</button>
+      <button class="btn-blue" onclick="document.getElementById('fileInputRepXlsx').click()">&#128202; Excel</button>
       <input type="file" id="fileInputRepXlsx" accept=".xlsx,.xls" style="display:none" onchange="cargarExcelRep(event)">
-      <button style="background:#475569" onclick="openModal('modalFecha')">&#128197; Fecha</button>
-      <button style="background:#475569" onclick="openModal('modalConfigRep')">&#9881;&#65039;</button>
+      <button class="btn-slate" onclick="openModal('modalFecha')">&#128197; Fecha</button>
+      <button class="btn-slate" onclick="openModal('modalConfigRep')">&#9881;&#65039;</button>
     </div>
     <div class="rep-tabs" id="rep-tabs">
       <div class="tab active" onclick="switchTabRep('pendientes')">Pendientes</div>
@@ -602,32 +549,32 @@ transition:transform .12s;
   <div class="field"><label>Tel&#233;fono</label><input type="tel" id="cTel" placeholder="8093334444"></div>
   <div class="field"><label>Monto RD$</label><input type="number" id="cCod" placeholder="0"></div>
   <div class="field"><label>Coordenadas</label><input type="text" id="cCoords" placeholder="19.2917, -70.2558"></div>
-  <div class="modal-btns"><button style="background:#059669" onclick="guardarCliente()">GUARDAR</button><button style="background:#94a3b8" onclick="closeModal('modalCliente')">CANCELAR</button></div>
+  <div class="modal-btns"><button class="btn-green" onclick="guardarCliente()">GUARDAR</button><button class="btn-gray" onclick="closeModal('modalCliente')">CANCELAR</button></div>
 </div></div>
 
 <div class="overlay" id="modalUbi"><div class="modal"><h2>&#128205; Actualizar Ubicaci&#243;n</h2>
   <input type="hidden" id="ubiId">
   <p style="font-size:.83rem;color:#64748b;margin-bottom:12px;">Pega coordenadas o link de Google Maps</p>
   <div class="field"><textarea id="ubiInput" placeholder="19.2917, -70.2558"></textarea></div>
-  <div class="modal-btns"><button style="background:#059669" onclick="guardarUbicacion()">GUARDAR</button><button style="background:#94a3b8" onclick="closeModal('modalUbi')">CANCELAR</button></div>
+  <div class="modal-btns"><button class="btn-green" onclick="guardarUbicacion()">GUARDAR</button><button class="btn-gray" onclick="closeModal('modalUbi')">CANCELAR</button></div>
 </div></div>
 
 <div class="overlay" id="modalConfigAdmin"><div class="modal"><h2>&#9881;&#65039; Opciones &mdash; Rutas</h2><br>
-  <button class="btn" style="background:#dc2626;width:100%;padding:13px;border-radius:10px;border:none;font-weight:700;cursor:pointer;color:#fff;font-size:.9rem;" onclick="if(confirm('Borrar todos los clientes?')){clientes=[];exportados=[];guardar();closeModal('modalConfigAdmin');}">&#128465; Borrar Todo</button>
-  <button class="btn" style="background:#94a3b8;width:100%;padding:13px;border-radius:10px;border:none;font-weight:700;cursor:pointer;color:#fff;font-size:.9rem;margin-top:8px;" onclick="closeModal('modalConfigAdmin')">CERRAR</button>
+  <button class="btn" class="ibtn ibtn-danger" onclick="if(confirm('Borrar todos los clientes?')){clientes=[];exportados=[];guardar();closeModal('modalConfigAdmin');}">&#128465; Borrar Todo</button>
+  <button class="btn" class="ibtn ibtn-secondary" onclick="closeModal('modalConfigAdmin')">CERRAR</button>
 </div></div>
 
 <!-- ═══════════ MODALS REP ═══════════ -->
 
 <div class="overlay" id="modalFecha"><div class="modal"><h2>&#128197; Fecha de Entrega</h2>
   <div class="field"><label>Fecha</label><input type="date" id="inputFecha"></div>
-  <div class="modal-btns"><button style="background:#059669" onclick="guardarFecha()">GUARDAR</button><button style="background:#94a3b8" onclick="closeModal('modalFecha')">CANCELAR</button></div>
+  <div class="modal-btns"><button class="btn-green" onclick="guardarFecha()">GUARDAR</button><button class="btn-gray" onclick="closeModal('modalFecha')">CANCELAR</button></div>
 </div></div>
 
 <div class="overlay" id="modalConfigRep"><div class="modal"><h2>&#9881;&#65039; Opciones &mdash; Entregas</h2><br>
-  <button style="width:100%;padding:13px;border-radius:10px;border:none;font-weight:700;cursor:pointer;color:#fff;background:#dc2626;font-size:.9rem" onclick="borrarPestanaRep()">&#128465; Borrar <span id="labelBorrar">Pendientes</span></button>
-  <button style="width:100%;padding:13px;border-radius:10px;border:none;font-weight:700;cursor:pointer;color:#fff;background:#7f1d1d;font-size:.9rem;margin-top:8px" onclick="borrarTodoRep()">&#128465; Borrar Todo</button>
-  <button style="width:100%;padding:13px;border-radius:10px;border:none;font-weight:700;cursor:pointer;color:#fff;background:#94a3b8;font-size:.9rem;margin-top:8px" onclick="closeModal('modalConfigRep')">CERRAR</button>
+  <button class="ibtn ibtn-danger" onclick="borrarPestanaRep()">&#128465; Borrar <span id="labelBorrar">Pendientes</span></button>
+  <button class="ibtn ibtn-danger" onclick="borrarTodoRep()">&#128465; Borrar Todo</button>
+  <button class="ibtn ibtn-secondary" onclick="closeModal('modalConfigRep')">CERRAR</button>
 </div></div>
 
 <!-- ═══════════ INV DETAIL SHEET ═══════════ -->
@@ -642,7 +589,7 @@ transition:transform .12s;
       <button class="ibtn ibtn-danger" id="inv-btn-delete-record" onclick="invDeleteRecord()" style="flex:1;margin-top:0;">Borrar registro</button>
     </div>
     <div style="margin-top:8px;" id="inv-btn-delete-pkg-wrap">
-      <button class="ibtn" style="background:#fef2f2;border:1px solid #fecaca;color:#dc2626;margin-top:0;width:100%;padding:12px;border-radius:12px;font-weight:700;cursor:pointer;" onclick="invDeletePackage()">Borrar paquete completo</button>
+      <button class="ibtn" class="ibtn ibtn-danger" style="margin-top:0;" onclick="invDeletePackage()">Borrar paquete completo</button>
     </div>
   </div>
 </div>
