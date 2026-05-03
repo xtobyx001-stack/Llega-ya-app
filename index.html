@@ -147,10 +147,14 @@ width:100%;
 .cv2-btn-blue  {background:#e3f0ff !important;border-color:#90bbf5 !important;color:#1a56c4 !important;}
 .cv2-btn-wa    {background:#e8f5e9 !important;border-color:#81c784 !important;color:#2e7d32 !important;}
 .cv2-btn-purple{background:#ede7f6 !important;border-color:#b39ddb !important;color:#5e35b1 !important;}
+.cv2-btn-ult{background:#fff0f0 !important;border-color:#ffb3b3 !important;color:#c0392b !important;}
 
 .card-action-pill{flex:1;padding:12px 8px;border-radius:18px;border-width:1.5px;border-style:solid;font-weight:700;font-size:.8rem;cursor:pointer;text-align:center;}
 .pill-green{background:#e8f5e9 !important;border-color:#81c784 !important;color:#2e7d32 !important;}
-.pill-gray {background:#f1f5f9 !important;border-color:#cbd5e1 !important;color:#475569 !important;}
+.pill-gray  {background:#f1f5f9 !important;border-color:#cbd5e1 !important;color:#475569 !important;}
+.pill-orange{background:#fff3e0 !important;border-color:#ffb74d !important;color:#e65100 !important;}
+.pill-red   {background:#fce8e8 !important;border-color:#ef9a9a !important;color:#c62828 !important;}
+.pill-purple{background:#ede7f6 !important;border-color:#b39ddb !important;color:#5e35b1 !important;}
 
 .cv2-icon-btn{background:#f1f5f9 !important;border:1.5px solid #cbd5e1 !important;color:#475569 !important;border-radius:13px;width:40px;height:40px;font-size:.9rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
 .cv2-icon-btn-amber{background:#fffde7 !important;border-color:#ffe082 !important;color:#f57f17 !important;}
@@ -330,6 +334,7 @@ width:100%;
     <div class="dw-item active" id="nav-admin" onclick="switchApp('admin')"><span class="ico">&#128506;</span> Rutas</div>
     <div class="dw-item" id="nav-rep" onclick="switchApp('rep')"><span class="ico">&#128757;</span> Entregas</div>
     <div class="dw-item" id="nav-inv" onclick="switchApp('inv')"><span class="ico">&#128230;</span> Inventario</div>
+    <div class="dw-item" id="nav-jostin" onclick="switchApp('jostin')"><span class="ico">&#128100;</span> Jostin</div>
   </nav>
   <div class="dw-foot">
     <div class="dw-foot-row" onclick="openModal('modalConfigAdmin');closeDrawer();"><span>&#9881;&#65039;</span> Ajustes</div>
@@ -365,9 +370,9 @@ width:100%;
     </div>
   </div>
   <div class="adm-tabs" id="admin-tabs">
-    <div class="tab active" onclick="switchTabAdmin('pendientes')">Pendientes</div>
+    <div class="tab active" onclick="switchTabAdmin('pendientes')">Rutas</div>
     <div class="tab" onclick="switchTabAdmin('sin_ubicacion')">Sin GPS</div>
-    <div class="tab" onclick="switchTabAdmin('completados')">Completados</div>
+    <div class="tab" onclick="switchTabAdmin('completados')">No Contesta</div>
     <div class="tab" onclick="switchTabAdmin('exportar')">&#128228; Exportar</div>
   </div>
   <div id="list-admin"></div>
@@ -542,6 +547,31 @@ width:100%;
   </div>
 </div>
 
+<!-- ═══════════ APP JOSTIN ═══════════ -->
+
+<div id="app-jostin" style="display:none">
+  <div class="rep-sticky">
+    <div class="rep-top">
+      <div class="rep-logo-circle" style="background:linear-gradient(135deg,#7c3aed,#5b21b6) !important;">&#128100;</div>
+      <div class="rep-brand">
+        <div class="r-name">Jostin</div>
+        <div class="r-sub" style="color:#7c3aed !important;">Repartidor</div>
+        <div class="r-phone">Paquetes asignados</div>
+      </div>
+    </div>
+    <div class="rep-actions">
+      <button class="btn-purple" onclick="document.getElementById('fileInputJostinXlsx').click()">&#128202; Cargar Excel Jostin</button>
+      <input type="file" id="fileInputJostinXlsx" accept=".xlsx,.xls" style="display:none" onchange="cargarExcelJostin(event)">
+    </div>
+  </div>
+  <div class="rep-search">
+    <div class="sw"><span class="lupa">&#128269;</span>
+      <input type="text" id="searchJostin" placeholder="Buscar en Jostin..." oninput="renderJostin()">
+    </div>
+  </div>
+  <div id="list-jostin"><div class="empty"><span class="empty-icon">&#128100;</span><p>No hay paquetes asignados a Jostin</p></div></div>
+</div>
+
 <!-- ═══════════ MODALS ADMIN ═══════════ -->
 
 <div class="overlay" id="modalCliente"><div class="modal"><h2 id="modalClienteTitulo">Nuevo Cliente</h2>
@@ -608,9 +638,11 @@ var STORE_RECS  = 'llya_records';
 var clientes   = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
 var exportados = JSON.parse(localStorage.getItem(EXPORT_KEY)  || '[]');
 var repFecha   = localStorage.getItem(FECHA_KEY) || '';
+var jostinClientes = [];
 var invPackages = {};
 var invRecords  = {};
 
+try { jostinClientes = JSON.parse(localStorage.getItem('llya_jostin') || '[]'); } catch(e){ jostinClientes=[]; }
 try { invPackages = JSON.parse(localStorage.getItem(STORE_PKGS) || '{}'); } catch(e){ invPackages = {}; }
 try { invRecords  = JSON.parse(localStorage.getItem(STORE_RECS) || '{}'); } catch(e){ invRecords = {}; }
 
@@ -666,18 +698,20 @@ function closeDrawer(){ document.getElementById('drawer').classList.remove('open
 function switchApp(app, skipSave){
   appActual = app;
   if(!skipSave) localStorage.setItem('llya_app', app);
-  document.getElementById('app-admin').style.display = app==='admin' ? 'block' : 'none';
-  document.getElementById('app-rep').style.display   = app==='rep'   ? 'block' : 'none';
-  document.getElementById('app-inv').style.display   = app==='inv'   ? 'block' : 'none';
-  document.getElementById('fab-admin').style.display = app==='admin' ? 'flex'  : 'none';
-  document.getElementById('nav-admin').classList.toggle('active', app==='admin');
-  document.getElementById('nav-rep').classList.toggle('active',   app==='rep');
-  document.getElementById('nav-inv').classList.toggle('active',   app==='inv');
-  var titles = {admin:'&#128757; LLEGA YA &mdash; Rutas', rep:'&#128757; LLEGA YA &mdash; Entregas', inv:'&#128230; LLEGA YA &mdash; Inventario'};
-  document.getElementById('headerTitle').innerHTML = titles[app];
+  document.getElementById('app-admin').style.display  = app==='admin'  ? 'block' : 'none';
+  document.getElementById('app-rep').style.display    = app==='rep'    ? 'block' : 'none';
+  document.getElementById('app-inv').style.display    = app==='inv'    ? 'block' : 'none';
+  document.getElementById('app-jostin').style.display = app==='jostin' ? 'block' : 'none';
+  document.getElementById('fab-admin').style.display  = app==='admin'  ? 'flex'  : 'none';
+  ['admin','rep','inv','jostin'].forEach(function(a){
+    document.getElementById('nav-'+a).classList.toggle('active', a===app);
+  });
+  var titles = {admin:'&#128506; LLEGA YA &mdash; Rutas', rep:'&#128757; LLEGA YA &mdash; Entregas', inv:'&#128230; LLEGA YA &mdash; Inventario', jostin:'&#128100; Jostin'};
+  document.getElementById('headerTitle').innerHTML = titles[app]||app;
   closeDrawer();
   if(app==='admin') renderAdmin();
   else if(app==='rep') renderRep();
+  else if(app==='jostin') renderJostin();
   else if(app==='inv'){ invUpdateBadge(); invUpdateStats(); if(invTabActual==='registros') invRenderRecords(); }
 }
 
@@ -737,8 +771,8 @@ function renderAdmin(){
     if(esMulti) notasHtml='<div class="card-notes">'+c.pedidos.map(function(p,i){ return '<div class="note-line">&#128230; Pedido '+(i+1)+': '+(p.nota||'&mdash;')+(p.cod?' &middot; RD$ '+parseFloat(p.cod).toLocaleString():'')+'</div>'; }).join('')+'</div>';
     else if(c.nota) notasHtml='<div class="note-simple">&#128230; '+c.nota+'</div>';
     var completadoBtn=c.estado==='completado'
-      ?'<button class="card-action-pill pill-gray" onclick="devolverAdmin(\''+uid+'\')">&#8617; Pendiente</button>'
-      :'<button class="card-action-pill pill-green" onclick="completarAdmin(\''+uid+'\')">&#10003; Completado</button>';
+      ?'<button class="card-action-pill pill-gray" onclick="devolverAdmin(\''+uid+'\')">&#8617; Volver a Rutas</button>'
+      :'<button class="card-action-pill pill-orange" onclick="completarAdmin(\''+uid+'\')">&#128222; No Contesta</button>';
     return '<div class="card-v2 '+(c.estado==='completado'?'card-v2-done':'')+(sinUbi?' card-v2-nogps':'')+'">'+
     '<div class="cv2-left-bar cv2-bar-'+accentColor+'"></div>'+
     '<div class="cv2-body">'+
@@ -764,13 +798,13 @@ function renderAdmin(){
         '<div class="cv2-row-main">'+
           (mapsUrl?'<a class="cv2-btn cv2-btn-blue" href="'+mapsUrl+'" target="_blank">&#128506; Mapa</a>':'')+
           (waUrl?'<a class="cv2-btn cv2-btn-wa" href="'+waUrl+'" target="_blank">&#128172; WhatsApp</a>':'')+
-          '<button class="cv2-btn cv2-btn-purple" onclick="abrirUbi(\''+uid+'\')">&#128205; GPS</button>'+
         '</div>'+
         '<div class="cv2-row-secondary">'+
           '<button class="cv2-icon-btn" onclick="editarCliente(\''+uid+'\')" title="Editar">&#9999;&#65039;</button>'+
           completadoBtn+
-          '<button class="cv2-icon-btn cv2-icon-btn-amber" onclick="enviarExportar(\''+uid+'\')" title="Exportar">&#128228;</button>'+
-          '<button class="cv2-icon-btn cv2-icon-btn-red" onclick="eliminarCliente(\''+uid+'\')" title="Eliminar">&#128465;</button>'+
+          '<button class="card-action-pill pill-green" style="max-width:90px" onclick="marcarEntregadoDesdeRuta(\''+uid+'\')">&#10003; Entregado</button>'+
+          '<button class="card-action-pill pill-orange" style="max-width:80px" onclick="enviarJostin(\''+uid+'\')">&#128100; Jostin</button>'+
+          '<button class="card-action-pill pill-red" style="max-width:90px" onclick="marcarDevolucionDesdeRuta(\''+uid+'\')">&#8617; Dev.</button>'+
         '</div>'+
       '</div>'+
     '</div>'+
@@ -811,11 +845,158 @@ function quitarExportar(uid){
   guardar();
 }
 
-function eliminarCliente(uid){
-  if(!confirm('Eliminar este cliente?')) return;
+function marcarEntregadoDesdeRuta(uid){
+  if(!confirm('\u00bfConfirmar entrega? La ficha saldr\u00e1 de Rutas y Entregas y se registrar\u00e1 en Inventario.')) return;
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
+  var orderNo=c._uid;
+  invPackages[orderNo]={customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||''};
+  invRecords[orderNo]={orderNo:orderNo,customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||'',status:'entregado',motivo:'',motivoCustom:'',pendienteDia:'',pendienteNota:'',devolucionMotivo:'',devolucionNota:'',ts:new Date().toLocaleString('es-DO')};
   clientes=clientes.filter(function(x){ return x._uid!==uid; });
   exportados=exportados.filter(function(x){ return x._uid!==uid; });
-  guardar();
+  invSave(); guardar();
+  invShowToast('Entregado y registrado en Inventario','success');
+}
+
+function marcarDevolucionDesdeRuta(uid){
+  if(!confirm('\u00bfEnviar a Devoluciones? La ficha saldr\u00e1 de Rutas y Entregas.')) return;
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
+  var orderNo=c._uid;
+  invPackages[orderNo]={customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||''};
+  invRecords[orderNo]={orderNo:orderNo,customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||'',status:'devolucion',motivo:'',motivoCustom:'',pendienteDia:'',pendienteNota:'',devolucionMotivo:'Marcado desde Rutas',devolucionNota:'',ts:new Date().toLocaleString('es-DO')};
+  clientes=clientes.filter(function(x){ return x._uid!==uid; });
+  exportados=exportados.filter(function(x){ return x._uid!==uid; });
+  invSave(); guardar();
+  invShowToast('Enviado a Devoluciones','info');
+}
+
+function enviarJostin(uid){
+  if(!confirm('\u00bfAsignar este paquete a Jostin? Saldr\u00e1 de Rutas y Entregas.')) return;
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
+  c.enJostin=true; c.estado='jostin';
+  clientes=clientes.filter(function(x){ return x._uid!==uid; });
+  jostinClientes.push(c);
+  localStorage.setItem('llya_jostin', JSON.stringify(jostinClientes));
+  exportados=exportados.filter(function(x){ return x._uid!==uid; });
+  guardar(); renderJostin();
+  invShowToast(c.nombre+' asignado a Jostin','info');
+}
+
+function devolverDeJostin(uid){
+  var c=jostinClientes.find(function(x){ return x._uid===uid; }); if(!c) return;
+  c.estado='pendiente'; c.enJostin=false;
+  jostinClientes=jostinClientes.filter(function(x){ return x._uid!==uid; });
+  clientes.push(c);
+  localStorage.setItem('llya_jostin', JSON.stringify(jostinClientes));
+  guardar(); renderJostin();
+}
+
+function cargarExcelJostin(e){
+  var f=e.target.files[0]; if(!f) return; e.target.value='';
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var wb=XLSX.read(ev.target.result,{type:'binary'});
+      var ws=wb.Sheets[wb.SheetNames[0]];
+      var raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+      if(!raw.length) return;
+      var headerIdx=-1;
+      for(var i=0;i<Math.min(raw.length,6);i++){
+        var rowStr=raw[i].join('|').toLowerCase();
+        if(rowStr.indexOf('dropoff')!==-1||rowStr.indexOf('cod')!==-1||rowStr.indexOf('tel')!==-1){ headerIdx=i;break; }
+      }
+      if(headerIdx===-1)return alert('No se encontr\u00f3 la fila de encabezados.');
+      var headers=raw[headerIdx];
+      var rows=[];
+      for(var j=headerIdx+1;j<raw.length;j++){
+        var obj={}; headers.forEach(function(h,k){obj[h]=raw[j][k]||'';}); rows.push(obj);
+      }
+      function findCol(row,cands){ var keys=Object.keys(row); for(var i=0;i<cands.length;i++){ var f=keys.find(function(k){return k.toLowerCase().trim()===cands[i].toLowerCase();}); if(f)return f; } for(var i=0;i<cands.length;i++){ var f=keys.find(function(k){return k.toLowerCase().indexOf(cands[i].toLowerCase())!==-1;}); if(f)return f; } return null; }
+      var sample=rows[0];
+      var colNombre=findCol(sample,['dropoff contact name','contacto','nombre','name','receiver']);
+      var colTel=findCol(sample,['dropoff contact','telefono','phone','tel','celular']);
+      var colCod=findCol(sample,['cod','monto','amount','valor']);
+      var colNota=findCol(sample,['nota','note','notas','producto','descripcion']);
+      var lista=rows.map(function(r){
+        var nombre=colNombre?String(r[colNombre]||'').trim():'';
+        var tel=colTel?String(r[colTel]||'').trim().replace(/\D/g,''):'';
+        var cod=colCod?parseFloat(String(r[colCod]||'0').replace(/[^0-9.]/g,''))||0:0;
+        var nota=colNota?String(r[colNota]||'').trim():'';
+        if(!nombre&&!tel)return null;
+        return{nombre:nombre,telefono:tel,cod:cod,nota:nota,lat:null,lng:null,estado:'jostin',enJostin:true,_uid:generarId()};
+      }).filter(Boolean);
+      /* Remove matching entries from clientes */
+      var telsJostin=lista.map(function(x){ return normTel(x.telefono); }).filter(Boolean);
+      var removed=0;
+      clientes=clientes.filter(function(c){
+        if(telsJostin.indexOf(normTel(c.telefono))!==-1){ removed++; return false; }
+        return true;
+      });
+      exportados=exportados.filter(function(c){ return telsJostin.indexOf(normTel(c.telefono))===-1; });
+      /* Add to jostin, avoid duplicates */
+      var existing=new Set(jostinClientes.map(function(x){ return normTel(x.telefono); }));
+      var added=0;
+      lista.forEach(function(x){ if(!existing.has(normTel(x.telefono))){ jostinClientes.push(x); added++; } });
+      localStorage.setItem('llya_jostin', JSON.stringify(jostinClientes));
+      guardar(); renderJostin();
+      invShowToast(added+' fichas a Jostin, '+removed+' quitadas de Rutas/Entregas','success');
+    }catch(err){ alert('Error: '+err.message); }
+  };
+  reader.readAsBinaryString(f);
+}
+
+function renderJostin(){
+  var list=document.getElementById('list-jostin');
+  var q=(document.getElementById('searchJostin')?document.getElementById('searchJostin').value:'').toLowerCase().trim();
+  var datos=jostinClientes.slice();
+  if(q) datos=datos.filter(function(c){ return (c.nombre||'').toLowerCase().includes(q)||(c.telefono||'').includes(q); });
+  if(!datos.length){ list.innerHTML='<div class="empty"><span class="empty-icon">&#128100;</span><p>No hay paquetes asignados a Jostin</p></div>'; return; }
+  list.innerHTML=datos.map(function(c,idx){
+    var uid=c._uid; var cod=calcCod(c);
+    var tel=(c.telefono||'').replace(/\D/g,'');
+    var waUrl=tel?'https://wa.me/'+tel:null;
+    var notasHtml=c.nota?'<div class="note-simple">&#128230; '+c.nota+'</div>':'';
+    return '<div class="card-v2"><div class="cv2-left-bar cv2-bar-purple"></div>'+
+    '<div class="cv2-body">'+
+      '<div class="cv2-header"><div class="cv2-header-left">'+
+        '<div class="cv2-num">#'+(idx+1)+'</div>'+
+        '<div class="cv2-name">'+(c.nombre||'Sin nombre')+'</div>'+
+        '<div class="cv2-sub">&#128222; '+(c.telefono||'&mdash;')+(cod?' &nbsp;&#183;&nbsp; <strong>RD$ '+cod.toLocaleString()+'</strong>':'')+'</div>'+
+      '</div></div>'+
+      notasHtml+
+      '<div class="cv2-actions">'+
+        '<div class="cv2-row-main">'+
+          (waUrl?'<a class="cv2-btn cv2-btn-wa" href="'+waUrl+'" target="_blank">&#128172; WhatsApp</a>':'')+
+        '</div>'+
+        '<div class="cv2-row-secondary">'+
+          '<button class="card-action-pill pill-green" onclick="marcarEntregadoJostin(\''+uid+'\')">&#10003; Entregado</button>'+
+          '<button class="card-action-pill pill-gray" onclick="devolverDeJostin(\''+uid+'\')">&#8617; Devolver</button>'+
+          '<button class="card-action-pill pill-red" onclick="marcarDevolucionJostin(\''+uid+'\')">&#8617; Dev.</button>'+
+        '</div>'+
+      '</div>'+
+    '</div></div>';
+  }).join('');
+}
+
+function marcarEntregadoJostin(uid){
+  if(!confirm('\u00bfConfirmar entrega? Ir\u00e1 a Inventario > Entregados.')) return;
+  var c=jostinClientes.find(function(x){ return x._uid===uid; }); if(!c) return;
+  invPackages[uid]={customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||''};
+  invRecords[uid]={orderNo:uid,customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||'',status:'entregado',motivo:'',motivoCustom:'',pendienteDia:'',pendienteNota:'',devolucionMotivo:'',devolucionNota:'',ts:new Date().toLocaleString('es-DO')};
+  jostinClientes=jostinClientes.filter(function(x){ return x._uid!==uid; });
+  localStorage.setItem('llya_jostin', JSON.stringify(jostinClientes));
+  invSave(); renderJostin();
+  invShowToast('Entregado registrado en Inventario','success');
+}
+
+function marcarDevolucionJostin(uid){
+  if(!confirm('\u00bfEnviar a Devoluciones?')) return;
+  var c=jostinClientes.find(function(x){ return x._uid===uid; }); if(!c) return;
+  invPackages[uid]={customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||''};
+  invRecords[uid]={orderNo:uid,customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||'',status:'devolucion',motivo:'',motivoCustom:'',pendienteDia:'',pendienteNota:'',devolucionMotivo:'Marcado desde Jostin',devolucionNota:'',ts:new Date().toLocaleString('es-DO')};
+  jostinClientes=jostinClientes.filter(function(x){ return x._uid!==uid; });
+  localStorage.setItem('llya_jostin', JSON.stringify(jostinClientes));
+  invSave(); renderJostin();
+  invShowToast('Enviado a Devoluciones','info');
 }
 
 function completarAdmin(uid){
@@ -896,10 +1077,18 @@ function leerExcel(file,origen){
         else{clientes.push(nuevo);telEx.set(tel,nuevo);agregados++;}
       });
       guardar();
-      var msg='\u2705 '+agregados+' clientes agregados desde Excel';
-      if(omitidos>0)msg+='\n\u26a0\ufe0f '+omitidos+' duplicados omitidos';
-      msg+='\n\n\ud83d\udccd Los clientes aparecen en "Sin Ubicaci\u00f3n" hasta agregar su GPS.';
-      alert(msg);
+      /* Also load into invPackages for Inventario > Sin escanear */
+      lista.forEach(function(nuevo){
+        var id=nuevo._uid;
+        if(!invPackages[id]){
+          invPackages[id]={customer:nuevo.nombre||'',receiver:nuevo.nombre||'',phone:nuevo.telefono||'',zone:'',cod:String(nuevo.cod||''),note:nuevo.nota||''};
+        }
+      });
+      try{ localStorage.setItem(STORE_PKGS, JSON.stringify(invPackages)); }catch(e){}
+      invUpdateBadge(); invUpdateStats();
+      var msg='\u2705 '+agregados+' clientes cargados';
+      if(omitidos>0)msg+=' (\u26a0\ufe0f '+omitidos+' duplicados omitidos)';
+      invShowToast(msg,'success');
     }catch(err){alert('Error al leer el Excel: '+err.message);}
   };
   reader.readAsBinaryString(file);
@@ -1026,7 +1215,7 @@ function renderRep(){
           (waUbi?'<a class="cv2-btn cv2-btn-blue" href="'+waUbi+'" target="_blank">&#128205; Ubicaci&#243;n</a>':'')+
         '</div>'+
         '<div class="cv2-row-main">'+
-          (waUlt?'<a class="cv2-btn" style="background:#b91c1c;flex:1;" href="'+waUlt+'" target="_blank">&#9888; &#218;ltimo Aviso</a>':'')+
+          (waUlt?'<a class="cv2-btn cv2-btn-ult" href="'+waUlt+'" target="_blank">&#9888; Último Aviso</a>':'')+
         '</div>'+
         '<div class="cv2-row-secondary">'+
           (c.contactado
@@ -1271,6 +1460,7 @@ function invSaveRecord(){
 
 function invSetFilter(el,val){
   invCurrentFilter=val;
+  localStorage.setItem('llya_filter', val);
   document.querySelectorAll('.ftab').forEach(function(t){ t.classList.remove('active'); });
   el.classList.add('active');
   invRenderRecords();
@@ -1449,9 +1639,43 @@ function invShowToast(msg,type){
   document.head.appendChild(s);
 })();
 
-renderAdmin();
-invUpdateBadge();
-invUpdateStats();
+/* ── INIT: restore last position ── */
+(function(){
+  var savedApp    = localStorage.getItem('llya_app')      || 'admin';
+  var savedAdmTab = localStorage.getItem('llya_admintab') || 'pendientes';
+  var savedRepTab = localStorage.getItem('llya_reptab')   || 'pendientes';
+  var savedInvTab = localStorage.getItem('llya_invtab')   || 'cargar';
+  var savedFilter = localStorage.getItem('llya_filter')   || 'pendiente';
+
+  adminTab = savedAdmTab;
+  repTabActual = savedRepTab;
+  invTabActual = savedInvTab;
+  invCurrentFilter = savedFilter;
+
+  /* Restore admin tab UI */
+  document.querySelectorAll('#admin-tabs .tab').forEach(function(t,i){
+    t.classList.toggle('active',['pendientes','sin_ubicacion','completados','exportar'][i]===savedAdmTab);
+  });
+  /* Restore rep tab UI */
+  document.querySelectorAll('#rep-tabs .tab').forEach(function(t,i){
+    t.classList.toggle('active',['pendientes','contactados'][i]===savedRepTab);
+  });
+  /* Restore inv tab UI */
+  ['cargar','escanear','registros'].forEach(function(t){
+    document.getElementById('itab-'+t).classList.toggle('active',t===savedInvTab);
+    document.getElementById('itab-view-'+t).classList.toggle('active',t===savedInvTab);
+  });
+  document.getElementById('inv-filter-tabs').style.display = savedInvTab==='registros'?'flex':'none';
+  /* Restore filter tab UI */
+  document.querySelectorAll('.ftab').forEach(function(t){
+    t.classList.toggle('active', t.getAttribute('data-val')===savedFilter);
+  });
+
+  switchApp(savedApp, true);
+  invUpdateBadge();
+  invUpdateStats();
+  if(savedInvTab==='registros') invRenderRecords();
+})();
 
 </script>
 
