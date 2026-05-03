@@ -171,17 +171,114 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a !important;letter-spaci
 .ftab.active{color:#2563eb !important;border-bottom-color:#2563eb !important;}
 .ftab-n{display:inline-block;background:#e2e8f0 !important;color:#334155 !important;border-radius:20px;font-size:.58rem;font-weight:700;padding:1px 6px;margin-left:3px;vertical-align:middle;}
 
-/* Record items */
-.rec-item{background:#ffffff !important;border:1px solid #e2e8f0 !important;border-radius:10px;padding:14px;margin-bottom:9px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.05) !important;}
-.rec-item.scanned{border-left:3px solid #059669;}
-.rec-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px;}
-.rec-id{font-size:.82rem;color:#2563eb !important;font-weight:700;}
-.rec-name{font-size:.9rem;font-weight:700;color:#0f172a !important;}
-.rec-sub{font-size:.72rem;color:#94a3b8 !important;margin-top:3px;}
-.rec-actions{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;margin-left:8px;}
-.qdel-btn{background:#fef2f2 !important;color:#dc2626 !important;border:1px solid #fecaca !important;border-radius:7px;font-size:.7rem;font-weight:700;padding:4px 8px;cursor:pointer;white-space:nowrap;}
-.quick-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px;padding-top:9px;border-top:1px solid #e2e8f0;}
-.qmove-btn{background:#f8fafc !important;border:1px solid #e2e8f0 !important;color:#334155 !important;border-radius:7px;font-size:.68rem;font-weight:600;padding:5px 9px;cursor:pointer;}
+/* ── DARK RECORD CARDS (Inventario Registros) ── */
+.record-item {
+background: #1a1f2e !important;
+border: 1px solid #2a3045 !important;
+border-radius: 14px;
+padding: 14px;
+margin-bottom: 10px;
+cursor: pointer;
+box-shadow: 0 4px 16px rgba(0,0,0,0.18) !important;
+transition: transform .12s, box-shadow .12s;
+}
+.record-item:active { transform: scale(.985); }
+.record-item.scanned { border-left: 3px solid #059669 !important; }
+
+.record-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+
+.record-position-badge {
+background: #2a3045 !important;
+color: #8892aa !important;
+font-size: .6rem;
+font-weight: 700;
+border-radius: 6px;
+padding: 2px 6px;
+flex-shrink: 0;
+}
+
+.record-order {
+font-size: .88rem;
+font-weight: 800;
+color: #f5c842 !important; /* yellow like the dark screenshot */
+letter-spacing: .3px;
+}
+
+.record-customer {
+font-size: .9rem;
+font-weight: 700;
+color: #e8eaf0 !important;
+margin-top: 3px;
+}
+
+.record-meta {
+font-size: .73rem;
+color: #8892aa !important;
+margin-top: 2px;
+}
+
+.scanned-badge {
+display: inline-flex;
+align-items: center;
+background: rgba(5,150,105,.18) !important;
+border: 1px solid rgba(5,150,105,.4) !important;
+border-radius: 20px;
+padding: 2px 7px;
+font-size: .58rem;
+font-weight: 700;
+color: #34d399 !important;
+text-transform: uppercase;
+}
+
+/* Status pills – dark card version */
+.status-pill {
+display: inline-flex;
+align-items: center;
+font-size: .65rem;
+font-weight: 700;
+padding: 3px 10px;
+border-radius: 20px;
+text-transform: uppercase;
+letter-spacing: .3px;
+white-space: nowrap;
+}
+.pill-pendiente   { background: rgba(148,163,184,.15) !important; color: #94a3b8 !important; border: 1px solid rgba(148,163,184,.25) !important; }
+.pill-entregado   { background: rgba(5,150,105,.18) !important;  color: #34d399 !important; border: 1px solid rgba(5,150,105,.35) !important; }
+.pill-no-entregado{ background: rgba(220,38,38,.18) !important;  color: #f87171 !important; border: 1px solid rgba(220,38,38,.35) !important; }
+.pill-devolucion  { background: rgba(234,88,12,.18) !important;  color: #fb923c !important; border: 1px solid rgba(234,88,12,.35) !important; }
+
+/* Delete button inside dark card */
+.btn-quick-del {
+background: rgba(220,38,38,.15) !important;
+border: 1px solid rgba(220,38,38,.4) !important;
+color: #f87171 !important;
+border-radius: 8px;
+font-size: .68rem;
+font-weight: 700;
+padding: 4px 10px;
+cursor: pointer;
+white-space: nowrap;
+}
+
+/* Quick move buttons inside dark card */
+.quick-move-row {
+display: flex;
+flex-wrap: wrap;
+gap: 6px;
+margin-top: 10px;
+padding-top: 10px;
+border-top: 1px solid #2a3045 !important;
+}
+.btn-move {
+background: #242a3b !important;
+border: 1px solid #343d55 !important;
+color: #c8cfe0 !important;
+border-radius: 8px;
+font-size: .68rem;
+font-weight: 600;
+padding: 6px 10px;
+cursor: pointer;
+}
 
 /* Scan form */
 .pkg-card{background:#ffffff !important;border:1px solid #e2e8f0 !important;border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.07),0 6px 20px rgba(0,0,0,0.05) !important;}
@@ -242,6 +339,14 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a !important;letter-spaci
 .inv-sheet{background:#ffffff !important;border-radius:22px 22px 0 0;padding:20px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 -10px 40px rgba(0,0,0,.14) !important;}
 .sheet-handle{width:34px;height:4px;background:#e2e8f0 !important;border-radius:2px;margin:0 auto 16px;}
 .inv-sheet h3{font-size:.92rem;font-weight:800;margin-bottom:14px;color:#0f172a !important;}
+
+/* inv-modal-field (used inside detail sheet) */
+.inv-modal-field{margin-bottom:9px;padding-bottom:9px;border-bottom:1px solid #e2e8f0;}
+.inv-modal-field:last-child{border-bottom:none;}
+.inv-modal-field label{font-size:.62rem;color:#94a3b8 !important;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:3px;font-weight:700;}
+.inv-modal-field .val{font-size:.86rem;font-weight:600;color:#0f172a !important;}
+
+/* legacy aliases kept for sheet */
 .sheet-field{margin-bottom:9px;padding-bottom:9px;border-bottom:1px solid #e2e8f0;}
 .sheet-field:last-child{border-bottom:none;}
 .sheet-field label{font-size:.62rem;color:#94a3b8 !important;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:3px;font-weight:700;}
@@ -269,6 +374,7 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a !important;letter-spaci
 .toast-inv.success{background:#059669 !important;}
 .toast-inv.error{background:#dc2626 !important;}
 .toast-inv.info{background:#2563eb !important;}
+
 /* ── CARD V2 (Admin) ── */
 .card-v2{background:#ffffff !important;border-radius:14px;margin-bottom:10px;border:1px solid #e2e8f0 !important;box-shadow:0 1px 3px rgba(0,0,0,0.07),0 6px 20px rgba(0,0,0,0.05) !important;display:flex;overflow:hidden;}
 .card-v2-done{opacity:.65;}
@@ -409,7 +515,6 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a !important;letter-spaci
       <div class="inv-tab" id="itab-escanear" onclick="switchInvTab('escanear')">Escanear</div>
       <div class="inv-tab" id="itab-registros" onclick="switchInvTab('registros')">Registros</div>
     </div>
-    <!-- Filter tabs - only visible in registros -->
     <div class="ftabs" id="inv-filter-tabs" style="display:none">
       <button class="ftab active" data-val="pendiente" onclick="invSetFilter(this,'pendiente')">Sin escanear <span class="ftab-n" id="icount-pendiente">0</span></button>
       <button class="ftab" data-val="no-entregado" onclick="invSetFilter(this,'no-entregado')">No entregados <span class="ftab-n" id="icount-no-entregado">0</span></button>
@@ -589,21 +694,6 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a !important;letter-spaci
 
 <script>
 
-/* ============================================================
-   UNIFIED DATA STORE
-   clientes      = Rutas/Repartidor contacts (llega_ya_clientes)
-   exportados    = Rutas export list (llega_ya_exportados)
-   invPackages   = Inventario packages (llya_packages)
-   invRecords    = Inventario records (llya_records)
-
-   SYNC LOGIC:
-   - invRecords status in ['entregado','devolucion']
-     => remove from clientes (hide from Rutas/Rep)
-   - invRecords status in ['pendiente','no-entregado','pendiente-prog']
-     => keep in clientes
-   - Changing back to pendiente in Inventario re-adds to clientes if missing
-   ============================================================ */
-
 var STORAGE_KEY = 'llega_ya_clientes';
 var EXPORT_KEY  = 'llega_ya_exportados';
 var FECHA_KEY   = 'llegaya_fecha';
@@ -623,7 +713,6 @@ function generarId(){ return Date.now().toString(36)+Math.random().toString(36).
 function normTel(t){ return (t||'').replace(/\D/g,''); }
 clientes = clientes.map(function(c){ return c._uid ? c : Object.assign({},c,{_uid:generarId()}); });
 
-/* Guardar todo */
 function guardar(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(clientes));
   localStorage.setItem(EXPORT_KEY,  JSON.stringify(exportados));
@@ -636,7 +725,6 @@ function invSave(){
   try { localStorage.setItem(STORE_RECS, JSON.stringify(invRecords));  } catch(e){}
   invUpdateBadge();
   invUpdateStats();
-  /* Sync: remove from Rutas/Rep if entregado or devolucion */
   syncInvToDelivery();
 }
 
@@ -645,7 +733,6 @@ function syncInvToDelivery(){
   Object.keys(invRecords).forEach(function(orderNo){
     var rec = invRecords[orderNo];
     if(finalStatuses[rec.status]){
-      /* Remove from clientes by matching orderNo or phone */
       clientes = clientes.filter(function(c){
         return normTel(c.telefono) !== normTel(rec.phone) && c._uid !== orderNo;
       });
@@ -664,9 +751,7 @@ function calcCod(c){
   return c.pedidos ? c.pedidos.reduce(function(s,p){ return s+(parseFloat(p.cod)||0); },0) : (parseFloat(c.cod)||0);
 }
 
-/* ============================================================
-   DRAWER
-   ============================================================ */
+/* DRAWER */
 var appActual = 'admin';
 var invTabActual = 'cargar';
 
@@ -697,9 +782,7 @@ function openModal(id){
 function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.overlay').forEach(function(o){ o.addEventListener('click',function(e){ if(e.target===o) o.classList.remove('open'); }); });
 
-/* ============================================================
-   APP ADMIN
-   ============================================================ */
+/* APP ADMIN */
 var adminTab = 'pendientes';
 
 function getDatosAdmin(){
@@ -746,11 +829,9 @@ function renderAdmin(){
     var notasHtml='';
     if(esMulti) notasHtml='<div class="card-notes">'+c.pedidos.map(function(p,i){ return '<div class="note-line">&#128230; Pedido '+(i+1)+': '+(p.nota||'&mdash;')+(p.cod?' &middot; RD$ '+parseFloat(p.cod).toLocaleString():'')+'</div>'; }).join('')+'</div>';
     else if(c.nota) notasHtml='<div class="note-simple">&#128230; '+c.nota+'</div>';
-
     var completadoBtn=c.estado==='completado'
       ?'<button class="card-action-pill pill-gray" onclick="devolverAdmin(\''+uid+'\')">&#8617; Pendiente</button>'
       :'<button class="card-action-pill pill-green" onclick="completarAdmin(\''+uid+'\')">&#10003; Completado</button>';
-
     return '<div class="card-v2 '+(c.estado==='completado'?'card-v2-done':'')+(sinUbi?' card-v2-nogps':'')+'">'+
     '<div class="cv2-left-bar cv2-bar-'+accentColor+'"></div>'+
     '<div class="cv2-body">'+
@@ -865,46 +946,29 @@ function leerExcel(file,origen){
       var ws=wb.Sheets[wb.SheetNames[0]];
       var raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
       if(!raw.length) return alert('El archivo est\u00e1 vac\u00edo.');
-
-      // Find header row
       var headerIdx=-1;
       for(var i=0;i<Math.min(raw.length,6);i++){
         var rowStr=raw[i].join('|').toLowerCase();
-        if(rowStr.indexOf('dropoff')!==-1||rowStr.indexOf('cod')!==-1||
-           rowStr.indexOf('contacto')!==-1||rowStr.indexOf('tel')!==-1){
-          headerIdx=i;break;
-        }
+        if(rowStr.indexOf('dropoff')!==-1||rowStr.indexOf('cod')!==-1||rowStr.indexOf('contacto')!==-1||rowStr.indexOf('tel')!==-1){ headerIdx=i;break; }
       }
       if(headerIdx===-1)return alert('No se encontr\u00f3 la fila de encabezados.');
-
       var headers=raw[headerIdx];
       var rows=[];
       for(var j=headerIdx+1;j<raw.length;j++){
         var obj={};headers.forEach(function(h,k){obj[h]=raw[j][k]||'';});rows.push(obj);
       }
-
-      // Flexible column detection
-      function findCol(row, candidates){
+      function findCol(row,candidates){
         var keys=Object.keys(row);
-        for(var ci=0;ci<candidates.length;ci++){
-          var found=keys.find(function(k){return k.toLowerCase().trim()===candidates[ci].toLowerCase();});
-          if(found) return found;
-        }
-        // partial match
-        for(var ci=0;ci<candidates.length;ci++){
-          var found=keys.find(function(k){return k.toLowerCase().indexOf(candidates[ci].toLowerCase())!==-1;});
-          if(found) return found;
-        }
+        for(var ci=0;ci<candidates.length;ci++){ var found=keys.find(function(k){return k.toLowerCase().trim()===candidates[ci].toLowerCase();}); if(found) return found; }
+        for(var ci=0;ci<candidates.length;ci++){ var found=keys.find(function(k){return k.toLowerCase().indexOf(candidates[ci].toLowerCase())!==-1;}); if(found) return found; }
         return null;
       }
-
       if(!rows.length) return alert('No se encontraron filas.');
       var sample=rows[0];
       var colNombre=findCol(sample,['dropoff contact name','contacto','nombre','name','receiver','destinatario']);
       var colTel=findCol(sample,['dropoff contact','telefono','tel\u00e9fono','phone','tel','celular','whatsapp']);
       var colCod=findCol(sample,['cod','monto','amount','valor','precio']);
       var colNota=findCol(sample,['nota','note','notas','producto','descripcion','referencia']);
-
       var lista=rows.map(function(r){
         var nombre=colNombre?String(r[colNombre]||'').trim():'';
         var tel=colTel?String(r[colTel]||'').trim():'';
@@ -915,9 +979,7 @@ function leerExcel(file,origen){
         tel=tel.replace(/\D/g,'');
         return{nombre:nombre,telefono:tel,cod:cod,nota:nota,lat:null,lng:null,estado:'pendiente',_uid:generarId()};
       }).filter(function(r){return r!==null;});
-
       if(!lista.length)return alert('No se encontraron clientes v\u00e1lidos.');
-
       var telEx=new Map(clientes.filter(function(c){return normTel(c.telefono);}).map(function(c){return [normTel(c.telefono),c];}));
       var agregados=0,omitidos=0;
       lista.forEach(function(nuevo){
@@ -926,7 +988,6 @@ function leerExcel(file,origen){
         if(telEx.has(tel)){omitidos++;}
         else{clientes.push(nuevo);telEx.set(tel,nuevo);agregados++;}
       });
-
       guardar();
       var msg='\u2705 '+agregados+' clientes agregados desde Excel';
       if(omitidos>0)msg+='\n\u26a0\ufe0f '+omitidos+' duplicados omitidos';
@@ -976,11 +1037,8 @@ function guardarUbicacion(){
   if(c){ c.lat=parseFloat(m[1]); c.lng=parseFloat(m[2]); guardar(); closeModal('modalUbi'); }
 }
 
-/* ============================================================
-   APP REPARTIDOR
-   ============================================================ */
+/* APP REPARTIDOR */
 var repTabActual='pendientes';
-
 var varUbi=[
   function(n,t){ return '%C2%A1Hola%20'+encodeURIComponent(n)+'!%20Le%20contacta%20*Llega%20Ya*.%0A%0ASu%20pedido%20est%C3%A1%20listo.%20Por%20favor%20comp%C3%A1rtanos%20su%20*ubicaci%C3%B3n%20actual*.%0A%0AGracias!'; },
   function(n,t){ return '%C2%A1Buenas!%20Le%20saluda%20*Llega%20Ya*.%0A%0A'+encodeURIComponent(t)+'%20'+encodeURIComponent(n)+'%2C%20su%20pedido%20est%C3%A1%20listo.%20Necesitamos%20su%20*ubicaci%C3%B3n%20actual*.'; },
@@ -1019,16 +1077,12 @@ function borrarTodoRep(){
 function renderRep(){
   var list=document.getElementById('list-rep');
   if(!clientes.length){ list.innerHTML='<div class="empty">Carga un archivo Excel para comenzar</div>'; return; }
-
   var datos=repTabActual==='pendientes'
     ?clientes.filter(function(c){ return (!c.estado||c.estado==='pendiente'||c.estado==='enviado')&&!c.contactado; })
     :clientes.filter(function(c){ return c.contactado; });
-
   var q=(document.getElementById('searchRep')?document.getElementById('searchRep').value:'').toLowerCase().trim();
   if(q) datos=datos.filter(function(c){ return (c.nombre||'').toLowerCase().includes(q)||(c.telefono||'').includes(q); });
-
   if(!datos.length){ list.innerHTML='<div class="empty">No se encontraron clientes</div>'; return; }
-
   list.innerHTML=datos.map(function(c,idx){
     var globalIdx=clientes.indexOf(c);
     var nombre1=(c.nombre||'').split(' ')[0];
@@ -1079,9 +1133,7 @@ function renderRep(){
 
 function toggleContactado(idx){ clientes[idx].contactado=!clientes[idx].contactado; guardar(); }
 
-/* ============================================================
-   APP INVENTARIO
-   ============================================================ */
+/* APP INVENTARIO */
 var invRawData=[];
 var invColMap={};
 var invCameraOn=false;
@@ -1115,7 +1167,6 @@ function switchInvTab(tab){
   if(tab==='registros') invRenderRecords();
 }
 
-/* FILE UPLOAD */
 document.getElementById('inv-file-input').addEventListener('change',function(){
   if(this.files[0]) invHandleFile(this.files[0]);
 });
@@ -1154,13 +1205,13 @@ function invPopulateMappingSelects(cols){
 
 function invAutoMap(cols){
   var matches={
-    'imap-order':    ['code','orderno','order_no','order no','orderid','order','codigo','id'],
-    'imap-customer': ['customer name','customer','cliente','shop'],
-    'imap-receiver': ['dropoff contact name','receiver','destinatario','nombre','name'],
-    'imap-phone':    ['dropoff contact','phone','telefono','tel','celular','whatsapp'],
-    'imap-zone':     ['zone','zona','sector','area'],
-    'imap-cod':      ['cod','monto','amount','valor','precio'],
-    'imap-note':     ['note','nota','notas','producto','descripcion']
+    'imap-order':['code','orderno','order_no','order no','orderid','order','codigo','id'],
+    'imap-customer':['customer name','customer','cliente','shop'],
+    'imap-receiver':['dropoff contact name','receiver','destinatario','nombre','name'],
+    'imap-phone':['dropoff contact','phone','telefono','tel','celular','whatsapp'],
+    'imap-zone':['zone','zona','sector','area'],
+    'imap-cod':['cod','monto','amount','valor','precio'],
+    'imap-note':['note','nota','notas','producto','descripcion']
   };
   Object.keys(matches).forEach(function(selId){
     var keywords=matches[selId];
@@ -1173,27 +1224,12 @@ function invAutoMap(cols){
 function invLoadPackages(){
   var orderCol=document.getElementById('imap-order').value;
   if(!orderCol){ invShowToast('Debes mapear la columna OrderNo','error'); return; }
-  invColMap={
-    order:orderCol,
-    customer:document.getElementById('imap-customer').value,
-    receiver:document.getElementById('imap-receiver').value,
-    phone:document.getElementById('imap-phone').value,
-    zone:document.getElementById('imap-zone').value,
-    cod:document.getElementById('imap-cod').value,
-    note:document.getElementById('imap-note').value
-  };
+  invColMap={order:orderCol,customer:document.getElementById('imap-customer').value,receiver:document.getElementById('imap-receiver').value,phone:document.getElementById('imap-phone').value,zone:document.getElementById('imap-zone').value,cod:document.getElementById('imap-cod').value,note:document.getElementById('imap-note').value};
   invPackages={};
   invRawData.forEach(function(row){
     var orderVal=String(row[invColMap.order]||'').trim();
     if(!orderVal) return;
-    invPackages[orderVal]={
-      customer:invColMap.customer?String(row[invColMap.customer]||'').trim():'',
-      receiver:invColMap.receiver?String(row[invColMap.receiver]||'').trim():'',
-      phone:invColMap.phone?String(row[invColMap.phone]||'').trim():'',
-      zone:invColMap.zone?String(row[invColMap.zone]||'').trim():'',
-      cod:invColMap.cod?String(row[invColMap.cod]||'').trim():'',
-      note:invColMap.note?String(row[invColMap.note]||'').trim():''
-    };
+    invPackages[orderVal]={customer:invColMap.customer?String(row[invColMap.customer]||'').trim():'',receiver:invColMap.receiver?String(row[invColMap.receiver]||'').trim():'',phone:invColMap.phone?String(row[invColMap.phone]||'').trim():'',zone:invColMap.zone?String(row[invColMap.zone]||'').trim():'',cod:invColMap.cod?String(row[invColMap.cod]||'').trim():'',note:invColMap.note?String(row[invColMap.note]||'').trim():''};
   });
   invSave();
   document.getElementById('inv-loaded-summary').style.display='block';
@@ -1223,18 +1259,13 @@ function invClearAll(){
   invRenderRecords();
 }
 
-/* CAMERA */
 function invToggleCamera(){ if(invCameraOn) invStopCamera(); else invStartCamera(); }
 
 function invStartCamera(){
   if(typeof Quagga==='undefined'){ invShowToast('Camara no disponible, usa entrada manual','error'); return; }
   var viewport=document.getElementById('quagga-viewport');
   viewport.innerHTML='';
-  Quagga.init({
-    inputStream:{name:'Live',type:'LiveStream',target:viewport,constraints:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}}},
-    decoder:{readers:['code_128_reader','ean_reader','ean_8_reader','code_39_reader','upc_reader']},
-    locate:true
-  },function(err){
+  Quagga.init({inputStream:{name:'Live',type:'LiveStream',target:viewport,constraints:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}}},decoder:{readers:['code_128_reader','ean_reader','ean_8_reader','code_39_reader','upc_reader']},locate:true},function(err){
     if(err){ invShowToast('No se pudo acceder a la camara','error'); return; }
     Quagga.start(); invCameraOn=true;
     document.getElementById('btn-toggle-cam').textContent='Detener camara';
@@ -1320,14 +1351,7 @@ function invSaveRecord(){
   if(invCurrentStatus==='no-entregado'&&!motivo){ invShowToast('Selecciona un motivo','error'); return; }
   if(invCurrentStatus==='pendiente-prog'&&!pendienteDia){ invShowToast('Selecciona el dia de reintento','error'); return; }
   if(invCurrentStatus==='devolucion'&&!devolucionMotivo){ invShowToast('Selecciona la razon de devolucion','error'); return; }
-  invRecords[invCurrentPkg.orderNo]={
-    orderNo:invCurrentPkg.orderNo,customer:invCurrentPkg.customer,receiver:invCurrentPkg.receiver,
-    phone:invCurrentPkg.phone,zone:invCurrentPkg.zone,cod:invCurrentPkg.cod,note:invCurrentPkg.note,
-    status:invCurrentStatus,motivo:motivo,motivoCustom:motivoCustom,
-    pendienteDia:pendienteDia,pendienteNota:pendienteNota,
-    devolucionMotivo:devolucionMotivo,devolucionNota:devolucionNota,
-    ts:new Date().toLocaleString('es-DO')
-  };
+  invRecords[invCurrentPkg.orderNo]={orderNo:invCurrentPkg.orderNo,customer:invCurrentPkg.customer,receiver:invCurrentPkg.receiver,phone:invCurrentPkg.phone,zone:invCurrentPkg.zone,cod:invCurrentPkg.cod,note:invCurrentPkg.note,status:invCurrentStatus,motivo:motivo,motivoCustom:motivoCustom,pendienteDia:pendienteDia,pendienteNota:pendienteNota,devolucionMotivo:devolucionMotivo,devolucionNota:devolucionNota,ts:new Date().toLocaleString('es-DO')};
   invSave();
   document.getElementById('inv-pkg-form').style.display='none';
   document.getElementById('inv-manual-code').value='';
@@ -1336,7 +1360,6 @@ function invSaveRecord(){
   invRenderRecords();
 }
 
-/* RECORDS */
 function invSetFilter(el,val){
   invCurrentFilter=val;
   document.querySelectorAll('.ftab').forEach(function(t){ t.classList.remove('active'); });
@@ -1387,10 +1410,10 @@ function invRenderRecords(){
     else if(item.status==='pendiente-prog'){pillTxt='Pendiente';pillClass='';}
     else if(item.status==='devolucion'){pillTxt='Devolucion';pillClass='pill-devolucion';}
     else{pillTxt='Sin escanear';pillClass='pill-pendiente';}
-    var pillStyle=item.status==='pendiente-prog'?' style="background:rgba(64,192,240,.15);color:#40c0f0;"':'';
+    var pillStyle=item.status==='pendiente-prog'?' style="background:rgba(64,192,240,.15);color:#40c0f0;border:1px solid rgba(64,192,240,.3);"':'';
     var pill='<span class="status-pill '+pillClass+'"'+pillStyle+'>'+pillTxt+'</span>';
-    var badge=hasRecord?'<span class="scanned-badge">Escaneado</span>':'';
-    var meta=[item.zone,item.cod?'COD: '+item.cod:''].filter(Boolean).join(' - ');
+    var badge=hasRecord?'<span class="scanned-badge">&#10003; Escaneado</span>':'';
+    var meta=[item.zone,item.cod?'COD: '+item.cod:''].filter(Boolean).join(' · ');
     var otherStatuses=[
       {val:'entregado',label:'Entregar'},{val:'no-entregado',label:'No entregado'},
       {val:'pendiente-prog',label:'Pendiente'},{val:'devolucion',label:'Devolucion'}
@@ -1399,22 +1422,26 @@ function invRenderRecords(){
       return '<button class="btn-move" onclick="event.stopPropagation();invQuickChangeStatus(\''+item.orderNo+'\',\''+s.val+'\')">'+s.label+'</button>';
     }).join('');
     html+='<div class="record-item'+(hasRecord?' scanned':'')+'" onclick="invOpenModal(\''+item.orderNo+'\')">';
-    html+='<div class="record-top"><div style="flex:1;min-width:0;">';
-    html+='<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:2px;">';
+    html+='<div class="record-top">';
+    html+='<div style="flex:1;min-width:0;">';
+    html+='<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px;">';
     html+='<span class="record-position-badge">#'+(idx+1)+'</span>';
-    html+='<div class="record-order">'+item.orderNo+'</div>'+badge;
+    html+='<span class="record-order">'+item.orderNo+'</span>';
+    html+=badge;
     html+='</div>';
-    html+='<div class="record-customer">'+(item.receiver||item.customer||'-')+'</div>';
-    if(item.phone) html+='<div class="record-meta" style="color:#a0a0c0;">Tel: '+item.phone+'</div>';
+    html+='<div class="record-customer">'+(item.receiver||item.customer||'&mdash;')+'</div>';
+    if(item.phone) html+='<div class="record-meta">Tel: '+item.phone+'</div>';
     html+='</div>';
-    html+='<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;" onclick="event.stopPropagation()">'+pill;
+    html+='<div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;" onclick="event.stopPropagation()">';
+    html+=pill;
     html+='<button class="btn-quick-del" onclick="event.stopPropagation();invQuickDelete(\''+item.orderNo+'\')">Borrar</button>';
-    html+='</div></div>';
-    if(meta) html+='<div class="record-meta">'+meta+'</div>';
-    if(item.motivo) html+='<div class="record-meta" style="color:#f04060;">- '+item.motivo+'</div>';
-    if(item.pendienteDia) html+='<div class="record-meta" style="color:#40c0f0;">- Reintentar el '+item.pendienteDia+'</div>';
-    if(item.devolucionMotivo) html+='<div class="record-meta" style="color:#ff8c00;">- '+item.devolucionMotivo+'</div>';
-    html+='<div class="quick-move-row" onclick="event.stopPropagation()">'+quickBtns+'</div>';
+    html+='</div>';
+    html+='</div>';
+    if(meta) html+='<div class="record-meta" style="margin-top:4px;">'+meta+'</div>';
+    if(item.motivo) html+='<div class="record-meta" style="color:#f87171;margin-top:2px;">&#8212; '+item.motivo+'</div>';
+    if(item.pendienteDia) html+='<div class="record-meta" style="color:#60a5fa;margin-top:2px;">&#8212; Reintentar: '+item.pendienteDia+'</div>';
+    if(item.devolucionMotivo) html+='<div class="record-meta" style="color:#fb923c;margin-top:2px;">&#8212; '+item.devolucionMotivo+'</div>';
+    html+='<div class="quick-move-row">'+quickBtns+'</div>';
     html+='</div>';
   });
   list.innerHTML=html;
@@ -1425,14 +1452,7 @@ function invOpenModal(orderNo){
   if(!rec){ var pkg=invPackages[orderNo]||{}; rec={orderNo:orderNo,customer:pkg.customer||'',receiver:pkg.receiver||'',phone:pkg.phone||'',zone:pkg.zone||'',cod:pkg.cod||'',note:pkg.note||'',status:'pendiente'}; }
   invCurrentRecordId=orderNo;
   var statusLabel=rec.status==='entregado'?'Entregado':rec.status==='no-entregado'?'No entregado':rec.status==='pendiente-prog'?'Pendiente programado':rec.status==='devolucion'?'Devolucion':'Sin escanear';
-  var fields=[
-    ['OrderNo',rec.orderNo],['Customer',rec.customer],['Receiver',rec.receiver],
-    ['Telefono',rec.phone],['Zone',rec.zone],['COD',rec.cod],['Producto',rec.note],
-    ['Estado',statusLabel],['Motivo',rec.motivo],['Nota',rec.motivoCustom],
-    ['Reintentar el',rec.pendienteDia],['Indicacion',rec.pendienteNota],
-    ['Razon devolucion',rec.devolucionMotivo],['Nota devolucion',rec.devolucionNota],
-    ['Fecha/Hora',rec.ts]
-  ].filter(function(f){ return f[1]; });
+  var fields=[['OrderNo',rec.orderNo],['Customer',rec.customer],['Receiver',rec.receiver],['Telefono',rec.phone],['Zone',rec.zone],['COD',rec.cod],['Producto',rec.note],['Estado',statusLabel],['Motivo',rec.motivo],['Nota',rec.motivoCustom],['Reintentar el',rec.pendienteDia],['Indicacion',rec.pendienteNota],['Razon devolucion',rec.devolucionMotivo],['Nota devolucion',rec.devolucionNota],['Fecha/Hora',rec.ts]].filter(function(f){ return f[1]; });
   document.getElementById('inv-modal-content').innerHTML=fields.map(function(f){
     return '<div class="inv-modal-field"><label>'+f[0]+'</label><div class="val">'+f[1]+'</div></div>';
   }).join('');
@@ -1465,9 +1485,7 @@ function invClearCurrentGroup(){
   if(invCurrentFilter==='pendiente'){
     Object.keys(invPackages).forEach(function(id){ if(!invRecords[id]) delete invPackages[id]; });
   } else {
-    Object.keys(invRecords).forEach(function(id){
-      if(invRecords[id].status===invCurrentFilter){ delete invRecords[id]; delete invPackages[id]; }
-    });
+    Object.keys(invRecords).forEach(function(id){ if(invRecords[id].status===invCurrentFilter){ delete invRecords[id]; delete invPackages[id]; } });
   }
   invSave(); invRenderRecords();
   invShowToast('Grupo borrado','info');
@@ -1483,40 +1501,10 @@ function invQuickDelete(orderNo){
 function invQuickChangeStatus(orderNo,newStatus){
   var pkg=invPackages[orderNo]||{};
   var existing=invRecords[orderNo]||{};
-  invRecords[orderNo]={
-    orderNo:orderNo,customer:pkg.customer||existing.customer||'',receiver:pkg.receiver||existing.receiver||'',
-    phone:pkg.phone||existing.phone||'',zone:pkg.zone||existing.zone||'',
-    cod:pkg.cod||existing.cod||'',note:pkg.note||existing.note||'',
-    status:newStatus,
-    motivo:newStatus==='entregado'?'':(existing.motivo||''),
-    motivoCustom:newStatus==='entregado'?'':(existing.motivoCustom||''),
-    pendienteDia:newStatus==='pendiente-prog'?(existing.pendienteDia||''):'',
-    pendienteNota:newStatus==='pendiente-prog'?(existing.pendienteNota||''):'',
-    devolucionMotivo:newStatus==='devolucion'?(existing.devolucionMotivo||''):'',
-    devolucionNota:newStatus==='devolucion'?(existing.devolucionNota||''):'',
-    ts:new Date().toLocaleString('es-DO')
-  };
+  invRecords[orderNo]={orderNo:orderNo,customer:pkg.customer||existing.customer||'',receiver:pkg.receiver||existing.receiver||'',phone:pkg.phone||existing.phone||'',zone:pkg.zone||existing.zone||'',cod:pkg.cod||existing.cod||'',note:pkg.note||existing.note||'',status:newStatus,motivo:newStatus==='entregado'?'':(existing.motivo||''),motivoCustom:newStatus==='entregado'?'':(existing.motivoCustom||''),pendienteDia:newStatus==='pendiente-prog'?(existing.pendienteDia||''):'',pendienteNota:newStatus==='pendiente-prog'?(existing.pendienteNota||''):'',devolucionMotivo:newStatus==='devolucion'?(existing.devolucionMotivo||''):'',devolucionNota:newStatus==='devolucion'?(existing.devolucionNota||''):'',ts:new Date().toLocaleString('es-DO')};
   invSave(); invRenderRecords();
   var labels={'entregado':'Entregado','no-entregado':'No entregado','pendiente-prog':'Pendiente','devolucion':'Devolucion'};
   invShowToast('#'+orderNo+' movido a '+(labels[newStatus]||newStatus),'success');
-}
-
-function invQuickMarkEntregado(code){
-  if(!code){ invShowToast('Escribe un OrderNo','error'); return; }
-  var pkg=invPackages[code]||(invRecords[code]?invRecords[code]:null);
-  if(!pkg){ invShowToast('OrderNo '+code+' no encontrado','error'); return; }
-  var base=invPackages[code]||invRecords[code]||{};
-  invRecords[code]={
-    orderNo:code,customer:base.customer||'',receiver:base.receiver||'',
-    phone:base.phone||'',zone:base.zone||'',cod:base.cod||'',note:base.note||'',
-    status:'entregado',motivo:'',motivoCustom:'',pendienteDia:'',pendienteNota:'',
-    devolucionMotivo:'',devolucionNota:'',ts:new Date().toLocaleString('es-DO')
-  };
-  invSave();
-
-  if(navigator.vibrate) navigator.vibrate(80);
-  invShowToast('#'+code+' marcado como entregado','success');
-  invRenderRecords();
 }
 
 function invExportExcel(){
@@ -1527,11 +1515,7 @@ function invExportExcel(){
   var rows=allOrders.map(function(id){
     var rec=invRecords[id]||{orderNo:id,status:'pendiente'};
     var pkg=invPackages[id]||{};
-    return{OrderNo:rec.orderNo,Customer:rec.customer||pkg.customer||'',Receiver:rec.receiver||pkg.receiver||'',
-      Telefono:rec.phone||pkg.phone||'',Zone:rec.zone||pkg.zone||'',COD:rec.cod||pkg.cod||'',
-      Producto:rec.note||pkg.note||'',Estado:rec.status||'pendiente',
-      Motivo:rec.motivo||'',Nota:rec.motivoCustom||'',PendienteDia:rec.pendienteDia||'',
-      DevolucionMotivo:rec.devolucionMotivo||'',FechaHora:rec.ts||''};
+    return{OrderNo:rec.orderNo,Customer:rec.customer||pkg.customer||'',Receiver:rec.receiver||pkg.receiver||'',Telefono:rec.phone||pkg.phone||'',Zone:rec.zone||pkg.zone||'',COD:rec.cod||pkg.cod||'',Producto:rec.note||pkg.note||'',Estado:rec.status||'pendiente',Motivo:rec.motivo||'',Nota:rec.motivoCustom||'',PendienteDia:rec.pendienteDia||'',DevolucionMotivo:rec.devolucionMotivo||'',FechaHora:rec.ts||''};
   });
   var ws=XLSX.utils.json_to_sheet(rows);
   var wb=XLSX.utils.book_new();
@@ -1549,7 +1533,6 @@ function invShowToast(msg,type){
   invToastTimer=setTimeout(function(){ t.classList.remove('show'); },2800);
 }
 
-/* Load Quagga async */
 (function(){
   var s=document.createElement('script');
   s.src='https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js';
@@ -1557,7 +1540,6 @@ function invShowToast(msg,type){
   document.head.appendChild(s);
 })();
 
-/* INIT */
 renderAdmin();
 invUpdateBadge();
 invUpdateStats();
