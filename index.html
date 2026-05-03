@@ -191,33 +191,34 @@ width:100%;
 .sn-green{color:#2e7d32 !important;}
 .sn-red{color:#c62828 !important;}
 
-.ftabs{display:flex;border-bottom:2px solid #e2e8f0;overflow-x:auto;scrollbar-width:none;background:#ffffff !important;}
+.ftabs{display:flex;border-bottom:2px solid #e2e8f0;overflow-x:auto;scrollbar-width:none;background:#ffffff !important;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
 .ftabs::-webkit-scrollbar{display:none;}
-.ftab{flex-shrink:0;padding:11px 10px;font-size:.63rem;font-weight:700;cursor:pointer;border:none !important;border-bottom:2px solid transparent;background:none !important;color:#94a3b8 !important;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;margin-bottom:-2px;}
+.ftab{flex-shrink:0;padding:11px 12px;font-size:.63rem;font-weight:700;cursor:pointer;border:none !important;border-bottom:2px solid transparent;background:none !important;color:#94a3b8 !important;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;margin-bottom:-2px;scroll-snap-align:start;}
 .ftab.active{color:#2563eb !important;border-bottom-color:#2563eb !important;}
 .ftab-n{display:inline-block;background:#e2e8f0 !important;color:#334155 !important;border-radius:20px;font-size:.58rem;font-weight:700;padding:1px 6px;margin-left:3px;vertical-align:middle;}
 
-/* ── DARK RECORD CARDS ── */
-.record-item{background:#1c2236 !important;border:1px solid #2a3350 !important;border-radius:20px;padding:15px;margin-bottom:11px;cursor:pointer;transition:transform .12s;}
+/* ── RECORD CARDS (Inventario > Registros) — mismo estilo blanco unificado ── */
+.record-item{background:#ffffff !important;border:1px solid #e8edf4 !important;border-radius:22px;padding:15px;margin-bottom:11px;cursor:pointer;box-shadow:0 2px 10px rgba(15,23,42,.07),0 6px 20px rgba(15,23,42,.04) !important;display:flex;flex-direction:column;transition:transform .12s;}
 .record-item:active{transform:scale(.985);}
 .record-item.scanned{border-left:4px solid #16a34a !important;}
 .record-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
-.record-position-badge{background:#2a3350 !important;color:#8892aa !important;font-size:.6rem;font-weight:700;border-radius:7px;padding:2px 7px;flex-shrink:0;}
-.record-order{font-size:.9rem;font-weight:800;color:#f5c842 !important;letter-spacing:.3px;}
-.record-customer{font-size:.92rem;font-weight:700;color:#e8eaf0 !important;margin-top:3px;}
-.record-meta{font-size:.75rem;color:#8892aa !important;margin-top:2px;}
-.scanned-badge{display:inline-flex;align-items:center;background:rgba(22,163,74,.18) !important;border:1px solid rgba(22,163,74,.4) !important;border-radius:20px;padding:2px 8px;font-size:.58rem;font-weight:700;color:#4ade80 !important;text-transform:uppercase;}
+.record-position-badge{background:#f1f5f9 !important;color:#94a3b8 !important;font-size:.6rem;font-weight:700;border-radius:7px;padding:2px 7px;flex-shrink:0;}
+.record-order{font-size:.9rem;font-weight:800;color:#2563eb !important;letter-spacing:.2px;}
+.record-customer{font-size:.93rem;font-weight:800;color:#0f172a !important;margin-top:3px;}
+.record-meta{font-size:.75rem;color:#64748b !important;margin-top:2px;}
+.scanned-badge{display:inline-flex;align-items:center;background:#e8f5e9 !important;border:1px solid #81c784 !important;border-radius:20px;padding:2px 8px;font-size:.58rem;font-weight:700;color:#2e7d32 !important;text-transform:uppercase;}
 
-.status-pill{display:inline-flex;align-items:center;font-size:.66rem;font-weight:700;padding:4px 11px;border-radius:20px;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;}
-.pill-pendiente   {background:rgba(148,163,184,.15) !important;color:#94a3b8 !important;border:1px solid rgba(148,163,184,.25) !important;}
-.pill-entregado   {background:rgba(22,163,74,.18) !important;color:#4ade80 !important;border:1px solid rgba(22,163,74,.35) !important;}
-.pill-no-entregado{background:rgba(220,38,38,.18) !important;color:#f87171 !important;border:1px solid rgba(220,38,38,.35) !important;}
-.pill-devolucion  {background:rgba(234,88,12,.18) !important;color:#fb923c !important;border:1px solid rgba(234,88,12,.35) !important;}
+/* Status pills — match the unified pastel style */
+.status-pill{display:inline-flex;align-items:center;font-size:.66rem;font-weight:700;padding:4px 11px;border-radius:20px;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;border-width:1.5px;border-style:solid;}
+.pill-pendiente   {background:#f1f5f9 !important;color:#64748b !important;border-color:#cbd5e1 !important;}
+.pill-entregado   {background:#e8f5e9 !important;color:#2e7d32 !important;border-color:#81c784 !important;}
+.pill-no-entregado{background:#fce8e8 !important;color:#c62828 !important;border-color:#ef9a9a !important;}
+.pill-devolucion  {background:#fff3e0 !important;color:#e65100 !important;border-color:#ffb74d !important;}
 
-/* Buttons inside dark card — keep dark bg, same pill border style */
-.btn-quick-del{background:rgba(220,38,38,.15) !important;border:1px solid rgba(220,38,38,.35) !important;color:#f87171 !important;border-radius:12px;font-size:.68rem;font-weight:700;padding:5px 11px;cursor:pointer;white-space:nowrap;}
-.quick-move-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;padding-top:10px;border-top:1px solid #2a3350 !important;}
-.btn-move{background:rgba(255,255,255,.07) !important;border:1px solid rgba(255,255,255,.14) !important;color:#c8cfe0 !important;border-radius:12px;font-size:.7rem;font-weight:600;padding:7px 12px;cursor:pointer;}
+/* Buttons inside record card — unified pill style */
+.btn-quick-del{background:#fce8e8 !important;border:1.5px solid #ef9a9a !important;color:#c62828 !important;border-radius:12px;font-size:.68rem;font-weight:700;padding:5px 11px;cursor:pointer;white-space:nowrap;}
+.quick-move-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;padding-top:10px;border-top:1px solid #f1f5f9 !important;}
+.btn-move{background:#f1f5f9 !important;border:1.5px solid #e2e8f0 !important;color:#475569 !important;border-radius:12px;font-size:.7rem;font-weight:600;padding:7px 12px;cursor:pointer;}
 
 /* Scan form */
 .pkg-card{background:#ffffff !important;border:1px solid #e8edf4 !important;border-radius:22px;padding:16px;margin-bottom:12px;}
@@ -662,8 +663,9 @@ var invTabActual = 'cargar';
 function openDrawer(){ document.getElementById('drawer').classList.add('open'); document.getElementById('drawer-overlay').classList.add('open'); }
 function closeDrawer(){ document.getElementById('drawer').classList.remove('open'); document.getElementById('drawer-overlay').classList.remove('open'); }
 
-function switchApp(app){
+function switchApp(app, skipSave){
   appActual = app;
+  if(!skipSave) localStorage.setItem('llya_app', app);
   document.getElementById('app-admin').style.display = app==='admin' ? 'block' : 'none';
   document.getElementById('app-rep').style.display   = app==='rep'   ? 'block' : 'none';
   document.getElementById('app-inv').style.display   = app==='inv'   ? 'block' : 'none';
@@ -698,6 +700,7 @@ function getDatosAdmin(){
 
 function switchTabAdmin(tab){
   adminTab=tab;
+  localStorage.setItem('llya_admintab', tab);
   document.getElementById('busqueda').value='';
   document.querySelectorAll('#admin-tabs .tab').forEach(function(t,i){
     t.classList.toggle('active',['pendientes','sin_ubicacion','completados','exportar'][i]===tab);
@@ -956,6 +959,7 @@ var varUltimo=[
 
 function switchTabRep(tab){
   repTabActual=tab;
+  localStorage.setItem('llya_reptab', tab);
   document.querySelectorAll('#rep-tabs .tab').forEach(function(t,i){ t.classList.toggle('active',['pendientes','contactados'][i]===tab); });
   document.getElementById('searchRep').value='';
   renderRep();
@@ -1062,6 +1066,7 @@ function invUpdateStats(){
 
 function switchInvTab(tab){
   invTabActual=tab;
+  localStorage.setItem('llya_invtab', tab);
   ['cargar','escanear','registros'].forEach(function(t){
     document.getElementById('itab-'+t).classList.toggle('active',t===tab);
     document.getElementById('itab-view-'+t).classList.toggle('active',t===tab);
