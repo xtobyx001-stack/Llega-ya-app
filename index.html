@@ -364,6 +364,17 @@ width:100%;
     <button class="btn-green" onclick="abrirNuevoCliente()">&#43; Cliente</button>
   </div>
   <input type="file" id="fileInputAdminXlsx" accept=".xlsx,.xls" style="display:none" onchange="cargarExcelAdmin(event)">
+
+  <!-- MAPA DE RUTA -->
+
+  <div id="route-map-wrap" style="display:none;margin:10px 14px 0;border-radius:18px;overflow:hidden;box-shadow:0 2px 10px rgba(15,23,42,.10);position:relative;">
+    <canvas id="route-map-canvas" style="width:100%;display:block;border-radius:18px;"></canvas>
+    <div style="position:absolute;bottom:10px;right:10px;">
+      <button onclick="abrirGoogleMapsRuta()" style="background:#2563eb;color:#fff;border:none;border-radius:14px;padding:10px 16px;font-size:.78rem;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(37,99,235,.35);">&#127758; Abrir en Maps</button>
+    </div>
+    <div style="position:absolute;top:10px;left:10px;background:rgba(255,255,255,.92);border-radius:10px;padding:5px 10px;font-size:.7rem;font-weight:700;color:#0f172a;" id="route-map-info"></div>
+  </div>
+
   <div class="adm-search">
     <div class="sw"><span class="lupa">&#128269;</span>
       <input type="text" id="busqueda" placeholder="Buscar por nombre o tel&#233;fono..." oninput="renderAdmin()">
@@ -754,6 +765,9 @@ function moverAdmin(uid,dir){
 
 function renderAdmin(){
   if(adminTab==='exportar'){ renderExportarAdmin(); return; }
+  /* Show/hide map only on Rutas tab */
+  var mapWrap=document.getElementById('route-map-wrap');
+  if(mapWrap) mapWrap.style.display=(adminTab==='pendientes'&&mapWrap.dataset.drawn==='1')?'block':'none';
   var list=document.getElementById('list-admin');
   var q=(document.getElementById('busqueda')||{value:''}).value.toLowerCase().trim();
   var datos=getDatosAdmin();
@@ -1011,16 +1025,142 @@ function devolverAdmin(uid){
 }
 
 function sortNearest(){
-  var pend=clientes.filter(function(c){ return c.estado==='pendiente'&&c.lat&&c.lng; });
-  var resto=clientes.filter(function(c){ return !(c.estado==='pendiente'&&c.lat&&c.lng); });
-  if(!pend.length) return alert('No hay clientes con ubicaci\u00f3n pendientes.');
-  if(!navigator.geolocation) return alert('Tu dispositivo no soporta GPS.');
-  function hav(a,b,c,d){ var R=6371,dL=(c-a)*Math.PI/180,dG=(d-b)*Math.PI/180,x=Math.pow(Math.sin(dL/2),2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.pow(Math.sin(dG/2),2); return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x)); }
-  function ord(o){ var la=o.lat,ln=o.lng,p=pend.slice(),r=[]; while(p.length){ var bi=0,bm=Infinity; p.forEach(function(c,j){ var d=hav(la,ln,c.lat,c.lng); if(d<bm){bm=d;bi=j;} }); var n=p.splice(bi,1)[0]; r.push(n); la=n.lat; ln=n.lng; } return r; }
-  navigator.geolocation.getCurrentPosition(
-    function(pos){ clientes=ord({lat:pos.coords.latitude,lng:pos.coords.longitude}).concat(resto); switchTabAdmin('pendientes'); guardar(); },
-    function(){ alert('No se pudo obtener tu ubicaci\u00f3n.'); },{timeout:10000,enableHighAccuracy:true}
-  );
+  var pend=clientes.filter(function(c){ return (c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng; });
+  var resto=clientes.filter(function(c){ return !((c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng); });
+  if(!pend.length){ invShowToast('No hay clientes con GPS','error'); return; }
+  if(!navigator.geolocation){ invShowToast('GPS no disponible','error'); return; }
+
+  function hav(a,b,c,d){
+    var R=6371,dL=(c-a)*Math.PI/180,dG=(d-b)*Math.PI/180;
+    var x=Math.pow(Math.sin(dL/2),2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.pow(Math.sin(dG/2),2);
+    return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+  }
+
+  /* Nearest-neighbor from origin, then try 2-opt improvement for circuit efficiency */
+  function buildRoute(origin, points){
+    var p=points.slice(), r=[], la=origin.lat, ln=origin.lng;
+    while(p.length){
+      var bi=0,bm=Infinity;
+      p.forEach(function(c,j){ var d=hav(la,ln,c.lat,c.lng); if(d<bm){bm=d;bi=j;} });
+      var n=p.splice(bi,1)[0]; r.push(n); la=n.lat; ln=n.lng;
+    }
+    return twoOpt(origin, r);
+  }
+
+  /* 2-opt: swap route segments to eliminate crossings */
+  function twoOpt(origin, route){
+    var improved=true;
+    while(improved){
+      improved=false;
+      for(var i=0;i<route.length-1;i++){
+        for(var j=i+2;j<route.length;j++){
+          var a0=i===0?origin:route[i-1];
+          var a1=route[i];
+          var b0=route[j];
+          var b1=j+1<route.length?route[j+1]:null;
+          var before=hav(a0.lat,a0.lng,a1.lat,a1.lng)+(b1?hav(b0.lat,b0.lng,b1.lat,b1.lng):0);
+          var after =hav(a0.lat,a0.lng,b0.lat,b0.lng)+(b1?hav(a1.lat,a1.lng,b1.lat,b1.lng):0);
+          if(after<before-0.001){
+            route=route.slice(0,i).concat(route.slice(i,j+1).reverse()).concat(route.slice(j+1));
+            improved=true;
+          }
+        }
+      }
+    }
+    return route;
+  }
+
+  navigator.geolocation.getCurrentPosition(function(pos){
+    var origin={lat:pos.coords.latitude,lng:pos.coords.longitude};
+    var ordered=buildRoute(origin, pend);
+    clientes=ordered.concat(resto);
+    guardar();
+    switchTabAdmin('pendientes');
+    drawRouteMap(origin, ordered);
+    document.getElementById('route-map-wrap').dataset.drawn='1';
+    invShowToast('Ruta optimizada: '+ordered.length+' paradas','success');
+  }, function(){ invShowToast('No se pudo obtener tu ubicaci\u00f3n','error'); },{timeout:10000,enableHighAccuracy:true});
+}
+
+function drawRouteMap(origin, points){
+  if(!points.length) return;
+  var wrap=document.getElementById('route-map-wrap');
+  var canvas=document.getElementById('route-map-canvas');
+  wrap.style.display='block';
+
+  /* Collect all coords including origin */
+  var allPts=[origin].concat(points.map(function(c){ return {lat:c.lat,lng:c.lng}; }));
+
+  /* Find bounding box */
+  var minLat=Infinity,maxLat=-Infinity,minLng=Infinity,maxLng=-Infinity;
+  allPts.forEach(function(p){ minLat=Math.min(minLat,p.lat);maxLat=Math.max(maxLat,p.lat);minLng=Math.min(minLng,p.lng);maxLng=Math.max(maxLng,p.lng); });
+
+  var W=canvas.parentElement.offsetWidth||360;
+  var H=Math.round(W*0.62);
+  canvas.width=W*2; canvas.height=H*2; /* retina */
+  canvas.style.height=H+'px';
+  var ctx=canvas.getContext('2d');
+  ctx.scale(2,2);
+
+  var pad=36;
+  var scaleX=function(lng){ return pad+(lng-minLng)/(maxLng-minLng||0.001)*(W-pad*2); };
+  var scaleY=function(lat){ return H-pad-(lat-minLat)/(maxLat-minLat||0.001)*(H-pad*2); };
+
+  /* Background */
+  ctx.fillStyle='#f0f4f8'; ctx.fillRect(0,0,W,H);
+
+  /* Grid lines */
+  ctx.strokeStyle='#e2e8f0'; ctx.lineWidth=0.5;
+  for(var i=0;i<=4;i++){
+    var x=pad+(W-pad*2)*i/4; ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();
+    var y=pad+(H-pad*2)*i/4; ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+  }
+
+  /* Route line */
+  ctx.strokeStyle='#2563eb'; ctx.lineWidth=2.5; ctx.lineJoin='round'; ctx.lineCap='round';
+  ctx.setLineDash([]);
+  ctx.beginPath();
+  ctx.moveTo(scaleX(origin.lng),scaleY(origin.lat));
+  points.forEach(function(c){ ctx.lineTo(scaleX(c.lng),scaleY(c.lat)); });
+  ctx.stroke();
+
+  /* Origin dot */
+  ctx.fillStyle='#16a34a';
+  ctx.beginPath(); ctx.arc(scaleX(origin.lng),scaleY(origin.lat),6,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(scaleX(origin.lng),scaleY(origin.lat),3,0,Math.PI*2); ctx.fill();
+
+  /* Stop dots with numbers */
+  points.forEach(function(c,i){
+    var x=scaleX(c.lng), y=scaleY(c.lat);
+    /* Shadow */
+    ctx.fillStyle='rgba(0,0,0,0.15)';
+    ctx.beginPath(); ctx.arc(x+1,y+1,10,0,Math.PI*2); ctx.fill();
+    /* Circle */
+    ctx.fillStyle='#2563eb';
+    ctx.beginPath(); ctx.arc(x,y,10,0,Math.PI*2); ctx.fill();
+    /* Number */
+    ctx.fillStyle='#fff'; ctx.font='bold 9px -apple-system,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(i+1,x,y);
+  });
+
+  /* Info badge */
+  var totalDist=0;
+  for(var i=0;i<points.length-1;i++){
+    totalDist+=hav2(points[i].lat,points[i].lng,points[i+1].lat,points[i+1].lng);
+  }
+  function hav2(a,b,c,d){var R=6371,dL=(c-a)*Math.PI/180,dG=(d-b)*Math.PI/180,x=Math.pow(Math.sin(dL/2),2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.pow(Math.sin(dG/2),2);return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
+  document.getElementById('route-map-info').textContent=points.length+' paradas · ~'+totalDist.toFixed(1)+' km';
+}
+
+function abrirGoogleMapsRuta(){
+  var pend=clientes.filter(function(c){ return (c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng; });
+  if(!pend.length){ invShowToast('No hay paradas con GPS','error'); return; }
+  /* Google Maps directions URL with waypoints (max 10 supported in web) */
+  var stops=pend.slice(0,10);
+  var dest=stops[stops.length-1];
+  var waypoints=stops.slice(0,stops.length-1).map(function(c){ return c.lat+','+c.lng; }).join('|');
+  var url='https://www.google.com/maps/dir/?api=1&destination='+dest.lat+','+dest.lng+'&waypoints='+encodeURIComponent(waypoints)+'&travelmode=driving';
+  window.open(url,'_blank');
 }
 
 function cargarExcelAdmin(e){ var f=e.target.files[0]; if(!f) return; e.target.value=''; leerExcel(f,'admin'); }
