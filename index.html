@@ -591,8 +591,8 @@ width:100%;
 </div></div>
 
 <div class="overlay" id="modalConfigAdmin"><div class="modal"><h2>&#9881;&#65039; Opciones &mdash; Rutas</h2><br>
-  <button class="btn" class="ibtn ibtn-danger" onclick="if(confirm('Borrar todos los clientes?')){clientes=[];exportados=[];guardar();closeModal('modalConfigAdmin');}">&#128465; Borrar Todo</button>
-  <button class="btn" class="ibtn ibtn-secondary" onclick="closeModal('modalConfigAdmin')">CERRAR</button>
+  <button class="ibtn ibtn-danger" onclick="if(confirm('Borrar todos los clientes?')){clientes=[];exportados=[];guardar();closeModal('modalConfigAdmin');}">&#128465; Borrar Todo</button>
+  <button class="ibtn ibtn-secondary" onclick="closeModal('modalConfigAdmin')">CERRAR</button>
 </div></div>
 
 <!-- ═══════════ MODALS REP ═══════════ -->
@@ -620,7 +620,7 @@ width:100%;
       <button class="ibtn ibtn-danger" id="inv-btn-delete-record" onclick="invDeleteRecord()" style="flex:1;margin-top:0;">Borrar registro</button>
     </div>
     <div style="margin-top:8px;" id="inv-btn-delete-pkg-wrap">
-      <button class="ibtn" class="ibtn ibtn-danger" style="margin-top:0;" onclick="invDeletePackage()">Borrar paquete completo</button>
+      <button class="ibtn ibtn-danger" style="margin-top:0;" onclick="invDeletePackage()">Borrar paquete completo</button>
     </div>
   </div>
 </div>
@@ -727,7 +727,7 @@ var adminTab = 'pendientes';
 
 function getDatosAdmin(){
   if(adminTab==='pendientes')    return clientes.filter(function(c){ return c.estado==='pendiente'&&c.lat&&c.lng; });
-  if(adminTab==='sin_ubicacion') return clientes.filter(function(c){ return (!c.lat||!c.lng)&&c.estado==='pendiente'; });
+  if(adminTab==='sin_ubicacion') return clientes.filter(function(c){ return (!c.lat||!c.lng)&&(c.estado==='pendiente'||!c.estado); });
   if(adminTab==='completados')   return clientes.filter(function(c){ return c.estado==='completado'; });
   return [];
 }
@@ -836,7 +836,7 @@ function enviarExportar(uid){
   c.estado='completado';
   var idx=clientes.findIndex(function(x){ return x._uid===uid; });
   var r=clientes.splice(idx,1)[0]; clientes.push(r);
-  guardar(); alert('\u2705 '+c.nombre+' exportado y movido a Completados');
+  guardar(); invShowToast(c.nombre+' movido a Exportados','success');
 }
 
 function quitarExportar(uid){
@@ -1175,7 +1175,7 @@ function renderRep(){
   var list=document.getElementById('list-rep');
   if(!clientes.length){ list.innerHTML='<div class="empty">Carga un archivo Excel para comenzar</div>'; return; }
   var datos=repTabActual==='pendientes'
-    ?clientes.filter(function(c){ return (!c.estado||c.estado==='pendiente'||c.estado==='enviado')&&!c.contactado; })
+    ?clientes.filter(function(c){ return (!c.estado||c.estado==='pendiente'||c.estado==='enviado')&&!c.contactado&&c.estado!=='jostin'; })
     :clientes.filter(function(c){ return c.contactado; });
   var q=(document.getElementById('searchRep')?document.getElementById('searchRep').value:'').toLowerCase().trim();
   if(q) datos=datos.filter(function(c){ return (c.nombre||'').toLowerCase().includes(q)||(c.telefono||'').includes(q); });
