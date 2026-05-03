@@ -1205,6 +1205,8 @@ function leerExcel(file,origen){
         if(nota==='-')nota='';
         if(!nombre&&!tel)return null;
         tel=tel.replace(/\D/g,'');
+        if(tel.length===10 && tel[0]!=='1') tel='1'+tel;
+        else if(tel.length===7) tel='1809'+tel;
         return{nombre:nombre,telefono:tel,cod:cod,nota:nota,lat:null,lng:null,estado:'pendiente',_uid:generarId()};
       }).filter(function(r){return r!==null;});
       if(!lista.length)return alert('No se encontraron clientes v\u00e1lidos.');
@@ -1361,6 +1363,7 @@ function renderRep(){
           (c.contactado
             ?'<button class="card-action-pill pill-gray" onclick="toggleContactado('+globalIdx+')">&#8617; Mover a Pendientes</button>'
             :'<button class="card-action-pill pill-green" onclick="toggleContactado('+globalIdx+')">&#128257; Ya Contact\u00e9</button>')+
+          '<button class="card-action-pill pill-purple" style="max-width:80px" onclick="enviarJostinRep(\''+c._uid+'\')">&#128100; Jostin</button>'+
         '</div>'+
       '</div>'+
     '</div>'+
@@ -1369,6 +1372,18 @@ function renderRep(){
 }
 
 function toggleContactado(idx){ clientes[idx].contactado=!clientes[idx].contactado; guardar(); }
+
+function enviarJostinRep(uid){
+  if(!confirm('\u00bfAsignar a Jostin? La ficha saldr\u00e1 de Rutas y Entregas.')) return;
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
+  c.enJostin=true; c.estado='jostin';
+  clientes=clientes.filter(function(x){ return x._uid!==uid; });
+  jostinClientes.push(c);
+  localStorage.setItem('llya_jostin', JSON.stringify(jostinClientes));
+  exportados=exportados.filter(function(x){ return x._uid!==uid; });
+  guardar(); renderRep();
+  invShowToast(c.nombre+' asignado a Jostin','info');
+}
 
 /* APP INVENTARIO */
 var invRawData=[];
