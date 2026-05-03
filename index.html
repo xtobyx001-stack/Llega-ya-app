@@ -292,6 +292,39 @@ header h1{font-size:.95rem;font-weight:800;color:var(–text);letter-spacing:-.2
 .toast-inv.success{background:var(–green);}
 .toast-inv.error{background:var(–red);}
 .toast-inv.info{background:var(–blue);}
+/* ── CARD V2 (Admin) ── */
+.card-v2{background:var(–surface);border-radius:var(–r);margin-bottom:10px;border:1px solid var(–border);box-shadow:var(–sh);display:flex;overflow:hidden;}
+.card-v2-done{opacity:.65;}
+.card-v2-nogps{border-color:#fde68a;}
+.cv2-left-bar{width:4px;flex-shrink:0;}
+.cv2-bar-blue{background:var(–blue);}
+.cv2-bar-green{background:var(–green);}
+.cv2-bar-yellow{background:var(–yellow);}
+.cv2-bar-purple{background:var(–purple);}
+.cv2-body{flex:1;padding:12px 12px 10px;min-width:0;}
+.cv2-header{display:flex;align-items:flex-start;gap:8px;margin-bottom:5px;}
+.cv2-header-left{flex:1;min-width:0;}
+.cv2-num{font-size:.63rem;font-weight:700;color:var(–text3);margin-bottom:1px;}
+.cv2-name{font-size:.93rem;font-weight:700;color:var(–text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cv2-tag{display:inline-block;font-size:.58rem;font-weight:700;padding:2px 6px;border-radius:20px;margin-left:5px;vertical-align:middle;}
+.cv2-tag-gps{background:#fef3c7;color:#92400e;}
+.cv2-tag-multi{background:#ede9fe;color:var(–purple);}
+.cv2-sub{font-size:.76rem;color:var(–text2);margin-top:3px;}
+.cv2-sort{display:flex;flex-direction:column;gap:2px;flex-shrink:0;}
+.cv2-sort-btn{background:var(–surface2);border:1px solid var(–border);color:var(–text3);border-radius:6px;width:26px;height:22px;font-size:.65rem;cursor:pointer;}
+.cv2-actions{display:flex;flex-direction:column;gap:6px;margin-top:8px;}
+.cv2-row-main{display:flex;gap:6px;}
+.cv2-btn{flex:1;padding:9px 4px;border-radius:9px;border:none;font-weight:700;font-size:.72rem;cursor:pointer;color:#fff;text-align:center;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:3px;}
+.cv2-btn-blue{background:var(–blue);}
+.cv2-btn-wa{background:#16a34a;}
+.cv2-btn-purple{background:var(–purple);}
+.cv2-row-secondary{display:flex;align-items:center;gap:5px;}
+.cv2-icon-btn{background:var(–surface2);border:1px solid var(–border);color:var(–text2);border-radius:8px;width:36px;height:33px;font-size:.85rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cv2-icon-btn-amber{background:#fef3c7;border-color:#fde68a;color:#92400e;}
+.cv2-icon-btn-red{background:var(–red-lt);border-color:#fecaca;color:var(–red);}
+.card-action-pill{flex:1;padding:7px 6px;border-radius:8px;border:none;font-weight:700;font-size:.72rem;cursor:pointer;text-align:center;}
+.pill-green{background:var(–green-lt);color:var(–green);border:1px solid #6ee7b7;}
+.pill-gray{background:var(–surface2);color:var(–text2);border:1px solid var(–border);}
 </style>
 
 </head>
@@ -398,6 +431,14 @@ header h1{font-size:.95rem;font-weight:800;color:var(–text);letter-spacing:-.2
       <div class="inv-tab active" id="itab-cargar" onclick="switchInvTab('cargar')">Cargar</div>
       <div class="inv-tab" id="itab-escanear" onclick="switchInvTab('escanear')">Escanear</div>
       <div class="inv-tab" id="itab-registros" onclick="switchInvTab('registros')">Registros</div>
+    </div>
+    <!-- Filter tabs — only visible in registros -->
+    <div class="ftabs" id="inv-filter-tabs" style="display:none">
+      <button class="ftab active" data-val="pendiente" onclick="invSetFilter(this,'pendiente')">Sin escanear <span class="ftab-n" id="icount-pendiente">0</span></button>
+      <button class="ftab" data-val="no-entregado" onclick="invSetFilter(this,'no-entregado')">No entregados <span class="ftab-n" id="icount-no-entregado">0</span></button>
+      <button class="ftab" data-val="pendiente-prog" onclick="invSetFilter(this,'pendiente-prog')">Pendientes <span class="ftab-n" id="icount-pendiente-prog">0</span></button>
+      <button class="ftab" data-val="devolucion" onclick="invSetFilter(this,'devolucion')">Devoluciones <span class="ftab-n" id="icount-devolucion">0</span></button>
+      <button class="ftab" data-val="entregado" onclick="invSetFilter(this,'entregado')">Entregados <span class="ftab-n" id="icount-entregado">0</span></button>
     </div>
   </div>
 
@@ -507,13 +548,6 @@ header h1{font-size:.95rem;font-weight:800;color:var(–text);letter-spacing:-.2
 
   <div class="inv-view" id="itab-view-registros">
     <input type="text" class="inv-search-input" id="inv-search-input" placeholder="Buscar OrderNo o cliente..." oninput="invRenderRecords()">
-    <div class="ftabs">
-      <button class="ftab active" data-val="pendiente" onclick="invSetFilter(this,'pendiente')">Sin escanear <span class="ftab-n" id="icount-pendiente">0</span></button>
-      <button class="ftab" data-val="no-entregado" onclick="invSetFilter(this,'no-entregado')">No entregados <span class="ftab-n" id="icount-no-entregado">0</span></button>
-      <button class="ftab" data-val="pendiente-prog" onclick="invSetFilter(this,'pendiente-prog')">Pendientes <span class="ftab-n" id="icount-pendiente-prog">0</span></button>
-      <button class="ftab" data-val="devolucion" onclick="invSetFilter(this,'devolucion')">Devoluciones <span class="ftab-n" id="icount-devolucion">0</span></button>
-      <button class="ftab" data-val="entregado" onclick="invSetFilter(this,'entregado')">Entregados <span class="ftab-n" id="icount-entregado">0</span></button>
-    </div>
     <div style="display:flex;justify-content:flex-end;padding:8px 0 4px;">
       <button onclick="invClearCurrentGroup()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:6px 12px;font-size:.9rem;cursor:pointer;">&#9881;&#65039;</button>
     </div>
@@ -732,42 +766,50 @@ function renderAdmin(){
     var esMulti=c.pedidos&&c.pedidos.length>1;
     var cod=calcCod(c);
     var accentColor=sinUbi?'yellow':(c.estado==='completado'?'green':(esMulti?'purple':'blue'));
-    var btnC=c.estado==='completado'
-      ?'<button class="abtn slate" style="flex:1" onclick="devolverAdmin(\''+uid+'\')">&#8617; Pendiente</button>'
-      :'<button class="abtn emerald" style="flex:1" onclick="completarAdmin(\''+uid+'\')">&#10003; Completado</button>';
     var notasHtml='';
-    if(esMulti) notasHtml='<div class="card-notes">'+c.pedidos.map(function(p,i){ return '<div class="note-line">&#128230; <strong>Pedido '+(i+1)+':</strong> '+(p.nota||'&mdash;')+(p.cod?' &middot; <strong style="color:var(--blue)">RD$ '+parseFloat(p.cod).toLocaleString()+'</strong>':'')+'</div>'; }).join('')+'</div>';
+    if(esMulti) notasHtml='<div class="card-notes">'+c.pedidos.map(function(p,i){ return '<div class="note-line">&#128230; Pedido '+(i+1)+': '+(p.nota||'&mdash;')+(p.cod?' &middot; RD$ '+parseFloat(p.cod).toLocaleString():'')+'</div>'; }).join('')+'</div>';
     else if(c.nota) notasHtml='<div class="note-simple">&#128230; '+c.nota+'</div>';
-    return '<div class="card '+(c.estado==='completado'?'completado':'')+'">'+
-    '<div class="card-accent '+accentColor+'"></div>'+
-    '<div class="card-top">'+
-    '<div class="info">'+
-    '<span class="card-num-badge">#'+(idx+1)+'</span>'+
-    '<div class="card-name">'+(c.nombre||'Sin nombre')+
-    (sinUbi?'<span class="card-tag tag-no-gps">Sin GPS</span>':'')+
-    (esMulti?'<span class="card-tag tag-multi">&#128230; '+c.pedidos.length+' pedidos</span>':'')+
+
+    var completadoBtn=c.estado==='completado'
+      ?'<button class="card-action-pill pill-gray" onclick="devolverAdmin(\''+uid+'\')">&#8617; Pendiente</button>'
+      :'<button class="card-action-pill pill-green" onclick="completarAdmin(\''+uid+'\')">&#10003; Completado</button>';
+
+    return '<div class="card-v2 '+(c.estado==='completado'?'card-v2-done':'')+(sinUbi?' card-v2-nogps':'')+'">'+
+    '<div class="cv2-left-bar cv2-bar-'+accentColor+'"></div>'+
+    '<div class="cv2-body">'+
+      '<div class="cv2-header">'+
+        '<div class="cv2-header-left">'+
+          '<div class="cv2-num">#'+(idx+1)+'</div>'+
+          '<div class="cv2-name">'+(c.nombre||'Sin nombre')+
+            (sinUbi?' <span class="cv2-tag cv2-tag-gps">Sin GPS</span>':'')+
+            (esMulti?' <span class="cv2-tag cv2-tag-multi">'+c.pedidos.length+' pedidos</span>':'')+
+          '</div>'+
+          '<div class="cv2-sub">'+
+            '<span>&#128222; '+(c.telefono||'&mdash;')+'</span>'+
+            (cod?' &nbsp;&#183;&nbsp; <strong>RD$ '+cod.toLocaleString()+'</strong>':'')+
+          '</div>'+
+        '</div>'+
+        '<div class="cv2-sort">'+
+          '<button onclick="moverAdmin(\''+uid+'\',-1)" class="cv2-sort-btn">&#9650;</button>'+
+          '<button onclick="moverAdmin(\''+uid+'\',1)" class="cv2-sort-btn">&#9660;</button>'+
+        '</div>'+
+      '</div>'+
+      notasHtml+
+      '<div class="cv2-actions">'+
+        '<div class="cv2-row-main">'+
+          (mapsUrl?'<a class="cv2-btn cv2-btn-blue" href="'+mapsUrl+'" target="_blank">&#128506; Mapa</a>':'')+
+          (waUrl?'<a class="cv2-btn cv2-btn-wa" href="'+waUrl+'" target="_blank">&#128172; WhatsApp</a>':'')+
+          '<button class="cv2-btn cv2-btn-purple" onclick="abrirUbi(\''+uid+'\')">&#128205; GPS</button>'+
+        '</div>'+
+        '<div class="cv2-row-secondary">'+
+          '<button class="cv2-icon-btn" onclick="editarCliente(\''+uid+'\')" title="Editar">&#9999;&#65039;</button>'+
+          completadoBtn+
+          '<button class="cv2-icon-btn cv2-icon-btn-amber" onclick="enviarExportar(\''+uid+'\')" title="Exportar">&#128228;</button>'+
+          '<button class="cv2-icon-btn cv2-icon-btn-red" onclick="eliminarCliente(\''+uid+'\')" title="Eliminar">&#128465;</button>'+
+        '</div>'+
+      '</div>'+
     '</div>'+
-    '<div class="card-meta">&#128222; '+(c.telefono||'&mdash;')+'</div>'+
-    (cod?'<div class="card-amount">RD$ '+cod.toLocaleString()+'</div>':'')+
-    '</div>'+
-    '<div class="card-order-controls"><button onclick="moverAdmin(\''+uid+'\',-1)">&#9650;</button><button onclick="moverAdmin(\''+uid+'\',1)">&#9660;</button></div>'+
-    '</div>'+
-    notasHtml+
-    '<div class="card-actions">'+
-    '<div class="btn-row">'+
-    (mapsUrl?'<a class="abtn blue" href="'+mapsUrl+'" target="_blank">&#128506; Mapa</a>':'')+
-    (waUrl?'<a class="abtn wa" href="'+waUrl+'" target="_blank">&#128172; WhatsApp</a>':'')+
-    '</div>'+
-    '<div class="btn-row">'+
-    '<button class="abtn purple" onclick="abrirUbi(\''+uid+'\')">&#128205; Ubicaci&#243;n</button>'+
-    '<button class="abtn slate" onclick="editarCliente(\''+uid+'\')">&#9999;&#65039; Editar</button>'+
-    '</div>'+
-    '<div class="btn-row">'+btnC+'</div>'+
-    '<div class="btn-row">'+
-    '<button class="abtn amber" onclick="enviarExportar(\''+uid+'\')">&#128228; Exportar</button>'+
-    '<button class="abtn red" onclick="eliminarCliente(\''+uid+'\')">&#128465; Eliminar</button>'+
-    '</div>'+
-    '</div></div>';
+    '</div>';
   }).join('');
 }
 
@@ -1026,21 +1068,35 @@ function renderRep(){
     var waUlt=tel?'https://wa.me/'+tel+'?text='+varUltimo[vi%3](nombre1,trat):null;
     var cod=calcCod(c);
     var notasHtml='';
-    if(esMulti) notasHtml='<div class="notas-multi">'+c.pedidos.map(function(p,i){ return '<div class="nota-item">&#128230; <strong>Pedido '+(i+1)+':</strong> '+(p.nota||'&mdash;')+(p.cod?' <span style="color:#f59e0b">&middot; RD$ '+parseFloat(p.cod).toLocaleString()+'</span>':'')+'</div>'; }).join('')+'</div>';
-    else if(c.nota) notasHtml='<div class="nota-simple">&#128230; '+c.nota+'</div>';
-    return '<div class="card '+(c.estado&&c.estado!=='pendiente'?c.estado:'')+' '+(esMulti?'multi':'')+'">'+
-    '<div class="card-header"><div class="info">'+
-    '<div class="card-nombre"><span class="card-num">#'+(idx+1)+'</span>'+(c.nombre||'Sin nombre')+(esMulti?'<span class="badge-pedidos">&#128230; '+c.pedidos.length+' pedidos</span>':'')+'</div>'+
-    '<div class="card-sub">&#128222; '+(c.telefono||'&mdash;')+'</div>'+
-    notasHtml+(cod?'<div class="card-cod-rep">&#128176; RD$ '+cod.toLocaleString()+'</div>':'')+
-    '</div></div>'+
-    '<div class="card-body">'+
-    '<div class="btn-row">'+(waUrl?'<a class="btn-sm" style="background:#25d366" href="'+waUrl+'" target="_blank">&#128172; Enviar</a>':'')+(waUbi?'<a class="btn-sm" style="background:#0e7490" href="'+waUbi+'" target="_blank">&#128205; Ubicaci&#243;n</a>':'')+'</div>'+
-    '<div class="btn-row">'+(waUlt?'<a class="btn-sm" style="background:#b91c1c" href="'+waUlt+'" target="_blank">&#9888; &#218;ltimo Aviso</a>':'')+'</div>'+
-    '<div class="btn-row">'+(c.contactado
-      ?'<button class="btn-sm" style="background:#334155" onclick="toggleContactado('+globalIdx+')">&#8617; Mover a Pendientes</button>'
-      :'<button class="btn-sm" style="background:#0f766e" onclick="toggleContactado('+globalIdx+')">&#128257; Ya Contact\u00e9</button>')+
-    '</div></div></div>';
+    if(esMulti) notasHtml='<div class="card-notes">'+c.pedidos.map(function(p,i){ return '<div class="note-line">&#128230; Pedido '+(i+1)+': '+(p.nota||'&mdash;')+(p.cod?' &middot; RD$ '+parseFloat(p.cod).toLocaleString():'')+'</div>'; }).join('')+'</div>';
+    else if(c.nota) notasHtml='<div class="note-simple">&#128230; '+c.nota+'</div>';
+    return '<div class="card-v2 '+(esMulti?'card-v2-multi':'')+'">'+
+    '<div class="cv2-left-bar '+(esMulti?'cv2-bar-purple':'cv2-bar-blue')+'"></div>'+
+    '<div class="cv2-body">'+
+      '<div class="cv2-header">'+
+        '<div class="cv2-header-left">'+
+          '<div class="cv2-num">#'+(idx+1)+'</div>'+
+          '<div class="cv2-name">'+(c.nombre||'Sin nombre')+(esMulti?' <span class="cv2-tag cv2-tag-multi">'+c.pedidos.length+' pedidos</span>':'')+'</div>'+
+          '<div class="cv2-sub">&#128222; '+(c.telefono||'&mdash;')+(cod?' &nbsp;&#183;&nbsp; <strong>RD$ '+cod.toLocaleString()+'</strong>':'')+'</div>'+
+        '</div>'+
+      '</div>'+
+      notasHtml+
+      '<div class="cv2-actions">'+
+        '<div class="cv2-row-main">'+
+          (waUrl?'<a class="cv2-btn cv2-btn-wa" href="'+waUrl+'" target="_blank">&#128172; Enviar</a>':'')+
+          (waUbi?'<a class="cv2-btn cv2-btn-blue" href="'+waUbi+'" target="_blank">&#128205; Ubicaci&#243;n</a>':'')+
+        '</div>'+
+        '<div class="cv2-row-main">'+
+          (waUlt?'<a class="cv2-btn" style="background:#b91c1c;flex:1;" href="'+waUlt+'" target="_blank">&#9888; &#218;ltimo Aviso</a>':'')+
+        '</div>'+
+        '<div class="cv2-row-secondary">'+
+          (c.contactado
+            ?'<button class="card-action-pill pill-gray" onclick="toggleContactado('+globalIdx+')">&#8617; Mover a Pendientes</button>'
+            :'<button class="card-action-pill pill-green" onclick="toggleContactado('+globalIdx+')">&#128257; Ya Contact\u00e9</button>')+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    '</div>';
   }).join('');
 }
 
@@ -1077,6 +1133,7 @@ function switchInvTab(tab){
     document.getElementById('itab-'+t).classList.toggle('active',t===tab);
     document.getElementById('itab-view-'+t).classList.toggle('active',t===tab);
   });
+  document.getElementById('inv-filter-tabs').style.display=tab==='registros'?'flex':'none';
   if(tab!=='escanear'&&invCameraOn) invStopCamera();
   if(tab==='registros') invRenderRecords();
 }
