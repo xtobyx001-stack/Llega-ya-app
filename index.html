@@ -1467,19 +1467,6 @@ var invCurrentStatus=null;
 var invCurrentFilter='pendiente';
 var invToastTimer;
 
-function invUpdateBadge(){
-  document.getElementById('inv-total-badge').textContent=Object.keys(invPackages).length+' pkgs';
-}
-
-function invUpdateStats(){
-  var total=Object.keys(invPackages).length;
-  var ok=Object.values(invRecords).filter(function(r){ return r.status==='entregado'; }).length;
-  var fail=Object.values(invRecords).filter(function(r){ return r.status==='no-entregado'; }).length;
-  document.getElementById('is-total').textContent=total;
-  document.getElementById('is-ok').textContent=ok;
-  document.getElementById('is-fail').textContent=fail;
-}
-
 function switchInvTab(tab){
   invTabActual=tab;
   localStorage.setItem('llya_invtab', tab);
@@ -1693,13 +1680,46 @@ function invSetFilter(el,val){
   invRenderRecords();
 }
 
+/* Build the unified list of ALL known UIDs across clientes, jostin, invPackages, invRecords */
+function getAllInvIds(){
+  var seen={}, all=[];
+  /* clientes activos (pendiente) */
+  clientes.forEach(function(c){ if(!seen[c._uid]){seen[c._uid]=1;all.push(c._uid);} });
+  /* jostinClientes */
+  jostinClientes.forEach(function(c){ if(!seen[c._uid]){seen[c._uid]=1;all.push(c._uid);} });
+  /* invPackages (cargados por Excel de inventario o por acciones) */
+  Object.keys(invPackages).forEach(function(id){ if(!seen[id]){seen[id]=1;all.push(id);} });
+  /* invRecords (escaneados) */
+  Object.keys(invRecords).forEach(function(id){ if(!seen[id]){seen[id]=1;all.push(id);} });
+  return all;
+}
+
+/* Get package data for a uid — prefer invPackages, fallback to clientes/jostin */
+function getInvPkg(uid){
+  if(invPackages[uid]) return invPackages[uid];
+  var c=clientes.find(function(x){ return x._uid===uid; })||jostinClientes.find(function(x){ return x._uid===uid; });
+  if(c) return{customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||''};
+  return {};
+}
+
+function invUpdateBadge(){
+  document.getElementById('inv-total-badge').textContent=getAllInvIds().length+' pkgs';
+}
+
+function invUpdateStats(){
+  var all=getAllInvIds();
+  var total=all.length;
+  var ok=Object.values(invRecords).filter(function(r){ return r.status==='entregado'; }).length;
+  var fail=Object.values(invRecords).filter(function(r){ return r.status==='no-entregado'; }).length;
+  document.getElementById('is-total').textContent=total;
+  document.getElementById('is-ok').textContent=ok;
+  document.getElementById('is-fail').textContent=fail;
+}
+
 function invUpdateCounts(){
-  var seen={};
-  var allOrders=[];
-  Object.keys(invRecords).forEach(function(id){ if(!seen[id]){seen[id]=1;allOrders.push(id);} });
-  Object.keys(invPackages).forEach(function(id){ if(!seen[id]){seen[id]=1;allOrders.push(id);} });
+  var all=getAllInvIds();
   var counts={'pendiente':0,'no-entregado':0,'pendiente-prog':0,'devolucion':0,'entregado':0};
-  allOrders.forEach(function(id){
+  all.forEach(function(id){
     var st=invRecords[id]?invRecords[id].status:'pendiente';
     if(counts[st]!==undefined) counts[st]++;
   });
@@ -1712,19 +1732,16 @@ function invUpdateCounts(){
 function invRenderRecords(){
   invUpdateCounts();
   var search=(document.getElementById('inv-search-input').value||'').trim().toLowerCase();
-  var seen={};
-  var allOrders=[];
-  Object.keys(invRecords).forEach(function(id){ if(!seen[id]){seen[id]=1;allOrders.push(id);} });
-  Object.keys(invPackages).forEach(function(id){ if(!seen[id]){seen[id]=1;allOrders.push(id);} });
-  var items=allOrders.map(function(id){
+  var all=getAllInvIds();
+  var items=all.map(function(id){
     var rec=invRecords[id];
-    var pkg=invPackages[id]||{};
+    var pkg=getInvPkg(id);
     if(rec) return rec;
     return{orderNo:id,customer:pkg.customer||'',receiver:pkg.receiver||'',phone:pkg.phone||'',zone:pkg.zone||'',cod:pkg.cod||'',note:pkg.note||'',status:'pendiente'};
   });
   if(search) items=items.filter(function(i){ return i.orderNo.toLowerCase().indexOf(search)>=0||(i.customer||'').toLowerCase().indexOf(search)>=0||(i.receiver||'').toLowerCase().indexOf(search)>=0; });
   items=items.filter(function(i){ return i.status===invCurrentFilter; });
-  items.sort(function(a,b){ return a.orderNo>b.orderNo?1:-1; });
+  items.sort(function(a,b){ return (a.customer||a.orderNo).toLowerCase()>(b.customer||b.orderNo).toLowerCase()?1:-1; });
   var list=document.getElementById('inv-records-list');
   if(!items.length){ list.innerHTML='<div class="empty">Sin resultados en este grupo</div>'; return; }
   var html='';
@@ -1834,14 +1851,11 @@ function invQuickChangeStatus(orderNo,newStatus){
 }
 
 function invExportExcel(){
-  var seen={};
-  var allOrders=[];
-  Object.keys(invRecords).forEach(function(id){ if(!seen[id]){seen[id]=1;allOrders.push(id);} });
-  Object.keys(invPackages).forEach(function(id){ if(!seen[id]){seen[id]=1;allOrders.push(id);} });
+  var allOrders=getAllInvIds();
   var rows=allOrders.map(function(id){
     var rec=invRecords[id]||{orderNo:id,status:'pendiente'};
-    var pkg=invPackages[id]||{};
-    return{OrderNo:rec.orderNo,Customer:rec.customer||pkg.customer||'',Receiver:rec.receiver||pkg.receiver||'',Telefono:rec.phone||pkg.phone||'',Zone:rec.zone||pkg.zone||'',COD:rec.cod||pkg.cod||'',Producto:rec.note||pkg.note||'',Estado:rec.status||'pendiente',Motivo:rec.motivo||'',Nota:rec.motivoCustom||'',PendienteDia:rec.pendienteDia||'',DevolucionMotivo:rec.devolucionMotivo||'',FechaHora:rec.ts||''};
+    var pkg=getInvPkg(id);
+    return{OrderNo:id,Customer:rec.customer||pkg.customer||'',Receiver:rec.receiver||pkg.receiver||'',Telefono:rec.phone||pkg.phone||'',Zone:rec.zone||pkg.zone||'',COD:rec.cod||pkg.cod||'',Producto:rec.note||pkg.note||'',Estado:rec.status||'pendiente',Motivo:rec.motivo||'',Nota:rec.motivoCustom||'',PendienteDia:rec.pendienteDia||'',DevolucionMotivo:rec.devolucionMotivo||'',FechaHora:rec.ts||''};
   });
   var ws=XLSX.utils.json_to_sheet(rows);
   var wb=XLSX.utils.book_new();
