@@ -765,13 +765,25 @@ function moverAdmin(uid,dir){
 
 function renderAdmin(){
   if(adminTab==='exportar'){ renderExportarAdmin(); return; }
-  /* Show/hide map only on Rutas tab */
   var mapWrap=document.getElementById('route-map-wrap');
-  if(mapWrap) mapWrap.style.display=(adminTab==='pendientes'&&mapWrap.dataset.drawn==='1')?'block':'none';
   var list=document.getElementById('list-admin');
   var q=(document.getElementById('busqueda')||{value:''}).value.toLowerCase().trim();
   var datos=getDatosAdmin();
   if(q) datos=datos.filter(function(c){ return (c.nombre||'').toLowerCase().includes(q)||(c.telefono||'').includes(q); });
+
+  /* Auto-draw map when on Rutas tab with GPS clients */
+  if(adminTab==='pendientes'){
+    var conGps=clientes.filter(function(c){ return (c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng; });
+    if(conGps.length>=1){
+      mapWrap.style.display='block';
+      drawRouteMap(null, conGps);
+    } else {
+      mapWrap.style.display='none';
+    }
+  } else {
+    mapWrap.style.display='none';
+  }
+
   if(!datos.length){ list.innerHTML='<div class="empty">No hay clientes en esta secci&#243;n</div>'; return; }
   list.innerHTML=datos.map(function(c,idx){
     var mapsUrl=c.lat&&c.lng?'https://www.google.com/maps?q='+c.lat+','+c.lng:null;
