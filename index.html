@@ -677,22 +677,19 @@ function invSave(){
 }
 
 function syncInvToDelivery(){
-  var finalStatuses = {'entregado':1,'devolucion':1};
-  Object.keys(invRecords).forEach(function(orderNo){
-    var rec = invRecords[orderNo];
+  var finalStatuses={'entregado':1,'devolucion':1};
+  Object.keys(invRecords).forEach(function(uid){
+    var rec=invRecords[uid];
     if(finalStatuses[rec.status]){
-      clientes = clientes.filter(function(c){
-        return normTel(c.telefono) !== normTel(rec.phone) && c._uid !== orderNo;
-      });
-      exportados = exportados.filter(function(c){
-        return normTel(c.telefono) !== normTel(rec.phone);
-      });
+      /* Remove by _uid (shared key) */
+      clientes=clientes.filter(function(c){ return c._uid!==uid; });
+      exportados=exportados.filter(function(c){ return c._uid!==uid; });
     }
   });
   localStorage.setItem(STORAGE_KEY, JSON.stringify(clientes));
   localStorage.setItem(EXPORT_KEY,  JSON.stringify(exportados));
-  if(appActual === 'admin') renderAdmin();
-  if(appActual === 'rep')   renderRep();
+  if(appActual==='admin') renderAdmin();
+  if(appActual==='rep')   renderRep();
 }
 
 function calcCod(c){
@@ -872,27 +869,50 @@ function quitarExportar(uid){
 }
 
 function marcarEntregadoDesdeRuta(uid){
-  if(!confirm('\u00bfConfirmar entrega? La ficha saldr\u00e1 de Rutas y Entregas y se registrar\u00e1 en Inventario.')) return;
+  if(!confirm('¿Confirmar entrega? La ficha saldrá de Rutas y Entregas y quedará en Inventario > Entregados.')) return;
   var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
-  var orderNo=c._uid;
-  invPackages[orderNo]={customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||''};
-  invRecords[orderNo]={orderNo:orderNo,customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||'',status:'entregado',motivo:'',motivoCustom:'',pendienteDia:'',pendienteNota:'',devolucionMotivo:'',devolucionNota:'',ts:new Date().toLocaleString('es-DO')};
+  /* Update or create invPackages entry using _uid as key */
+  invPackages[uid]=invPackages[uid]||{customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||''};
+  /* Create invRecord as entregado */
+  invRecords[uid]={
+    orderNo:uid,customer:c.nombre||'',receiver:c.nombre||'',
+    phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||'',
+    status:'entregado',motivo:'',motivoCustom:'',
+    pendienteDia:'',pendienteNota:'',devolucionMotivo:'',devolucionNota:'',
+    ts:new Date().toLocaleString('es-DO')
+  };
+  /* Remove from Rutas y Entregas */
   clientes=clientes.filter(function(x){ return x._uid!==uid; });
   exportados=exportados.filter(function(x){ return x._uid!==uid; });
-  invSave(); guardar();
-  invShowToast('Entregado y registrado en Inventario','success');
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(clientes));
+  localStorage.setItem(EXPORT_KEY,  JSON.stringify(exportados));
+  localStorage.setItem(STORE_PKGS,  JSON.stringify(invPackages));
+  localStorage.setItem(STORE_RECS,  JSON.stringify(invRecords));
+  invUpdateBadge(); invUpdateStats();
+  renderAdmin(); renderRep();
+  invShowToast('✅ Entregado — registrado en Inventario','success');
 }
 
 function marcarDevolucionDesdeRuta(uid){
-  if(!confirm('\u00bfEnviar a Devoluciones? La ficha saldr\u00e1 de Rutas y Entregas.')) return;
+  if(!confirm('¿Enviar a Devoluciones? La ficha saldrá de Rutas y Entregas.')) return;
   var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
-  var orderNo=c._uid;
-  invPackages[orderNo]={customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||''};
-  invRecords[orderNo]={orderNo:orderNo,customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||'',status:'devolucion',motivo:'',motivoCustom:'',pendienteDia:'',pendienteNota:'',devolucionMotivo:'Marcado desde Rutas',devolucionNota:'',ts:new Date().toLocaleString('es-DO')};
+  invPackages[uid]=invPackages[uid]||{customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||''};
+  invRecords[uid]={
+    orderNo:uid,customer:c.nombre||'',receiver:c.nombre||'',
+    phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||'',
+    status:'devolucion',motivo:'',motivoCustom:'',
+    pendienteDia:'',pendienteNota:'',devolucionMotivo:'Marcado desde Rutas',devolucionNota:'',
+    ts:new Date().toLocaleString('es-DO')
+  };
   clientes=clientes.filter(function(x){ return x._uid!==uid; });
   exportados=exportados.filter(function(x){ return x._uid!==uid; });
-  invSave(); guardar();
-  invShowToast('Enviado a Devoluciones','info');
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(clientes));
+  localStorage.setItem(EXPORT_KEY,  JSON.stringify(exportados));
+  localStorage.setItem(STORE_PKGS,  JSON.stringify(invPackages));
+  localStorage.setItem(STORE_RECS,  JSON.stringify(invRecords));
+  invUpdateBadge(); invUpdateStats();
+  renderAdmin(); renderRep();
+  invShowToast('↩️ Devolución registrada en Inventario','info');
 }
 
 function enviarJostin(uid){
@@ -1100,67 +1120,88 @@ function drawRouteMap(origin, points){
   var canvas=document.getElementById('route-map-canvas');
   wrap.style.display='block';
 
-  /* Collect all coords including origin */
-  var allPts=[origin].concat(points.map(function(c){ return {lat:c.lat,lng:c.lng}; }));
+  var hasOrigin=origin&&origin.lat&&origin.lng;
 
-  /* Find bounding box */
+  /* Collect all coords */
+  var allPts=(hasOrigin?[origin]:[]).concat(points.map(function(c){ return {lat:c.lat,lng:c.lng}; }));
+
+  /* Find bounding box with extra margin */
   var minLat=Infinity,maxLat=-Infinity,minLng=Infinity,maxLng=-Infinity;
   allPts.forEach(function(p){ minLat=Math.min(minLat,p.lat);maxLat=Math.max(maxLat,p.lat);minLng=Math.min(minLng,p.lng);maxLng=Math.max(maxLng,p.lng); });
 
-  var W=canvas.parentElement.offsetWidth||360;
-  var H=Math.round(W*0.62);
-  canvas.width=W*2; canvas.height=H*2; /* retina */
+  /* Add 15% margin to bounding box so edge points aren't clipped */
+  var latSpan=(maxLat-minLat)||0.01;
+  var lngSpan=(maxLng-minLng)||0.01;
+  minLat-=latSpan*0.18; maxLat+=latSpan*0.18;
+  minLng-=lngSpan*0.18; maxLng+=lngSpan*0.18;
+
+  var W=wrap.offsetWidth||340;
+  var H=Math.round(W*0.58);
+  canvas.width=W*2; canvas.height=H*2;
   canvas.style.height=H+'px';
   var ctx=canvas.getContext('2d');
   ctx.scale(2,2);
 
-  var pad=36;
-  var scaleX=function(lng){ return pad+(lng-minLng)/(maxLng-minLng||0.001)*(W-pad*2); };
-  var scaleY=function(lat){ return H-pad-(lat-minLat)/(maxLat-minLat||0.001)*(H-pad*2); };
+  var scaleX=function(lng){ return (lng-minLng)/(maxLng-minLng)*W; };
+  var scaleY=function(lat){ return H-(lat-minLat)/(maxLat-minLat)*H; };
 
   /* Background */
-  ctx.fillStyle='#f0f4f8'; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#eef2f7'; ctx.fillRect(0,0,W,H);
 
-  /* Grid lines */
-  ctx.strokeStyle='#e2e8f0'; ctx.lineWidth=0.5;
-  for(var i=0;i<=4;i++){
-    var x=pad+(W-pad*2)*i/4; ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();
-    var y=pad+(H-pad*2)*i/4; ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+  /* Subtle grid */
+  ctx.strokeStyle='#dde3ec'; ctx.lineWidth=0.6;
+  for(var i=1;i<=4;i++){
+    var gx=W*i/5; ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke();
+    var gy=H*i/5; ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();
   }
 
-  /* Route line */
-  ctx.strokeStyle='#2563eb'; ctx.lineWidth=2.5; ctx.lineJoin='round'; ctx.lineCap='round';
-  ctx.setLineDash([]);
+  /* Route line with glow */
+  ctx.strokeStyle='rgba(37,99,235,0.18)'; ctx.lineWidth=7; ctx.lineJoin='round'; ctx.lineCap='round';
   ctx.beginPath();
-  ctx.moveTo(scaleX(origin.lng),scaleY(origin.lat));
+  if(hasOrigin) ctx.moveTo(scaleX(origin.lng),scaleY(origin.lat));
+  else ctx.moveTo(scaleX(points[0].lng),scaleY(points[0].lat));
+  points.forEach(function(c){ ctx.lineTo(scaleX(c.lng),scaleY(c.lat)); });
+  ctx.stroke();
+
+  ctx.strokeStyle='#2563eb'; ctx.lineWidth=2.8;
+  ctx.beginPath();
+  if(hasOrigin) ctx.moveTo(scaleX(origin.lng),scaleY(origin.lat));
+  else ctx.moveTo(scaleX(points[0].lng),scaleY(points[0].lat));
   points.forEach(function(c){ ctx.lineTo(scaleX(c.lng),scaleY(c.lat)); });
   ctx.stroke();
 
   /* Origin dot */
-  ctx.fillStyle='#16a34a';
-  ctx.beginPath(); ctx.arc(scaleX(origin.lng),scaleY(origin.lat),6,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(scaleX(origin.lng),scaleY(origin.lat),3,0,Math.PI*2); ctx.fill();
+  if(hasOrigin){
+    var ox=scaleX(origin.lng), oy=scaleY(origin.lat);
+    ctx.fillStyle='rgba(22,163,74,0.2)';
+    ctx.beginPath(); ctx.arc(ox,oy,10,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#16a34a';
+    ctx.beginPath(); ctx.arc(ox,oy,5,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(ox,oy,2.5,0,Math.PI*2); ctx.fill();
+  }
 
   /* Stop dots with numbers */
   points.forEach(function(c,i){
     var x=scaleX(c.lng), y=scaleY(c.lat);
     /* Shadow */
-    ctx.fillStyle='rgba(0,0,0,0.15)';
-    ctx.beginPath(); ctx.arc(x+1,y+1,10,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='rgba(0,0,0,0.13)';
+    ctx.beginPath(); ctx.arc(x+1,y+1.5,11,0,Math.PI*2); ctx.fill();
     /* Circle */
     ctx.fillStyle='#2563eb';
-    ctx.beginPath(); ctx.arc(x,y,10,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x,y,11,0,Math.PI*2); ctx.fill();
+    /* White ring */
+    ctx.strokeStyle='#fff'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.arc(x,y,11,0,Math.PI*2); ctx.stroke();
     /* Number */
-    ctx.fillStyle='#fff'; ctx.font='bold 9px -apple-system,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillStyle='#fff'; ctx.font='bold 8.5px -apple-system,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
     ctx.fillText(i+1,x,y);
   });
 
-  /* Info badge */
-  var totalDist=0;
-  for(var i=0;i<points.length-1;i++){
-    totalDist+=hav2(points[i].lat,points[i].lng,points[i+1].lat,points[i+1].lng);
-  }
+  /* Distance info */
   function hav2(a,b,c,d){var R=6371,dL=(c-a)*Math.PI/180,dG=(d-b)*Math.PI/180,x=Math.pow(Math.sin(dL/2),2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.pow(Math.sin(dG/2),2);return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
+  var totalDist=0;
+  var allSeq=(hasOrigin?[origin]:[]).concat(points);
+  for(var i=0;i<allSeq.length-1;i++) totalDist+=hav2(allSeq[i].lat,allSeq[i].lng,allSeq[i+1].lat,allSeq[i+1].lng);
   document.getElementById('route-map-info').textContent=points.length+' paradas · ~'+totalDist.toFixed(1)+' km';
 }
 
@@ -1185,13 +1226,13 @@ function leerExcel(file,origen){
       var wb=XLSX.read(ev.target.result,{type:'binary'});
       var ws=wb.Sheets[wb.SheetNames[0]];
       var raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
-      if(!raw.length) return alert('El archivo est\u00e1 vac\u00edo.');
+      if(!raw.length){ invShowToast('El archivo está vacío','error'); return; }
       var headerIdx=-1;
       for(var i=0;i<Math.min(raw.length,6);i++){
         var rowStr=raw[i].join('|').toLowerCase();
         if(rowStr.indexOf('dropoff')!==-1||rowStr.indexOf('cod')!==-1||rowStr.indexOf('contacto')!==-1||rowStr.indexOf('tel')!==-1){ headerIdx=i;break; }
       }
-      if(headerIdx===-1)return alert('No se encontr\u00f3 la fila de encabezados.');
+      if(headerIdx===-1){ invShowToast('No se encontró fila de encabezados','error'); return; }
       var headers=raw[headerIdx];
       var rows=[];
       for(var j=headerIdx+1;j<raw.length;j++){
@@ -1199,16 +1240,18 @@ function leerExcel(file,origen){
       }
       function findCol(row,candidates){
         var keys=Object.keys(row);
-        for(var ci=0;ci<candidates.length;ci++){ var found=keys.find(function(k){return k.toLowerCase().trim()===candidates[ci].toLowerCase();}); if(found) return found; }
-        for(var ci=0;ci<candidates.length;ci++){ var found=keys.find(function(k){return k.toLowerCase().indexOf(candidates[ci].toLowerCase())!==-1;}); if(found) return found; }
+        for(var ci=0;ci<candidates.length;ci++){ var f=keys.find(function(k){return k.toLowerCase().trim()===candidates[ci].toLowerCase();}); if(f)return f; }
+        for(var ci=0;ci<candidates.length;ci++){ var f=keys.find(function(k){return k.toLowerCase().indexOf(candidates[ci].toLowerCase())!==-1;}); if(f)return f; }
         return null;
       }
-      if(!rows.length) return alert('No se encontraron filas.');
+      if(!rows.length){ invShowToast('No se encontraron filas','error'); return; }
       var sample=rows[0];
       var colNombre=findCol(sample,['dropoff contact name','contacto','nombre','name','receiver','destinatario']);
-      var colTel=findCol(sample,['dropoff contact','telefono','tel\u00e9fono','phone','tel','celular','whatsapp']);
+      var colTel=findCol(sample,['dropoff contact','telefono','teléfono','phone','tel','celular','whatsapp']);
       var colCod=findCol(sample,['cod','monto','amount','valor','precio']);
       var colNota=findCol(sample,['nota','note','notas','producto','descripcion','referencia']);
+
+      /* Build unified list — each item gets one _uid used across all 3 apps */
       var lista=rows.map(function(r){
         var nombre=colNombre?String(r[colNombre]||'').trim():'';
         var tel=colTel?String(r[colTel]||'').trim():'';
@@ -1217,33 +1260,50 @@ function leerExcel(file,origen){
         if(nota==='-')nota='';
         if(!nombre&&!tel)return null;
         tel=tel.replace(/\D/g,'');
-        if(tel.length===10 && tel[0]!=='1') tel='1'+tel;
+        if(tel.length===10&&tel[0]!=='1') tel='1'+tel;
         else if(tel.length===7) tel='1809'+tel;
         return{nombre:nombre,telefono:tel,cod:cod,nota:nota,lat:null,lng:null,estado:'pendiente',_uid:generarId()};
-      }).filter(function(r){return r!==null;});
-      if(!lista.length)return alert('No se encontraron clientes v\u00e1lidos.');
+      }).filter(Boolean);
+
+      if(!lista.length){ invShowToast('No se encontraron clientes válidos','error'); return; }
+
+      /* Dedup by phone against existing clientes */
       var telEx=new Map(clientes.filter(function(c){return normTel(c.telefono);}).map(function(c){return [normTel(c.telefono),c];}));
-      var agregados=0,omitidos=0;
+      var agregados=0, omitidos=0;
+      var clientesNuevos=[];
       lista.forEach(function(nuevo){
         var tel=normTel(nuevo.telefono);
-        if(!tel){clientes.push(nuevo);agregados++;return;}
-        if(telEx.has(tel)){omitidos++;}
-        else{clientes.push(nuevo);telEx.set(tel,nuevo);agregados++;}
+        if(!tel){ clientes.push(nuevo); clientesNuevos.push(nuevo); agregados++; return; }
+        if(telEx.has(tel)){ omitidos++; }
+        else{ clientes.push(nuevo); telEx.set(tel,nuevo); clientesNuevos.push(nuevo); agregados++; }
       });
-      guardar();
-      /* Also load into invPackages for Inventario > Sin escanear */
-      lista.forEach(function(nuevo){
-        var id=nuevo._uid;
-        if(!invPackages[id]){
-          invPackages[id]={customer:nuevo.nombre||'',receiver:nuevo.nombre||'',phone:nuevo.telefono||'',zone:'',cod:String(nuevo.cod||''),note:nuevo.nota||''};
+
+      /* ── SYNC 1: Guardar en Rutas/Entregas ── */
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(clientes));
+      localStorage.setItem(EXPORT_KEY,  JSON.stringify(exportados));
+      renderAdmin(); renderRep();
+
+      /* ── SYNC 2: Cargar en Inventario > Sin escanear (solo los nuevos) ── */
+      clientesNuevos.forEach(function(c){
+        if(!invPackages[c._uid]){
+          invPackages[c._uid]={
+            customer:c.nombre||'',
+            receiver:c.nombre||'',
+            phone:c.telefono||'',
+            zone:'',
+            cod:String(c.cod||''),
+            note:c.nota||''
+          };
         }
       });
       try{ localStorage.setItem(STORE_PKGS, JSON.stringify(invPackages)); }catch(e){}
       invUpdateBadge(); invUpdateStats();
-      var msg='\u2705 '+agregados+' clientes cargados';
-      if(omitidos>0)msg+=' (\u26a0\ufe0f '+omitidos+' duplicados omitidos)';
+
+      var msg='✅ '+agregados+' cargados en Rutas, Entregas e Inventario';
+      if(omitidos>0) msg+=' · ⚠️ '+omitidos+' duplicados';
       invShowToast(msg,'success');
-    }catch(err){alert('Error al leer el Excel: '+err.message);}
+
+    }catch(err){ invShowToast('Error: '+err.message,'error'); }
   };
   reader.readAsBinaryString(file);
 }
