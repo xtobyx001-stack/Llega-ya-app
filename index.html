@@ -737,7 +737,7 @@ document.querySelectorAll('.overlay').forEach(function(o){ o.addEventListener('c
 var adminTab = 'pendientes';
 
 function getDatosAdmin(){
-  if(adminTab==='pendientes')    return clientes.filter(function(c){ return c.estado==='pendiente'&&c.lat&&c.lng; });
+  if(adminTab==='pendientes')    return clientes.filter(function(c){ return (c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng; });
   if(adminTab==='sin_ubicacion') return clientes.filter(function(c){ return (!c.lat||!c.lng)&&(c.estado==='pendiente'||!c.estado); });
   if(adminTab==='completados')   return clientes.filter(function(c){ return c.estado==='completado'; });
   return [];
