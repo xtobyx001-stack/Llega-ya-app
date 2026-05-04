@@ -1246,23 +1246,33 @@ function leerExcel(file,origen){
       }
       if(!rows.length){ invShowToast('No se encontraron filas','error'); return; }
       var sample=rows[0];
+      var colCodigo=findCol(sample,['code','codigo','orderid','order_no','order no','orderno','id']);
       var colNombre=findCol(sample,['dropoff contact name','contacto','nombre','name','receiver','destinatario']);
       var colTel=findCol(sample,['dropoff contact','telefono','teléfono','phone','tel','celular','whatsapp']);
       var colCod=findCol(sample,['cod','monto','amount','valor','precio']);
       var colNota=findCol(sample,['nota','note','notas','producto','descripcion','referencia']);
+      var colZone=findCol(sample,['zone','zona','sector','area']);
+      var colCustomer=findCol(sample,['customer name','customer','cliente','shop']);
 
-      /* Build unified list — each item gets one _uid used across all 3 apps */
+      /* Build unified list — use Code as _uid if available so inventory shows real order numbers */
+      var usedCodes={};
       var lista=rows.map(function(r){
         var nombre=colNombre?String(r[colNombre]||'').trim():'';
         var tel=colTel?String(r[colTel]||'').trim():'';
         var cod=colCod?parseFloat(String(r[colCod]||'0').replace(/[^0-9.]/g,''))||0:0;
         var nota=colNota?String(r[colNota]||'').trim():'';
+        var zone=colZone?String(r[colZone]||'').trim():'';
+        var customer=colCustomer?String(r[colCustomer]||'').trim():'';
+        var codigo=colCodigo?String(r[colCodigo]||'').trim():'';
         if(nota==='-')nota='';
         if(!nombre&&!tel)return null;
         tel=tel.replace(/\D/g,'');
         if(tel.length===10&&tel[0]!=='1') tel='1'+tel;
         else if(tel.length===7) tel='1809'+tel;
-        return{nombre:nombre,telefono:tel,cod:cod,nota:nota,lat:null,lng:null,estado:'pendiente',_uid:generarId()};
+        /* Use real order code as uid if available and not duplicate */
+        var uid=codigo&&!usedCodes[codigo]?codigo:generarId();
+        if(codigo) usedCodes[codigo]=1;
+        return{nombre:nombre,telefono:tel,cod:cod,nota:nota,zone:zone,customer:customer,lat:null,lng:null,estado:'pendiente',_uid:uid};
       }).filter(Boolean);
 
       if(!lista.length){ invShowToast('No se encontraron clientes válidos','error'); return; }
@@ -1287,10 +1297,10 @@ function leerExcel(file,origen){
       clientesNuevos.forEach(function(c){
         if(!invPackages[c._uid]){
           invPackages[c._uid]={
-            customer:c.nombre||'',
+            customer:c.customer||c.nombre||'',
             receiver:c.nombre||'',
             phone:c.telefono||'',
-            zone:'',
+            zone:c.zone||'',
             cod:String(c.cod||''),
             note:c.nota||''
           };
@@ -1698,7 +1708,7 @@ function getAllInvIds(){
 function getInvPkg(uid){
   if(invPackages[uid]) return invPackages[uid];
   var c=clientes.find(function(x){ return x._uid===uid; })||jostinClientes.find(function(x){ return x._uid===uid; });
-  if(c) return{customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||''};
+  if(c) return{customer:c.customer||c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:c.zone||'',cod:String(calcCod(c)||''),note:c.nota||''};
   return {};
 }
 
