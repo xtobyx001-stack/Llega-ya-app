@@ -1547,15 +1547,27 @@ function invLoadPackages(){
   var orderCol=document.getElementById('imap-order').value;
   if(!orderCol){ invShowToast('Debes mapear la columna OrderNo','error'); return; }
   invColMap={order:orderCol,customer:document.getElementById('imap-customer').value,receiver:document.getElementById('imap-receiver').value,phone:document.getElementById('imap-phone').value,zone:document.getElementById('imap-zone').value,cod:document.getElementById('imap-cod').value,note:document.getElementById('imap-note').value};
-  invPackages={};
+  var added=0, dupes=0;
   invRawData.forEach(function(row){
     var orderVal=String(row[invColMap.order]||'').trim();
     if(!orderVal) return;
-    invPackages[orderVal]={customer:invColMap.customer?String(row[invColMap.customer]||'').trim():'',receiver:invColMap.receiver?String(row[invColMap.receiver]||'').trim():'',phone:invColMap.phone?String(row[invColMap.phone]||'').trim():'',zone:invColMap.zone?String(row[invColMap.zone]||'').trim():'',cod:invColMap.cod?String(row[invColMap.cod]||'').trim():'',note:invColMap.note?String(row[invColMap.note]||'').trim():''};
+    /* Skip duplicate codes */
+    if(invPackages[orderVal]){ dupes++; return; }
+    invPackages[orderVal]={
+      customer:invColMap.customer?String(row[invColMap.customer]||'').trim():'',
+      receiver:invColMap.receiver?String(row[invColMap.receiver]||'').trim():'',
+      phone:invColMap.phone?String(row[invColMap.phone]||'').trim():'',
+      zone:invColMap.zone?String(row[invColMap.zone]||'').trim():'',
+      cod:invColMap.cod?String(row[invColMap.cod]||'').trim():'',
+      note:invColMap.note?String(row[invColMap.note]||'').trim():''
+    };
+    added++;
   });
   invSave();
   document.getElementById('inv-loaded-summary').style.display='block';
-  invShowToast(Object.keys(invPackages).length+' paquetes cargados','success');
+  var msg=added+' paquetes cargados';
+  if(dupes>0) msg+=' · '+dupes+' duplicados omitidos';
+  invShowToast(msg,'success');
   switchInvTab('registros');
   invCurrentFilter='pendiente';
   document.querySelectorAll('.ftab').forEach(function(t){ t.classList.remove('active'); });
@@ -1572,12 +1584,18 @@ function invClearFile(){
 }
 
 function invClearAll(){
-  if(!confirm('Eliminar todos los paquetes y registros del dia?')) return;
+  if(!confirm('¿Eliminar todos los paquetes y registros del día?')) return;
   invPackages={}; invRecords={};
-  try{ localStorage.removeItem(STORE_PKGS); localStorage.removeItem(STORE_RECS); }catch(e){}
+  clientes=[]; jostinClientes=[];
+  try{
+    localStorage.removeItem(STORE_PKGS); localStorage.removeItem(STORE_RECS);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+    localStorage.setItem('llya_jostin', JSON.stringify([]));
+  }catch(e){}
   invUpdateBadge(); invUpdateStats();
   document.getElementById('inv-loaded-summary').style.display='none';
-  invShowToast('Datos eliminados','info');
+  renderAdmin(); renderRep(); renderJostin();
+  invShowToast('Todo limpiado','info');
   invRenderRecords();
 }
 
@@ -1817,6 +1835,35 @@ function invOpenModal(orderNo){
 function invCloseModal(e){ if(e.target===document.getElementById('inv-detail-modal')) invCloseModalDirect(); }
 function invCloseModalDirect(){ document.getElementById('inv-detail-modal').classList.remove('open'); }
 
+/* Remove a uid from ALL stores */
+function invRemoveUid(uid){
+  delete invRecords[uid];
+  delete invPackages[uid];
+  clientes=clientes.filter(function(c){ return c._uid!==uid; });
+  jostinClientes=jostinClientes.filter(function(c){ return c._uid!==uid; });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(clientes));
+  localStorage.setItem('llya_jostin', JSON.stringify(jostinClientes));
+}
+
+function invClearCurrentGroup(){
+  var labels={'pendiente':'Sin escanear','no-entregado':'No entregados','pendiente-prog':'Pendientes','devolucion':'Devoluciones','entregado':'Entregados'};
+  if(!confirm('¿Borrar todos los de: '+(labels[invCurrentFilter]||invCurrentFilter)+'?')) return;
+  var toRemove=getAllInvIds().filter(function(id){
+    var st=invRecords[id]?invRecords[id].status:'pendiente';
+    return st===invCurrentFilter;
+  });
+  toRemove.forEach(function(uid){ invRemoveUid(uid); });
+  invSave(); invRenderRecords();
+  invShowToast(toRemove.length+' eliminados','info');
+}
+
+function invQuickDelete(orderNo){
+  if(!confirm('¿Borrar #'+orderNo+'?')) return;
+  invRemoveUid(orderNo);
+  invSave(); invRenderRecords();
+  invShowToast('Paquete #'+orderNo+' borrado','info');
+}
+
 function invDeleteRecord(){
   if(!invCurrentRecordId) return;
   delete invRecords[invCurrentRecordId];
@@ -1826,29 +1873,10 @@ function invDeleteRecord(){
 
 function invDeletePackage(){
   if(!invCurrentRecordId) return;
-  if(!confirm('Borrar el paquete #'+invCurrentRecordId+' y su registro?')) return;
-  delete invRecords[invCurrentRecordId]; delete invPackages[invCurrentRecordId];
+  if(!confirm('¿Borrar el paquete #'+invCurrentRecordId+' completo?')) return;
+  invRemoveUid(invCurrentRecordId);
   invSave(); invCloseModalDirect(); invRenderRecords();
   invShowToast('Paquete #'+invCurrentRecordId+' borrado','info');
-}
-
-function invClearCurrentGroup(){
-  var labels={'pendiente':'Sin escanear','no-entregado':'No entregados','pendiente-prog':'Pendientes','devolucion':'Devoluciones','entregado':'Entregados'};
-  if(!confirm('Borrar todos los registros de: '+(labels[invCurrentFilter]||invCurrentFilter)+'?')) return;
-  if(invCurrentFilter==='pendiente'){
-    Object.keys(invPackages).forEach(function(id){ if(!invRecords[id]) delete invPackages[id]; });
-  } else {
-    Object.keys(invRecords).forEach(function(id){ if(invRecords[id].status===invCurrentFilter){ delete invRecords[id]; delete invPackages[id]; } });
-  }
-  invSave(); invRenderRecords();
-  invShowToast('Grupo borrado','info');
-}
-
-function invQuickDelete(orderNo){
-  if(!confirm('Borrar #'+orderNo+'?')) return;
-  delete invRecords[orderNo]; delete invPackages[orderNo];
-  invSave(); invRenderRecords();
-  invShowToast('Paquete #'+orderNo+' borrado','info');
 }
 
 function invQuickChangeStatus(orderNo,newStatus){
