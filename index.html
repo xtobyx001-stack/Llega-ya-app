@@ -448,29 +448,13 @@ width:100%;
   <!-- CARGAR -->
 
   <div class="inv-view active" id="itab-view-cargar">
-    <div class="upload-zone" id="inv-upload-zone">
-      <input type="file" id="inv-file-input" accept=".xlsx,.xls,.csv">
-      <span class="upload-icon">&#128202;</span>
-      <h3>Cargar archivo del d&#237;a</h3>
-      <p>Excel .xlsx / .xls &middot; Toca para seleccionar</p>
+    <div style="text-align:center;padding:24px 16px 16px;">
+      <div style="font-size:2.8rem;margin-bottom:10px;">&#128230;</div>
+      <div style="font-size:1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">Carga el Excel desde Rutas</div>
+      <div style="font-size:.82rem;color:#64748b;line-height:1.5;">El archivo Excel que cargues en <strong>Rutas</strong> se sincroniza automáticamente aquí en Sin escanear.</div>
+      <button class="ibtn ibtn-primary" style="margin-top:18px;max-width:240px;display:inline-block;" onclick="switchApp('admin')">&#128506; Ir a Rutas</button>
     </div>
-    <div id="inv-file-info-box" style="display:none" class="file-pill">
-      <span style="font-size:1.3rem">&#128196;</span>
-      <div style="flex:1"><strong id="inv-file-name">-</strong><span id="inv-file-rows">-</span></div>
-      <button class="btn-clear-inv" onclick="invClearFile()">&#10005;</button>
-    </div>
-    <div class="map-card" id="inv-mapping-card" style="display:none">
-      <h4>Mapear columnas</h4>
-      <div class="map-row"><span class="map-lbl">OrderNo *</span><select class="map-sel" id="imap-order"></select></div>
-      <div class="map-row"><span class="map-lbl">Customer</span><select class="map-sel" id="imap-customer"></select></div>
-      <div class="map-row"><span class="map-lbl">Receiver</span><select class="map-sel" id="imap-receiver"></select></div>
-      <div class="map-row"><span class="map-lbl">Telefono</span><select class="map-sel" id="imap-phone"></select></div>
-      <div class="map-row"><span class="map-lbl">Zone</span><select class="map-sel" id="imap-zone"></select></div>
-      <div class="map-row"><span class="map-lbl">COD</span><select class="map-sel" id="imap-cod"></select></div>
-      <div class="map-row"><span class="map-lbl">Note</span><select class="map-sel" id="imap-note"></select></div>
-    </div>
-    <button class="ibtn ibtn-primary" id="inv-btn-load" style="display:none" onclick="invLoadPackages()">Cargar paquetes</button>
-    <div id="inv-loaded-summary" style="display:none;margin-top:14px;">
+    <div id="inv-loaded-summary" style="margin-top:4px;">
       <div class="stats-row">
         <div class="stat-box"><div class="stat-n sn-blue" id="is-total">0</div><div class="stat-l">Total</div></div>
         <div class="stat-box"><div class="stat-n sn-green" id="is-ok">0</div><div class="stat-l">Entregados</div></div>
@@ -478,7 +462,7 @@ width:100%;
       </div>
       <div style="display:flex;gap:8px;">
         <button class="ibtn ibtn-secondary" style="flex:1;margin-top:0" onclick="invExportExcel()">&#11015; Exportar</button>
-        <button class="ibtn ibtn-danger" style="flex:1;margin-top:0" onclick="invClearAll()">&#128465; Limpiar</button>
+        <button class="ibtn ibtn-danger" style="flex:1;margin-top:0" onclick="invClearAll()">&#128465; Limpiar todo</button>
       </div>
     </div>
   </div>
@@ -1277,15 +1261,27 @@ function leerExcel(file,origen){
 
       if(!lista.length){ invShowToast('No se encontraron clientes válidos','error'); return; }
 
-      /* Dedup by phone against existing clientes */
-      var telEx=new Map(clientes.filter(function(c){return normTel(c.telefono);}).map(function(c){return [normTel(c.telefono),c];}));
+      /* Final statuses — these should NOT come back to Rutas/Entregas */
+      var finalStatuses={'entregado':1,'devolucion':1,'jostin':1};
+
+      /* Only block if uid is already in active clientes/jostin OR has a final inv status */
+      var blockUids=new Set(
+        clientes.map(function(c){ return c._uid; })
+        .concat(jostinClientes.map(function(c){ return c._uid; }))
+      );
+      /* Also block codes that have final status in invRecords */
+      Object.keys(invRecords).forEach(function(uid){
+        if(finalStatuses[invRecords[uid].status]) blockUids.add(uid);
+      });
+
       var agregados=0, omitidos=0;
       var clientesNuevos=[];
       lista.forEach(function(nuevo){
-        var tel=normTel(nuevo.telefono);
-        if(!tel){ clientes.push(nuevo); clientesNuevos.push(nuevo); agregados++; return; }
-        if(telEx.has(tel)){ omitidos++; }
-        else{ clientes.push(nuevo); telEx.set(tel,nuevo); clientesNuevos.push(nuevo); agregados++; }
+        if(blockUids.has(nuevo._uid)){ omitidos++; return; }
+        blockUids.add(nuevo._uid);
+        clientes.push(nuevo);
+        clientesNuevos.push(nuevo);
+        agregados++;
       });
 
       /* ── SYNC 1: Guardar en Rutas/Entregas ── */
@@ -1468,8 +1464,6 @@ function enviarJostinRep(uid){
 }
 
 /* APP INVENTARIO */
-var invRawData=[];
-var invColMap={};
 var invCameraOn=false;
 var invCurrentPkg=null;
 var invCurrentRecordId=null;
@@ -1487,100 +1481,6 @@ function switchInvTab(tab){
   document.getElementById('inv-filter-tabs').style.display=tab==='registros'?'flex':'none';
   if(tab!=='escanear'&&invCameraOn) invStopCamera();
   if(tab==='registros') invRenderRecords();
-}
-
-document.getElementById('inv-file-input').addEventListener('change',function(){
-  if(this.files[0]) invHandleFile(this.files[0]);
-});
-
-function invHandleFile(file){
-  var reader=new FileReader();
-  reader.onload=function(e){
-    try{
-      var wb=XLSX.read(e.target.result,{type:'array'});
-      var ws=wb.Sheets[wb.SheetNames[0]];
-      invRawData=XLSX.utils.sheet_to_json(ws,{defval:''});
-      if(!invRawData.length){ invShowToast('El archivo esta vacio','error'); return; }
-      var firstKey=Object.keys(invRawData[0])[0]||'';
-      var looksLikeTitle=firstKey.toLowerCase().indexOf('report')>=0||Object.keys(invRawData[0]).length<=2;
-      if(looksLikeTitle) invRawData=XLSX.utils.sheet_to_json(ws,{defval:'',range:1});
-      if(!invRawData.length){ invShowToast('El archivo esta vacio','error'); return; }
-      document.getElementById('inv-file-name').textContent=file.name;
-      document.getElementById('inv-file-rows').textContent=invRawData.length+' filas';
-      document.getElementById('inv-file-info-box').style.display='flex';
-      document.getElementById('inv-mapping-card').style.display='block';
-      document.getElementById('inv-btn-load').style.display='block';
-      invPopulateMappingSelects(Object.keys(invRawData[0]));
-      invAutoMap(Object.keys(invRawData[0]));
-    }catch(err){ invShowToast('Error leyendo el archivo','error'); }
-  };
-  reader.readAsArrayBuffer(file);
-}
-
-function invPopulateMappingSelects(cols){
-  ['imap-order','imap-customer','imap-receiver','imap-phone','imap-zone','imap-cod','imap-note'].forEach(function(id){
-    var sel=document.getElementById(id);
-    sel.innerHTML='<option value="">- no mapear -</option>';
-    cols.forEach(function(c){ var o=document.createElement('option'); o.value=c; o.textContent=c; sel.appendChild(o); });
-  });
-}
-
-function invAutoMap(cols){
-  var matches={
-    'imap-order':['code','orderno','order_no','order no','orderid','order','codigo','id'],
-    'imap-customer':['customer name','customer','cliente','shop'],
-    'imap-receiver':['dropoff contact name','receiver','destinatario','nombre','name'],
-    'imap-phone':['dropoff contact','phone','telefono','tel','celular','whatsapp'],
-    'imap-zone':['zone','zona','sector','area'],
-    'imap-cod':['cod','monto','amount','valor','precio'],
-    'imap-note':['note','nota','notas','producto','descripcion']
-  };
-  Object.keys(matches).forEach(function(selId){
-    var keywords=matches[selId];
-    var sel=document.getElementById(selId);
-    var found=cols.find(function(c){ return keywords.some(function(k){ return c.toLowerCase().trim()===k; }); });
-    if(found) sel.value=found;
-  });
-}
-
-function invLoadPackages(){
-  var orderCol=document.getElementById('imap-order').value;
-  if(!orderCol){ invShowToast('Debes mapear la columna OrderNo','error'); return; }
-  invColMap={order:orderCol,customer:document.getElementById('imap-customer').value,receiver:document.getElementById('imap-receiver').value,phone:document.getElementById('imap-phone').value,zone:document.getElementById('imap-zone').value,cod:document.getElementById('imap-cod').value,note:document.getElementById('imap-note').value};
-  var added=0, dupes=0;
-  invRawData.forEach(function(row){
-    var orderVal=String(row[invColMap.order]||'').trim();
-    if(!orderVal) return;
-    /* Skip duplicate codes */
-    if(invPackages[orderVal]){ dupes++; return; }
-    invPackages[orderVal]={
-      customer:invColMap.customer?String(row[invColMap.customer]||'').trim():'',
-      receiver:invColMap.receiver?String(row[invColMap.receiver]||'').trim():'',
-      phone:invColMap.phone?String(row[invColMap.phone]||'').trim():'',
-      zone:invColMap.zone?String(row[invColMap.zone]||'').trim():'',
-      cod:invColMap.cod?String(row[invColMap.cod]||'').trim():'',
-      note:invColMap.note?String(row[invColMap.note]||'').trim():''
-    };
-    added++;
-  });
-  invSave();
-  document.getElementById('inv-loaded-summary').style.display='block';
-  var msg=added+' paquetes cargados';
-  if(dupes>0) msg+=' · '+dupes+' duplicados omitidos';
-  invShowToast(msg,'success');
-  switchInvTab('registros');
-  invCurrentFilter='pendiente';
-  document.querySelectorAll('.ftab').forEach(function(t){ t.classList.remove('active'); });
-  document.querySelector('.ftab[data-val="pendiente"]').classList.add('active');
-  invRenderRecords();
-}
-
-function invClearFile(){
-  invRawData=[];
-  document.getElementById('inv-file-info-box').style.display='none';
-  document.getElementById('inv-mapping-card').style.display='none';
-  document.getElementById('inv-btn-load').style.display='none';
-  document.getElementById('inv-file-input').value='';
 }
 
 function invClearAll(){
