@@ -879,6 +879,8 @@ function marcarEntregadoDesdeRuta(uid){
   localStorage.setItem(STORE_PKGS,  JSON.stringify(invPackages));
   localStorage.setItem(STORE_RECS,  JSON.stringify(invRecords));
   invUpdateBadge(); invUpdateStats();
+  /* Force map redraw on next renderAdmin by resetting gpsCount */
+  var mw=document.getElementById('route-map-wrap'); if(mw) mw.dataset.gpsCount='';
   renderAdmin(); renderRep();
   invShowToast('✅ Entregado — registrado en Inventario','success');
 }
@@ -901,6 +903,7 @@ function marcarDevolucionDesdeRuta(uid){
   localStorage.setItem(STORE_PKGS,  JSON.stringify(invPackages));
   localStorage.setItem(STORE_RECS,  JSON.stringify(invRecords));
   invUpdateBadge(); invUpdateStats();
+  var mw2=document.getElementById('route-map-wrap'); if(mw2) mw2.dataset.gpsCount='';
   renderAdmin(); renderRep();
   invShowToast('↩️ Devolución registrada en Inventario','info');
 }
@@ -1805,7 +1808,8 @@ function invQuickChangeStatus(orderNo,newStatus){
   var pkg=invPackages[orderNo]||{};
   var existing=invRecords[orderNo]||{};
   invRecords[orderNo]={orderNo:orderNo,customer:pkg.customer||existing.customer||'',receiver:pkg.receiver||existing.receiver||'',phone:pkg.phone||existing.phone||'',zone:pkg.zone||existing.zone||'',cod:pkg.cod||existing.cod||'',note:pkg.note||existing.note||'',status:newStatus,motivo:newStatus==='entregado'?'':(existing.motivo||''),motivoCustom:newStatus==='entregado'?'':(existing.motivoCustom||''),pendienteDia:newStatus==='pendiente-prog'?(existing.pendienteDia||''):'',pendienteNota:newStatus==='pendiente-prog'?(existing.pendienteNota||''):'',devolucionMotivo:newStatus==='devolucion'?(existing.devolucionMotivo||''):'',devolucionNota:newStatus==='devolucion'?(existing.devolucionNota||''):'',ts:new Date().toLocaleString('es-DO')};
-  invSave(false); invRenderRecords();
+  var isF=newStatus==='entregado'||newStatus==='devolucion';
+  invSave(isF); invRenderRecords();
   var labels={'entregado':'Entregado','no-entregado':'No entregado','pendiente-prog':'Pendiente','devolucion':'Devolucion'};
   invShowToast('#'+orderNo+' movido a '+(labels[newStatus]||newStatus),'success');
 }
