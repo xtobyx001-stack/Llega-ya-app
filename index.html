@@ -652,12 +652,12 @@ function guardar(){
   renderRep();
 }
 
-function invSave(){
+function invSave(doSync){
   try { localStorage.setItem(STORE_PKGS, JSON.stringify(invPackages)); } catch(e){}
   try { localStorage.setItem(STORE_RECS, JSON.stringify(invRecords));  } catch(e){}
   invUpdateBadge();
   invUpdateStats();
-  syncInvToDelivery();
+  if(doSync) syncInvToDelivery();
 }
 
 function syncInvToDelivery(){
@@ -752,12 +752,17 @@ function renderAdmin(){
   var datos=getDatosAdmin();
   if(q) datos=datos.filter(function(c){ return (c.nombre||'').toLowerCase().includes(q)||(c.telefono||'').includes(q); });
 
-  /* Auto-draw map when on Rutas tab with GPS clients */
+  /* Auto-draw map only when switching TO rutas tab, not on every card action */
   if(adminTab==='pendientes'){
     var conGps=clientes.filter(function(c){ return (c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng; });
     if(conGps.length>=1){
       mapWrap.style.display='block';
-      drawRouteMap(null, conGps);
+      /* Only redraw if client count changed or map not drawn yet */
+      var prevCount=mapWrap.dataset.gpsCount||'0';
+      if(prevCount!==String(conGps.length)){
+        mapWrap.dataset.gpsCount=String(conGps.length);
+        drawRouteMap(null, conGps);
+      }
     } else {
       mapWrap.style.display='none';
     }
@@ -811,7 +816,8 @@ function renderAdmin(){
           completadoBtn+
           '<button class="card-action-pill pill-green" style="max-width:90px" onclick="marcarEntregadoDesdeRuta(\''+uid+'\')">&#10003; Entregado</button>'+
           '<button class="card-action-pill pill-orange" style="max-width:80px" onclick="enviarJostin(\''+uid+'\')">&#128100; Jostin</button>'+
-          '<button class="card-action-pill pill-red" style="max-width:90px" onclick="marcarDevolucionDesdeRuta(\''+uid+'\')">&#8617; Dev.</button>'+
+          '<button class="card-action-pill pill-red" style="max-width:80px" onclick="marcarDevolucionDesdeRuta(\''+uid+'\')">&#8617; Dev.</button>'+
+          '<button class="cv2-icon-btn cv2-icon-btn-amber" onclick="enviarExportar(\''+uid+'\')" title="Exportar GPS">&#128228;</button>'+
         '</div>'+
       '</div>'+
     '</div>'+
@@ -1014,7 +1020,7 @@ function marcarEntregadoJostin(uid){
   invRecords[uid]={orderNo:uid,customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||'',status:'entregado',motivo:'',motivoCustom:'',pendienteDia:'',pendienteNota:'',devolucionMotivo:'',devolucionNota:'',ts:new Date().toLocaleString('es-DO')};
   jostinClientes=jostinClientes.filter(function(x){ return x._uid!==uid; });
   localStorage.setItem('llya_jostin', JSON.stringify(jostinClientes));
-  invSave(); renderJostin();
+  invSave(false); renderJostin();
   invShowToast('Entregado registrado en Inventario','success');
 }
 
@@ -1025,7 +1031,7 @@ function marcarDevolucionJostin(uid){
   invRecords[uid]={orderNo:uid,customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||'',status:'devolucion',motivo:'',motivoCustom:'',pendienteDia:'',pendienteNota:'',devolucionMotivo:'Marcado desde Jostin',devolucionNota:'',ts:new Date().toLocaleString('es-DO')};
   jostinClientes=jostinClientes.filter(function(x){ return x._uid!==uid; });
   localStorage.setItem('llya_jostin', JSON.stringify(jostinClientes));
-  invSave(); renderJostin();
+  invSave(false); renderJostin();
   invShowToast('Enviado a Devoluciones','info');
 }
 
@@ -1211,32 +1217,47 @@ function leerExcel(file,origen){
       var ws=wb.Sheets[wb.SheetNames[0]];
       var raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
       if(!raw.length){ invShowToast('El archivo está vacío','error'); return; }
+
+      /* Find header row — look for row containing 'code' or 'dropoff' or 'cod' */
       var headerIdx=-1;
-      for(var i=0;i<Math.min(raw.length,6);i++){
+      for(var i=0;i<Math.min(raw.length,8);i++){
         var rowStr=raw[i].join('|').toLowerCase();
-        if(rowStr.indexOf('dropoff')!==-1||rowStr.indexOf('cod')!==-1||rowStr.indexOf('contacto')!==-1||rowStr.indexOf('tel')!==-1){ headerIdx=i;break; }
+        if(rowStr.indexOf('code')!==-1||rowStr.indexOf('dropoff')!==-1||
+           rowStr.indexOf('cod')!==-1||rowStr.indexOf('tel')!==-1){
+          headerIdx=i; break;
+        }
       }
       if(headerIdx===-1){ invShowToast('No se encontró fila de encabezados','error'); return; }
+
       var headers=raw[headerIdx];
       var rows=[];
       for(var j=headerIdx+1;j<raw.length;j++){
-        var obj={};headers.forEach(function(h,k){obj[h]=raw[j][k]||'';});rows.push(obj);
+        var obj={};
+        headers.forEach(function(h,k){ obj[String(h).trim()]=raw[j][k]||''; });
+        rows.push(obj);
       }
       function findCol(row,candidates){
         var keys=Object.keys(row);
-        for(var ci=0;ci<candidates.length;ci++){ var f=keys.find(function(k){return k.toLowerCase().trim()===candidates[ci].toLowerCase();}); if(f)return f; }
-        for(var ci=0;ci<candidates.length;ci++){ var f=keys.find(function(k){return k.toLowerCase().indexOf(candidates[ci].toLowerCase())!==-1;}); if(f)return f; }
+        for(var ci=0;ci<candidates.length;ci++){
+          var f=keys.find(function(k){ return k.trim().toLowerCase()===candidates[ci].toLowerCase(); });
+          if(f) return f;
+        }
+        for(var ci=0;ci<candidates.length;ci++){
+          var f=keys.find(function(k){ return k.trim().toLowerCase().indexOf(candidates[ci].toLowerCase())!==-1; });
+          if(f) return f;
+        }
         return null;
       }
       if(!rows.length){ invShowToast('No se encontraron filas','error'); return; }
       var sample=rows[0];
-      var colCodigo=findCol(sample,['code','codigo','orderid','order_no','order no','orderno','id']);
-      var colNombre=findCol(sample,['dropoff contact name','contacto','nombre','name','receiver','destinatario']);
-      var colTel=findCol(sample,['dropoff contact','telefono','teléfono','phone','tel','celular','whatsapp']);
-      var colCod=findCol(sample,['cod','monto','amount','valor','precio']);
-      var colNota=findCol(sample,['nota','note','notas','producto','descripcion','referencia']);
-      var colZone=findCol(sample,['zone','zona','sector','area']);
+      var colCodigo =findCol(sample,['code','codigo','código','orderid','order_no','order no','orderno','id']);
+      var colNombre =findCol(sample,['dropoff contact name','receiver','contacto','nombre','name','destinatario']);
+      var colTel    =findCol(sample,['dropoff contact','telefono','teléfono','phone','tel','celular','whatsapp']);
+      var colCod    =findCol(sample,['cod','monto','amount','valor','precio']);
+      var colNota   =findCol(sample,['note','nota','notas','producto','descripcion','referencia']);
+      var colZone   =findCol(sample,['zone','zona','sector','area']);
       var colCustomer=findCol(sample,['customer name','customer','cliente','shop']);
+      console.log('Cols → Code:',colCodigo,' Name:',colNombre,' Tel:',colTel,' COD:',colCod,' Zone:',colZone,' Note:',colNota);
 
       /* Build unified list — use Code as _uid if available so inventory shows real order numbers */
       var usedCodes={};
@@ -1592,7 +1613,8 @@ function invSaveRecord(){
   if(invCurrentStatus==='pendiente-prog'&&!pendienteDia){ invShowToast('Selecciona el dia de reintento','error'); return; }
   if(invCurrentStatus==='devolucion'&&!devolucionMotivo){ invShowToast('Selecciona la razon de devolucion','error'); return; }
   invRecords[invCurrentPkg.orderNo]={orderNo:invCurrentPkg.orderNo,customer:invCurrentPkg.customer,receiver:invCurrentPkg.receiver,phone:invCurrentPkg.phone,zone:invCurrentPkg.zone,cod:invCurrentPkg.cod,note:invCurrentPkg.note,status:invCurrentStatus,motivo:motivo,motivoCustom:motivoCustom,pendienteDia:pendienteDia,pendienteNota:pendienteNota,devolucionMotivo:devolucionMotivo,devolucionNota:devolucionNota,ts:new Date().toLocaleString('es-DO')};
-  invSave();
+  var needsSync=invCurrentStatus==='entregado'||invCurrentStatus==='devolucion';
+  invSave(needsSync);
   document.getElementById('inv-pkg-form').style.display='none';
   document.getElementById('inv-manual-code').value='';
   invCurrentPkg=null; invCurrentStatus=null;
@@ -1753,21 +1775,21 @@ function invClearCurrentGroup(){
     return st===invCurrentFilter;
   });
   toRemove.forEach(function(uid){ invRemoveUid(uid); });
-  invSave(); invRenderRecords();
+  invSave(false); invRenderRecords();
   invShowToast(toRemove.length+' eliminados','info');
 }
 
 function invQuickDelete(orderNo){
   if(!confirm('¿Borrar #'+orderNo+'?')) return;
   invRemoveUid(orderNo);
-  invSave(); invRenderRecords();
+  invSave(false); invRenderRecords();
   invShowToast('Paquete #'+orderNo+' borrado','info');
 }
 
 function invDeleteRecord(){
   if(!invCurrentRecordId) return;
   delete invRecords[invCurrentRecordId];
-  invSave(); invCloseModalDirect(); invRenderRecords();
+  invSave(false); invCloseModalDirect(); invRenderRecords();
   invShowToast('Registro borrado','info');
 }
 
@@ -1775,7 +1797,7 @@ function invDeletePackage(){
   if(!invCurrentRecordId) return;
   if(!confirm('¿Borrar el paquete #'+invCurrentRecordId+' completo?')) return;
   invRemoveUid(invCurrentRecordId);
-  invSave(); invCloseModalDirect(); invRenderRecords();
+  invSave(false); invCloseModalDirect(); invRenderRecords();
   invShowToast('Paquete #'+invCurrentRecordId+' borrado','info');
 }
 
@@ -1783,7 +1805,7 @@ function invQuickChangeStatus(orderNo,newStatus){
   var pkg=invPackages[orderNo]||{};
   var existing=invRecords[orderNo]||{};
   invRecords[orderNo]={orderNo:orderNo,customer:pkg.customer||existing.customer||'',receiver:pkg.receiver||existing.receiver||'',phone:pkg.phone||existing.phone||'',zone:pkg.zone||existing.zone||'',cod:pkg.cod||existing.cod||'',note:pkg.note||existing.note||'',status:newStatus,motivo:newStatus==='entregado'?'':(existing.motivo||''),motivoCustom:newStatus==='entregado'?'':(existing.motivoCustom||''),pendienteDia:newStatus==='pendiente-prog'?(existing.pendienteDia||''):'',pendienteNota:newStatus==='pendiente-prog'?(existing.pendienteNota||''):'',devolucionMotivo:newStatus==='devolucion'?(existing.devolucionMotivo||''):'',devolucionNota:newStatus==='devolucion'?(existing.devolucionNota||''):'',ts:new Date().toLocaleString('es-DO')};
-  invSave(); invRenderRecords();
+  invSave(false); invRenderRecords();
   var labels={'entregado':'Entregado','no-entregado':'No entregado','pendiente-prog':'Pendiente','devolucion':'Devolucion'};
   invShowToast('#'+orderNo+' movido a '+(labels[newStatus]||newStatus),'success');
 }
