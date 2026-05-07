@@ -596,31 +596,6 @@ width:100%;
   </div>
 </div>
 
-<!-- ═══════════ TRACKING PAGE ═══════════ -->
-
-<div class="overlay" id="modalTracking" onclick="if(event.target===this)closeModal('modalTracking')">
-  <div class="modal" style="max-width:420px;padding:0;overflow:hidden;border-radius:20px;">
-    <div style="background:#2563eb;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;">
-      <div>
-        <div style="color:#fff;font-size:.95rem;font-weight:800;">&#128506; Rastreo en Vivo</div>
-        <div style="color:#bfdbfe;font-size:.72rem;" id="track-pkg-id">-</div>
-      </div>
-      <button onclick="stopTracking();closeModal('modalTracking')" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:10px;padding:7px 12px;font-size:.8rem;font-weight:700;cursor:pointer;">&#10005; Cerrar</button>
-    </div>
-    <div id="track-map-container" style="width:100%;height:280px;background:#e8f0fe;position:relative;display:flex;align-items:center;justify-content:center;">
-      <canvas id="track-canvas" style="width:100%;height:100%;display:block;"></canvas>
-      <div id="track-status-overlay" style="position:absolute;bottom:10px;left:10px;background:rgba(255,255,255,.95);border-radius:10px;padding:6px 12px;font-size:.72rem;font-weight:700;color:#0f172a;">&#128280; Esperando GPS...</div>
-    </div>
-    <div style="padding:16px 20px;">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-        <div style="width:10px;height:10px;background:#16a34a;border-radius:50%;animation:pulse 1.5s infinite;flex-shrink:0;"></div>
-        <div style="font-size:.82rem;color:#0f172a;font-weight:600;" id="track-info-text">Actualizando ubicación...</div>
-      </div>
-      <button onclick="startTracking()" style="width:100%;padding:13px;background:#2563eb;color:#fff;border:none;border-radius:14px;font-size:.86rem;font-weight:700;cursor:pointer;">&#128205; Activar rastreo en vivo</button>
-    </div>
-  </div>
-</div>
-
 <style>
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
 .wa-estado-btn{width:100%;padding:14px 16px;border-radius:14px;border:1.5px solid #e2e8f0;background:#fff;color:#0f172a;font-size:.88rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left;transition:all .15s;}
@@ -1924,7 +1899,7 @@ var waEstados = [
     msg: function(n,p){ return '[LLEGA YA] Hola '+n+'! \uD83D\uDCE6 Tu pedido '+p+' est\u00e1 en proceso en nuestro almac\u00e9n. Te notificaremos cuando salga a ruta.'; }
   },
   { key:'transito', icon:'&#128666;', label:'En tr\u00e1nsito', color:'active-transito',
-    msg: function(n,p,link){ return '[LLEGA YA] Hola '+n+'! \uD83D\uDE9A Tu pedido '+p+' est\u00e1 en camino. Puedes rastrear tu env\u00edo en tiempo real.\n\nRastrear tu paquete aqu\u00ed: '+link; }
+    msg: function(n,p){ return '[LLEGA YA] Hola '+n+'! \uD83D\uDE9A Tu pedido '+p+' est\u00e1 en camino. Pronto llegar\u00e1 a tu puerta. \uD83D\uDE9A'; }
   },
   { key:'entregado', icon:'&#9989;', label:'Entregado', color:'active-entregado',
     msg: function(n,p){ return '[LLEGA YA] Hola '+n+'! \u2705 Tu pedido '+p+' ha sido entregado. \u00a1Gracias por tu compra!'; }
@@ -1941,14 +1916,13 @@ function abrirMenuWA(uid){
   if(!c) return;
   var nombre1 = (c.nombre||'').split(' ')[0];
   var producto = c.nota || c.nombre || 'tu pedido';
-  var trackLink = window.location.origin + window.location.pathname + '?track=' + uid;
 
   document.getElementById('wa-modal-nombre').textContent = c.nombre||'Sin nombre';
   document.getElementById('wa-modal-tel').textContent = '+'+c.telefono;
 
   var estadosDiv = document.getElementById('wa-estados');
   estadosDiv.innerHTML = waEstados.map(function(e){
-    return '<button class="wa-estado-btn" id="wa-btn-'+e.key+'" onclick="selEstadoWA(\''+e.key+'\',\''+encodeURIComponent(nombre1)+'\',\''+encodeURIComponent(producto)+'\',\''+encodeURIComponent(trackLink)+'\')">'+
+    return '<button class="wa-estado-btn" id="wa-btn-'+e.key+'" onclick="selEstadoWA(\''+e.key+'\',\''+encodeURIComponent(nombre1)+'\',\''+encodeURIComponent(producto)+'\')">'+
       '<span class="wa-estado-icon">'+e.icon+'</span>'+e.label+'</button>';
   }).join('');
 
@@ -1957,24 +1931,19 @@ function abrirMenuWA(uid){
   openModal('modalWA');
 }
 
-function selEstadoWA(key, nombre64, prod64, link64){
+function selEstadoWA(key, nombre64, prod64){
   waCurrentStatus = key;
   var nombre = decodeURIComponent(nombre64);
   var prod = decodeURIComponent(prod64);
-  var link = decodeURIComponent(link64);
   document.querySelectorAll('.wa-estado-btn').forEach(function(b){ b.className='wa-estado-btn'; });
   var btn = document.getElementById('wa-btn-'+key);
   var estado = waEstados.find(function(e){ return e.key===key; });
   if(btn && estado){ btn.classList.add(estado.color); }
-  var msg = estado.key==='transito' ? estado.msg(nombre,prod,link) : estado.msg(nombre,prod);
+  var msg = estado.msg(nombre,prod);
   document.getElementById('wa-msg-preview').value = msg;
   document.getElementById('wa-char-count').textContent = msg.length+' / 160';
 
-  /* If transito - show tracking option */
-  if(key==='transito'){
-    trackCurrentUid = waCurrentUid;
-    invShowToast('Activa el rastreo en vivo desde el modal de seguimiento','info');
-  }
+
 }
 
 function enviarMsgWA(){
@@ -1989,197 +1958,49 @@ function enviarMsgWA(){
   closeModal('modalWA');
   /* Open WA */
   window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');
-  /* If transito, open tracking modal */
-  if(waCurrentStatus==='transito'){
-    setTimeout(function(){ abrirTracking(waCurrentUid); }, 500);
-  }
+
   invShowToast('Mensaje enviado — estado: '+waCurrentStatus,'success');
 }
 
-/* ============================================================
-   SUPABASE REAL-TIME TRACKING
-   ============================================================ */
-var SUPA_URL = 'https://nnqenwdbrbrqjgtrayxv.supabase.co';
-var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ucWVud2RicmJycWpndHJheXh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMTY1NTYsImV4cCI6MjA5MzY5MjU1Nn0.Bh9geMFlqM4sgBKw-tTx6Pn4cUpj66Rs0MC9DthA-8k';
 
-function supaUpsert(id,lat,lng){
-  fetch(SUPA_URL+'/rest/v1/tracking',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Prefer':'resolution=merge-duplicates'},
-    body:JSON.stringify({id:String(id),lat:lat,lng:lng,updated_at:new Date().toISOString()})
-  }).catch(function(){});
-}
-
-var trackWatchId=null, trackPositions=[], trackCurrentUid=null;
-
-function abrirTracking(uid){
-  trackCurrentUid=uid; trackPositions=[];
-  document.getElementById('track-pkg-id').textContent='Paquete #'+uid;
-  openModal('modalTracking');
-  drawTrackMap();
-}
-
-function startTracking(){
-  if(!navigator.geolocation){invShowToast('GPS no disponible','error');return;}
-  if(trackWatchId) navigator.geolocation.clearWatch(trackWatchId);
-  document.getElementById('track-info-text').textContent='📡 Rastreo activo — enviando ubicación a Supabase...';
-  trackWatchId=navigator.geolocation.watchPosition(function(pos){
-    var lat=pos.coords.latitude,lng=pos.coords.longitude;
-    trackPositions.push({lat:lat,lng:lng,ts:Date.now()});
-    supaUpsert(trackCurrentUid,lat,lng);
-    document.getElementById('track-status-overlay').textContent='📍 '+lat.toFixed(5)+' | '+lng.toFixed(5);
-    drawTrackMap();
-  },function(){invShowToast('No se pudo obtener GPS','error');},{enableHighAccuracy:true,maximumAge:3000,timeout:10000});
-  invShowToast('Rastreo en vivo activado ✅','success');
-}
-
-function stopTracking(){
-  if(trackWatchId){navigator.geolocation.clearWatch(trackWatchId);trackWatchId=null;}
-}
-
-function drawTrackMap(){
-  var canvas=document.getElementById('track-canvas');
-  var container=document.getElementById('track-map-container');
-  var W=container.offsetWidth||340,H=280;
-  canvas.width=W*2;canvas.height=H*2;canvas.style.height=H+'px';
-  var ctx=canvas.getContext('2d');ctx.scale(2,2);
-  ctx.fillStyle='#e8f0fe';ctx.fillRect(0,0,W,H);
-  if(!trackPositions.length){
-    ctx.fillStyle='#94a3b8';ctx.font='bold 13px -apple-system,sans-serif';
-    ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText('Esperando posición GPS...',W/2,H/2);return;
-  }
-  var lats=trackPositions.map(function(p){return p.lat;}),lngs=trackPositions.map(function(p){return p.lng;});
-  var minLat=Math.min.apply(null,lats)-0.002,maxLat=Math.max.apply(null,lats)+0.002;
-  var minLng=Math.min.apply(null,lngs)-0.003,maxLng=Math.max.apply(null,lngs)+0.003;
-  var sx=function(v){return (v-minLng)/(maxLng-minLng||0.001)*W;};
-  var sy=function(v){return H-(v-minLat)/(maxLat-minLat||0.001)*H;};
-  ctx.strokeStyle='#c7d7f7';ctx.lineWidth=0.5;
-  for(var i=1;i<5;i++){ctx.beginPath();ctx.moveTo(W*i/5,0);ctx.lineTo(W*i/5,H);ctx.stroke();}
-  if(trackPositions.length>1){
-    ctx.strokeStyle='#2563eb';ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.lineCap='round';
-    ctx.beginPath();ctx.moveTo(sx(trackPositions[0].lng),sy(trackPositions[0].lat));
-    trackPositions.forEach(function(p){ctx.lineTo(sx(p.lng),sy(p.lat));});ctx.stroke();
-  }
-  var last=trackPositions[trackPositions.length-1];
-  var cx=sx(last.lng),cy=sy(last.lat);
-  ctx.fillStyle='rgba(37,99,235,0.2)';ctx.beginPath();ctx.arc(cx,cy,16,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#2563eb';ctx.beginPath();ctx.arc(cx,cy,8,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fill();
-}
-
-/* ── TRACKING PAGE — client view via ?track=uid ── */
 (function(){
-  var params=new URLSearchParams(window.location.search);
-  var trackId=params.get('track');
-  if(!trackId) return;
-  var tpPos=[];
-  document.addEventListener('DOMContentLoaded',function(){
-    document.body.innerHTML=
-      '<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,sans-serif;}@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}</style>'+
+  var savedApp    = localStorage.getItem('llya_app')      || 'admin';
+  var savedAdmTab = localStorage.getItem('llya_admintab') || 'pendientes';
+  var savedRepTab = localStorage.getItem('llya_reptab')   || 'pendientes';
+  var savedInvTab = localStorage.getItem('llya_invtab')   || 'cargar';
+  var savedFilter = localStorage.getItem('llya_filter')   || 'pendiente';
 
-```
-  '<div style="max-width:480px;margin:0 auto;background:#f0f4f8;min-height:100vh;">'+
-  '<div style="background:#2563eb;padding:20px;color:#fff;">'+
-    '<div style="font-size:1.05rem;font-weight:800;">📦 Llega Ya — Rastreo en Vivo</div>'+
-    '<div style="font-size:.75rem;opacity:.8;margin-top:2px;">Paquete #'+trackId+'</div>'+
-  '</div>'+
-  '<div style="padding:14px;">'+
-    '<div id="tp-status" style="background:#fff;border-radius:14px;padding:14px;margin-bottom:12px;border:1px solid #e2e8f0;display:flex;align-items:center;gap:10px;">'+
-      '<div style="width:10px;height:10px;background:#f59e0b;border-radius:50%;flex-shrink:0;"></div>'+
-      '<div style="font-size:.85rem;font-weight:600;color:#0f172a;">Conectando con el repartidor...</div>'+
-    '</div>'+
-    '<canvas id="tp-canvas" style="width:100%;border-radius:14px;display:block;background:#e8f0fe;"></canvas>'+
-    '<div id="tp-coords" style="background:#fff;border-radius:12px;padding:12px 14px;margin-top:10px;font-size:.78rem;color:#475569;border:1px solid #e2e8f0;"></div>'+
-    '<a id="tp-maps" href="#" target="_blank" style="display:block;margin-top:10px;padding:13px;background:#2563eb;color:#fff;border-radius:14px;text-align:center;font-weight:700;font-size:.88rem;text-decoration:none;">🗺️ Ver ubicación en Google Maps</a>'+
-    '<div style="text-align:center;color:#94a3b8;font-size:.72rem;margin-top:10px;">Se actualiza cada 8 segundos automáticamente</div>'+
-  '</div></div>';
+  adminTab = savedAdmTab;
+  repTabActual = savedRepTab;
+  invTabActual = savedInvTab;
+  invCurrentFilter = savedFilter;
 
-function tpDraw(lat,lng){
-  tpPos.push({lat:lat,lng:lng});
-  if(tpPos.length>60) tpPos.shift();
-  var canvas=document.getElementById('tp-canvas');
-  var W=canvas.parentElement.offsetWidth-28||340,H=260;
-  canvas.width=W*2;canvas.height=H*2;canvas.style.height=H+'px';
-  var ctx=canvas.getContext('2d');ctx.scale(2,2);
-  ctx.fillStyle='#e8f0fe';ctx.fillRect(0,0,W,H);
-  var lats=tpPos.map(function(p){return p.lat;}),lngs=tpPos.map(function(p){return p.lng;});
-  var minLa=Math.min.apply(null,lats)-0.002,maxLa=Math.max.apply(null,lats)+0.002;
-  var minLn=Math.min.apply(null,lngs)-0.003,maxLn=Math.max.apply(null,lngs)+0.003;
-  var sx=function(v){return (v-minLn)/(maxLn-minLn||0.001)*W;};
-  var sy=function(v){return H-(v-minLa)/(maxLa-minLa||0.001)*H;};
-  ctx.strokeStyle='#c7d7f7';ctx.lineWidth=0.5;
-  for(var i=1;i<5;i++){ctx.beginPath();ctx.moveTo(W*i/5,0);ctx.lineTo(W*i/5,H);ctx.stroke();}
-  if(tpPos.length>1){
-    ctx.strokeStyle='#2563eb';ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.lineCap='round';
-    ctx.beginPath();ctx.moveTo(sx(tpPos[0].lng),sy(tpPos[0].lat));
-    tpPos.forEach(function(p){ctx.lineTo(sx(p.lng),sy(p.lat));});ctx.stroke();
-  }
-  var cx=sx(lng),cy=sy(lat);
-  ctx.fillStyle='rgba(37,99,235,0.2)';ctx.beginPath();ctx.arc(cx,cy,16,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#2563eb';ctx.beginPath();ctx.arc(cx,cy,8,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fill();
-}
+  /* Restore admin tab UI */
+  document.querySelectorAll('#admin-tabs .tab').forEach(function(t,i){
+    t.classList.toggle('active',['pendientes','sin_ubicacion','completados','exportar'][i]===savedAdmTab);
+  });
+  /* Restore rep tab UI */
+  document.querySelectorAll('#rep-tabs .tab').forEach(function(t,i){
+    t.classList.toggle('active',['pendientes','contactados'][i]===savedRepTab);
+  });
+  /* Restore inv tab UI */
+  ['cargar','escanear','registros'].forEach(function(t){
+    document.getElementById('itab-'+t).classList.toggle('active',t===savedInvTab);
+    document.getElementById('itab-view-'+t).classList.toggle('active',t===savedInvTab);
+  });
+  document.getElementById('inv-filter-tabs').style.display = savedInvTab==='registros'?'flex':'none';
+  /* Restore filter tab UI */
+  document.querySelectorAll('.ftab').forEach(function(t){
+    t.classList.toggle('active', t.getAttribute('data-val')===savedFilter);
+  });
 
-function tpPoll(){
-  fetch(SUPA_URL+'/rest/v1/tracking?id=eq.'+encodeURIComponent(trackId)+'&select=*',{
-    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
-  }).then(function(r){return r.json();}).then(function(data){
-    if(data&&data[0]){
-      var d=data[0];
-      var ago=Math.round((Date.now()-new Date(d.updated_at).getTime())/1000);
-      document.getElementById('tp-status').innerHTML=
-        '<div style="width:10px;height:10px;background:#16a34a;border-radius:50%;flex-shrink:0;animation:pulse 1.5s infinite;"></div>'+
-        '<div style="font-size:.85rem;font-weight:600;color:#0f172a;">En camino 🚛 · hace '+ago+'s</div>';
-      document.getElementById('tp-coords').textContent='📍 Lat: '+Number(d.lat).toFixed(5)+' · Lng: '+Number(d.lng).toFixed(5);
-      document.getElementById('tp-maps').href='https://maps.google.com/?q='+d.lat+','+d.lng;
-      tpDraw(Number(d.lat),Number(d.lng));
-    }
-  }).catch(function(){});
-}
-tpPoll();
-setInterval(tpPoll,8000);
-```
-
-});
-})();
-(function(){
-var savedApp    = localStorage.getItem(‘llya_app’)      || ‘admin’;
-var savedAdmTab = localStorage.getItem(‘llya_admintab’) || ‘pendientes’;
-var savedRepTab = localStorage.getItem(‘llya_reptab’)   || ‘pendientes’;
-var savedInvTab = localStorage.getItem(‘llya_invtab’)   || ‘cargar’;
-var savedFilter = localStorage.getItem(‘llya_filter’)   || ‘pendiente’;
-
-adminTab = savedAdmTab;
-repTabActual = savedRepTab;
-invTabActual = savedInvTab;
-invCurrentFilter = savedFilter;
-
-/* Restore admin tab UI */
-document.querySelectorAll(’#admin-tabs .tab’).forEach(function(t,i){
-t.classList.toggle(‘active’,[‘pendientes’,‘sin_ubicacion’,‘completados’,‘exportar’][i]===savedAdmTab);
-});
-/* Restore rep tab UI */
-document.querySelectorAll(’#rep-tabs .tab’).forEach(function(t,i){
-t.classList.toggle(‘active’,[‘pendientes’,‘contactados’][i]===savedRepTab);
-});
-/* Restore inv tab UI */
-[‘cargar’,‘escanear’,‘registros’].forEach(function(t){
-document.getElementById(‘itab-’+t).classList.toggle(‘active’,t===savedInvTab);
-document.getElementById(‘itab-view-’+t).classList.toggle(‘active’,t===savedInvTab);
-});
-document.getElementById(‘inv-filter-tabs’).style.display = savedInvTab===‘registros’?‘flex’:‘none’;
-/* Restore filter tab UI */
-document.querySelectorAll(’.ftab’).forEach(function(t){
-t.classList.toggle(‘active’, t.getAttribute(‘data-val’)===savedFilter);
-});
-
-switchApp(savedApp, true);
-invUpdateBadge();
-invUpdateStats();
-if(savedInvTab===‘registros’) invRenderRecords();
+  switchApp(savedApp, true);
+  invUpdateBadge();
+  invUpdateStats();
+  if(savedInvTab==='registros') invRenderRecords();
 })();
 
 </script>
+
 </body>
 </html>
