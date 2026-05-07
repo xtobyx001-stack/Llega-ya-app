@@ -873,6 +873,7 @@ function renderAdmin(){
         '<div class="cv2-row-main">'+
           (mapsUrl?'<a class="cv2-btn cv2-btn-blue" href="'+mapsUrl+'" target="_blank">&#128506; Mapa</a>':'')+
           (c.telefono?'<button class="cv2-btn cv2-btn-wa" onclick="abrirMenuWA(\''+uid+'\')">&#128172; WhatsApp</button>':'')+
+          '<button class="cv2-btn" style="background:#fff3e0;color:#e65100;border:1.5px solid #ffb74d;max-width:48px;padding:9px 0;flex:0 0 48px;" onclick="enviarExportar(\''+uid+'\')" title="Exportar GPS">&#128228;</button>'+
         '</div>'+
         '<div class="cv2-row-secondary">'+
           '<button class="cv2-icon-btn" onclick="editarCliente(\''+uid+'\')" title="Editar">&#9999;&#65039;</button>'+
@@ -880,7 +881,6 @@ function renderAdmin(){
           '<button class="card-action-pill pill-green" style="max-width:90px" onclick="marcarEntregadoDesdeRuta(\''+uid+'\')">&#10003; Entregado</button>'+
           '<button class="card-action-pill pill-orange" style="max-width:80px" onclick="enviarJostin(\''+uid+'\')">&#128100; Jostin</button>'+
           '<button class="card-action-pill pill-red" style="max-width:80px" onclick="marcarDevolucionDesdeRuta(\''+uid+'\')">&#8617; Dev.</button>'+
-          '<button class="cv2-icon-btn cv2-icon-btn-amber" onclick="enviarExportar(\''+uid+'\')" title="Exportar GPS">&#128228;</button>'+
         '</div>'+
       '</div>'+
     '</div>'+
