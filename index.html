@@ -360,10 +360,12 @@ width:100%;
 <div id="app-admin">
   <div class="adm-bar">
     <button class="btn-blue" onclick="document.getElementById('fileInputAdminXlsx').click()">&#128202; Excel</button>
+    <button class="btn-green" style="background:#059669;color:#fff;" onclick="document.getElementById('fileInputAdminJSON').click()">&#123;&#125; JSON</button>
     <button class="btn-purple" onclick="sortNearest()">&#9889; Cercan&#237;a</button>
     <button class="btn-green" onclick="abrirNuevoCliente()">&#43; Cliente</button>
   </div>
   <input type="file" id="fileInputAdminXlsx" accept=".xlsx,.xls" style="display:none" onchange="cargarExcelAdmin(event)">
+  <input type="file" id="fileInputAdminJSON" accept=".json" style="display:none" onchange="cargarJSON(event)">
 
   <!-- MAPA DE RUTA -->
 
@@ -1248,6 +1250,74 @@ function abrirGoogleMapsRuta(){
 }
 
 function cargarExcelAdmin(e){ var f=e.target.files[0]; if(!f) return; e.target.value=''; leerExcel(f,'admin'); }
+
+function cargarJSON(e){
+  var f=e.target.files[0]; if(!f) return; e.target.value='';
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var data=JSON.parse(ev.target.result);
+      var lista=data.clientes||data;
+      if(!Array.isArray(lista)||!lista.length){ invShowToast('JSON vacío o formato incorrecto','error'); return; }
+
+      /* Block uids already in final status */
+      var finalStatuses={'entregado':1,'devolucion':1,'jostin':1};
+      var blockUids=new Set(
+        clientes.map(function(c){ return c._uid; })
+        .concat(jostinClientes.map(function(c){ return c._uid; }))
+      );
+      Object.keys(invRecords).forEach(function(uid){
+        if(finalStatuses[invRecords[uid].status]) blockUids.add(uid);
+      });
+
+      var agregados=0, omitidos=0, conGps=0;
+      var nuevos=[];
+      lista.forEach(function(c){
+        if(!c._uid){ omitidos++; return; }
+        if(blockUids.has(String(c._uid))){ omitidos++; return; }
+        blockUids.add(String(c._uid));
+        var cliente={
+          _uid: String(c._uid),
+          nombre: c.nombre||'',
+          telefono: String(c.telefono||'').replace(/\D/g,''),
+          cod: parseFloat(c.cod)||0,
+          nota: c.nota||c.note||'',
+          zone: c.zone||c.zona||'',
+          lat: c.lat||null,
+          lng: c.lng||null,
+          estado: 'pendiente'
+        };
+        if(cliente.lat&&cliente.lng) conGps++;
+        clientes.push(cliente);
+        nuevos.push(cliente);
+        agregados++;
+      });
+
+      /* Sync to invPackages */
+      nuevos.forEach(function(c){
+        if(!invPackages[c._uid]){
+          invPackages[c._uid]={
+            customer:c.nombre||'',receiver:c.nombre||'',
+            phone:c.telefono||'',zone:c.zone||'',
+            cod:String(c.cod||''),note:c.nota||''
+          };
+        }
+      });
+      try{ localStorage.setItem(STORE_PKGS,JSON.stringify(invPackages)); }catch(err){}
+
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(clientes));
+      renderAdmin(); renderRep();
+      invUpdateBadge(); invUpdateStats();
+
+      var msg='✅ '+agregados+' fichas importadas';
+      if(conGps>0) msg+=' · 📍 '+conGps+' con GPS';
+      if(omitidos>0) msg+=' · ⚠️ '+omitidos+' duplicados';
+      invShowToast(msg,'success');
+
+    }catch(err){ invShowToast('Error leyendo JSON: '+err.message,'error'); }
+  };
+  reader.readAsText(f);
+}
 function cargarExcelRep(e){ var f=e.target.files[0]; if(!f) return; e.target.value=''; leerExcel(f,'rep'); }
 
 function leerExcel(file,origen){
