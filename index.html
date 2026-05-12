@@ -75,7 +75,7 @@ width:100%;
 /* ── ADMIN STICKY ── */
 .adm-bar{display:flex;gap:8px;padding:12px 14px;background:#ffffff !important;border-bottom:1px solid #e2e8f0;position:sticky;top:58px;z-index:49;}
 .adm-bar button{flex:1;padding:13px 6px;border-radius:18px;font-weight:700;font-size:.82rem;cursor:pointer;border-width:1.5px;border-style:solid;letter-spacing:.1px;}
-.adm-search{padding:10px 14px;background:#f0f4f8 !important;border-bottom:1px solid #e2e8f0;position:sticky;top:113px;z-index:48;}
+.adm-search{padding:10px 14px;background:#f0f4f8 !important;border-bottom:1px solid #e2e8f0;position:sticky;top:120px;z-index:48;}
 .adm-search input{width:100%;padding:12px 14px 12px 40px;border-radius:16px;border:none !important;background:#ffffff !important;color:#0f172a !important;font-size:.88rem;box-shadow:0 1px 4px rgba(0,0,0,.07) !important;-webkit-text-fill-color:#0f172a !important;-webkit-box-shadow:0 0 0 1000px #ffffff inset !important;}
 .adm-search input::placeholder{color:#94a3b8 !important;-webkit-text-fill-color:#94a3b8 !important;}
 .adm-search input:focus{outline:2px solid #2563eb !important;}
@@ -775,12 +775,18 @@ function switchTabAdmin(tab){
 }
 
 function moverAdmin(uid,dir){
+  /* Find the client in the full clientes array */
+  var idx=clientes.findIndex(function(x){ return x._uid===uid; });
+  if(idx===-1) return;
+  /* Get the current filtered/visible list to find adjacent visible item */
   var datos=getDatosAdmin();
-  var pos=datos.findIndex(function(x){ return x._uid===uid; });
-  var np=pos+dir; if(np<0||np>=datos.length) return;
-  var ia=clientes.findIndex(function(x){ return x._uid===datos[pos]._uid; });
-  var ib=clientes.findIndex(function(x){ return x._uid===datos[np]._uid; });
-  var tmp=clientes[ia]; clientes[ia]=clientes[ib]; clientes[ib]=tmp;
+  var visPos=datos.findIndex(function(x){ return x._uid===uid; });
+  var visNext=visPos+dir;
+  if(visNext<0||visNext>=datos.length) return;
+  var nextUid=datos[visNext]._uid;
+  var idx2=clientes.findIndex(function(x){ return x._uid===nextUid; });
+  if(idx2===-1) return;
+  var tmp=clientes[idx]; clientes[idx]=clientes[idx2]; clientes[idx2]=tmp;
   guardar();
 }
 
@@ -1963,7 +1969,7 @@ var trackCurrentUid = null;
 
 var waEstados = [
   { key:'pendiente', icon:'&#128230;', label:'Pendiente', color:'active-pendiente',
-    msg: function(n,p){ return '[LLEGA YA] Hola '+n+'! \uD83D\uDCE6 Tu pedido '+p+' est\u00e1 pendiente de procesamiento. Te notificaremos pronto.'; }
+    msg: function(n,p){ return '[LLEGA YA] Hola '+n+'! \uD83D\uDCE6 Tu pedido '+p+' est\u00e1 pendiente de procesamiento. Te notificaremos pronto.\n\nNos encantar\u00eda que nos comparta su ubicaci\u00f3n para coordinar la entrega.'; }
   },
   { key:'proceso', icon:'&#128336;', label:'En proceso', color:'active-proceso',
     msg: function(n,p){ return '[LLEGA YA] Hola '+n+'! \uD83D\uDCE6 Tu pedido '+p+' est\u00e1 en proceso en nuestro almac\u00e9n. Te notificaremos cuando salga a ruta.'; }
