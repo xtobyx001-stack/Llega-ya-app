@@ -1038,7 +1038,10 @@ function renderJostin(){
   list.innerHTML=datos.map(function(c,idx){
     var uid=c._uid; var cod=calcCod(c);
     var tel=(c.telefono||'').replace(/\D/g,'');
-    var waUrl=tel?'https://wa.me/'+tel:null;
+    var nombre1=(c.nombre||'').split(' ')[0];
+    var producto=encodeURIComponent(c.nota||c.nombre||'tu pedido');
+    var waMsg='%5BLLEGA+YA%5D+Hola+'+encodeURIComponent(nombre1)+'!+%F0%9F%9A%9A+Tu+pedido+'+producto+'+est%C3%A1+en+camino.+Pronto+llegar%C3%A1+a+tu+puerta.%0A%0ASu+chofer+a+cargo+de+su+paquete+es+Jostin.';
+    var waUrl=tel?'https://wa.me/'+tel+'?text='+waMsg:null;
     var notasHtml=c.nota?'<div class="note-simple">&#128230; '+c.nota+'</div>':'';
     return '<div class="card-v2"><div class="cv2-left-bar cv2-bar-purple"></div>'+
     '<div class="cv2-body">'+
