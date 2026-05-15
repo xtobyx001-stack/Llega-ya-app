@@ -882,10 +882,14 @@ function renderExportarAdmin(){
 }
 
 function descargarJSON(){
-  var data={clientes:exportados.map(function(c){ return {_uid:c._uid,nombre:c.nombre||'',telefono:c.telefono||'',cod:calcCod(c),lat:c.lat||null,lng:c.lng||null,estado:'pendiente'}; })};
+  var defaultName='llega_ya_'+new Date().toISOString().slice(0,10);
+  var nombre=prompt('Nombre del archivo:',defaultName);
+  if(!nombre) return;
+  nombre=nombre.replace(/\.json$/i,'');
+  var data={clientes:exportados.map(function(c){ return {_uid:c._uid,nombre:c.nombre||'',telefono:c.telefono||'',cod:calcCod(c),lat:c.lat||null,lng:c.lng||null,nota:c.nota||'',estado:'pendiente'}; })};
   var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download='llega_ya_'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+  a.download=nombre+'.json'; a.click();
 }
 
 function enviarExportar(uid){
