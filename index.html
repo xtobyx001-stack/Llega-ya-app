@@ -332,7 +332,7 @@ width:100%;
   </div>
   <nav class="dw-nav">
     <div class="dw-item active" id="nav-admin" onclick="switchApp('admin')"><span class="ico">&#128506;</span> Rutas</div>
-    <div class="dw-item" id="nav-rep" onclick="switchApp('rep')"><span class="ico">&#128757;</span> Entregas</div>
+    <div class="dw-item" id="nav-rep" onclick="switchApp('rep')"><span class="ico">&#9203;</span> Pospuesto</div>
     <div class="dw-item" id="nav-inv" onclick="switchApp('inv')"><span class="ico">&#128230;</span> Inventario</div>
     <div class="dw-item" id="nav-jostin" onclick="switchApp('jostin')"><span class="ico">&#128100;</span> Jostin</div>
   </nav>
@@ -394,35 +394,25 @@ width:100%;
   </div>
 </div>
 
-<!-- ═══════════ APP REPARTIDOR ═══════════ -->
+<!-- ═══════════ APP POSPUESTO ═══════════ -->
 
 <div id="app-rep" style="display:none">
-  <div class="rep-sticky">
-    <div class="rep-top">
-      <div class="rep-logo-circle">&#128757;</div>
-      <div class="rep-brand">
-        <div class="r-name">Llega YA</div>
-        <div class="r-sub">Entregas R&#225;pidas</div>
-        <div class="r-phone">&#128241; +1 849-343-8658</div>
-      </div>
-    </div>
-    <div class="rep-actions">
-      <button class="btn-blue" onclick="document.getElementById('fileInputRepXlsx').click()">&#128202; Excel</button>
-      <input type="file" id="fileInputRepXlsx" accept=".xlsx,.xls" style="display:none" onchange="cargarExcelRep(event)">
-      <button class="btn-slate" onclick="openModal('modalFecha')">&#128197; Fecha</button>
-      <button class="btn-slate" onclick="openModal('modalConfigRep')">&#9881;&#65039;</button>
-    </div>
-    <div class="rep-tabs" id="rep-tabs">
-      <div class="tab active" onclick="switchTabRep('pendientes')">Pendientes</div>
-      <div class="tab" onclick="switchTabRep('contactados')">Ya Contact&#233;</div>
-    </div>
+  <div class="adm-bar">
+    <button class="btn-blue" onclick="document.getElementById('fileInputPospXlsx').click()">&#128202; Excel</button>
+    <input type="file" id="fileInputPospXlsx" accept=".xlsx,.xls" style="display:none" onchange="cargarExcelRep(event)">
+    <button class="btn-slate" onclick="openModal('modalConfigRep')">&#9881;&#65039;</button>
   </div>
-  <div class="rep-search">
+  <div class="adm-search">
     <div class="sw"><span class="lupa">&#128269;</span>
-      <input type="text" id="searchRep" placeholder="Buscar..." oninput="renderRep()">
+      <input type="text" id="searchRep" placeholder="Buscar pospuestos..." oninput="renderRep()">
     </div>
   </div>
-  <div id="list-rep"><div class="empty"><span class="empty-icon">&#128230;</span><p>Carga un archivo Excel para comenzar</p></div></div>
+  <div class="adm-tabs" id="rep-tabs">
+    <div class="tab active" onclick="switchTabRep('pendientes')">Pospuestos</div>
+    <div class="tab" onclick="switchTabRep('sin_ubicacion')">Sin GPS</div>
+    <div class="tab" onclick="switchTabRep('contactados')">No Contesta</div>
+  </div>
+  <div id="list-rep"><div class="empty"><span class="empty-icon">&#9203;</span><p>No hay paquetes pospuestos</p></div></div>
 </div>
 
 <!-- ═══════════ APP INVENTARIO ═══════════ -->
@@ -738,7 +728,7 @@ function switchApp(app, skipSave){
   ['admin','rep','inv','jostin'].forEach(function(a){
     document.getElementById('nav-'+a).classList.toggle('active', a===app);
   });
-  var titles = {admin:'&#128506; LLEGA YA &mdash; Rutas', rep:'&#128757; LLEGA YA &mdash; Entregas', inv:'&#128230; LLEGA YA &mdash; Inventario', jostin:'&#128100; Jostin'};
+  var titles = {admin:'&#128506; LLEGA YA &mdash; Rutas', rep:'&#9203; LLEGA YA &mdash; Pospuesto', inv:'&#128230; LLEGA YA &mdash; Inventario', jostin:'&#128100; Jostin'};
   document.getElementById('headerTitle').innerHTML = titles[app]||app;
   closeDrawer();
   if(app==='admin') renderAdmin();
@@ -861,9 +851,10 @@ function renderAdmin(){
         '<div class="cv2-row-secondary">'+
           '<button class="cv2-icon-btn" onclick="editarCliente(\''+uid+'\')" title="Editar">&#9999;&#65039;</button>'+
           completadoBtn+
-          '<button class="card-action-pill pill-green" style="max-width:90px" onclick="marcarEntregadoDesdeRuta(\''+uid+'\')">&#10003; Entregado</button>'+
-          '<button class="card-action-pill pill-orange" style="max-width:80px" onclick="enviarJostin(\''+uid+'\')">&#128100; Jostin</button>'+
-          '<button class="card-action-pill pill-red" style="max-width:80px" onclick="marcarDevolucionDesdeRuta(\''+uid+'\')">&#8617; Dev.</button>'+
+          '<button class="card-action-pill pill-green" style="max-width:82px" onclick="marcarEntregadoDesdeRuta(\''+uid+'\')">&#10003; Entregado</button>'+
+          '<button class="card-action-pill pill-orange" style="max-width:72px" onclick="enviarJostin(\''+uid+'\')">&#128100; Jostin</button>'+
+          '<button class="card-action-pill pill-red" style="max-width:68px" onclick="marcarDevolucionDesdeRuta(\''+uid+'\')">&#8617; Dev.</button>'+
+          '<button class="card-action-pill" style="background:#fff8e1;color:#f57f17;border:1.5px solid #ffe082;max-width:82px" onclick="moverAPospuesto(\''+uid+'\')">&#9203; Posponer</button>'+
         '</div>'+
       '</div>'+
     '</div>'+
@@ -1514,9 +1505,59 @@ var varUltimo=[
 function switchTabRep(tab){
   repTabActual=tab;
   localStorage.setItem('llya_reptab', tab);
-  document.querySelectorAll('#rep-tabs .tab').forEach(function(t,i){ t.classList.toggle('active',['pendientes','contactados'][i]===tab); });
+  document.querySelectorAll('#rep-tabs .tab').forEach(function(t,i){
+    t.classList.toggle('active',['pendientes','sin_ubicacion','contactados'][i]===tab);
+  });
   document.getElementById('searchRep').value='';
   renderRep();
+}
+
+function renderRep(){
+  var list=document.getElementById('list-rep');
+  /* Pospuestos = clientes with estado==='pospuesto' */
+  var pospuestos=clientes.filter(function(c){ return c.estado==='pospuesto'; });
+  if(!pospuestos.length && repTabActual==='pendientes'){
+    list.innerHTML='<div class="empty"><span class="empty-icon">&#9203;</span><p>No hay paquetes pospuestos</p></div>'; return;
+  }
+
+  var datos;
+  if(repTabActual==='pendientes') datos=pospuestos.filter(function(c){ return c.lat&&c.lng; });
+  else if(repTabActual==='sin_ubicacion') datos=pospuestos.filter(function(c){ return !c.lat||!c.lng; });
+  else datos=pospuestos.filter(function(c){ return c.contactado; });
+
+  var q=(document.getElementById('searchRep')?document.getElementById('searchRep').value:'').toLowerCase().trim();
+  if(q) datos=datos.filter(function(c){ return (c.nombre||'').toLowerCase().includes(q)||(c.telefono||'').includes(q); });
+
+  if(!datos.length){ list.innerHTML='<div class="empty">No hay paquetes en esta sección</div>'; return; }
+
+  list.innerHTML=datos.map(function(c,idx){
+    var uid=c._uid; var cod=calcCod(c);
+    var tel=(c.telefono||'').replace(/\D/g,'');
+    var mapsUrl=c.lat&&c.lng?'https://www.google.com/maps?q='+c.lat+','+c.lng:null;
+    var waUrl=tel?'https://wa.me/'+tel:null;
+    var esMulti=c.pedidos&&c.pedidos.length>1;
+    var notasHtml=c.nota?'<div class="note-simple">&#128230; '+c.nota+'</div>':'';
+    return '<div class="card-v2"><div class="cv2-left-bar cv2-bar-yellow"></div>'+
+    '<div class="cv2-body">'+
+      '<div class="cv2-header"><div class="cv2-header-left">'+
+        '<div class="cv2-num">#'+(idx+1)+'</div>'+
+        '<div class="cv2-name">'+(c.nombre||'Sin nombre')+'</div>'+
+        '<div class="cv2-sub">&#128222; '+(c.telefono||'&mdash;')+(cod?' &nbsp;&#183;&nbsp; <strong>RD$ '+cod.toLocaleString()+'</strong>':'')+'</div>'+
+      '</div></div>'+
+      notasHtml+
+      '<div class="cv2-actions">'+
+        '<div class="cv2-row-main">'+
+          (mapsUrl?'<a class="cv2-btn cv2-btn-blue" href="'+mapsUrl+'" target="_blank">&#128506; Mapa</a>':'')+
+          (waUrl?'<button class="cv2-btn cv2-btn-wa" onclick="abrirMenuWA(\''+uid+'\')">&#128172; WhatsApp</button>':'')+
+        '</div>'+
+        '<div class="cv2-row-secondary">'+
+          '<button class="card-action-pill pill-green" onclick="moverARoutas(\''+uid+'\')">&#8593; A Rutas</button>'+
+          '<button class="card-action-pill pill-orange" onclick="enviarJostinRep(\''+uid+'\')">&#128100; Jostin</button>'+
+          '<button class="card-action-pill pill-red" onclick="marcarDevolucionPospuesto(\''+uid+'\')">&#8617; Dev.</button>'+
+        '</div>'+
+      '</div>'+
+    '</div></div>';
+  }).join('');
 }
 
 function guardarFecha(){
@@ -1536,62 +1577,32 @@ function borrarTodoRep(){
   clientes=[]; guardar(); closeModal('modalConfigRep');
 }
 
-function renderRep(){
-  var list=document.getElementById('list-rep');
-  if(!clientes.length){ list.innerHTML='<div class="empty">Carga un archivo Excel para comenzar</div>'; return; }
-  var datos=repTabActual==='pendientes'
-    ?clientes.filter(function(c){ return (!c.estado||c.estado==='pendiente'||c.estado==='enviado')&&!c.contactado&&c.estado!=='jostin'; })
-    :clientes.filter(function(c){ return c.contactado; });
-  var q=(document.getElementById('searchRep')?document.getElementById('searchRep').value:'').toLowerCase().trim();
-  if(q) datos=datos.filter(function(c){ return (c.nombre||'').toLowerCase().includes(q)||(c.telefono||'').includes(q); });
-  if(!datos.length){ list.innerHTML='<div class="empty">No se encontraron clientes</div>'; return; }
-  list.innerHTML=datos.map(function(c,idx){
-    var globalIdx=clientes.indexOf(c);
-    var nombre1=(c.nombre||'').split(' ')[0];
-    var esFem=['a','ia','na','ra','la','da','sa','ca'].some(function(s){ return nombre1.toLowerCase().endsWith(s); });
-    var trat=esFem?'Estimada':'Estimado';
-    var fechaFmt2=repFecha?new Date(repFecha+'T12:00:00').toLocaleDateString('es-DO',{weekday:'long',year:'numeric',month:'long',day:'numeric'}):'[fecha por confirmar]';
-    var esMulti=c.pedidos&&c.pedidos.length>1;
-    var pedidosTexto=esMulti?c.pedidos.map(function(p,i){ return 'Pedido '+(i+1)+': '+(p.nota||'---'); }).join('%0A'):encodeURIComponent(c.nota||'');
-    var msgP='Muy buenos d\u00edas.%0A%0AReciba un cordial saludo de parte de Llega Ya.%0A%0A'+trat+' '+nombre1+',%0A%0AEs un placer confirmarle que su pedido fue procesado y est\u00e1 listo para entrega.%0A%0ADetalle de su pedido:%0A'+pedidosTexto+'%0A%0ALa entrega est\u00e1 programada para '+encodeURIComponent(fechaFmt2)+'.%0A%0ANos encantar\u00eda que nos comparta su ubicaci\u00f3n para coordinar la entrega.';
-    var vi=(c._uid||'').split('').reduce(function(a,ch){ return a+ch.charCodeAt(0); },0);
-    var tel=(c.telefono||'').replace(/\D/g,'');
-    var waUrl=tel?'https://wa.me/'+tel+'?text='+msgP:null;
-    var waUbi=tel?'https://wa.me/'+tel+'?text='+varUbi[vi%3](nombre1,trat):null;
-    var waUlt=tel?'https://wa.me/'+tel+'?text='+varUltimo[vi%3](nombre1,trat):null;
-    var cod=calcCod(c);
-    var notasHtml='';
-    if(esMulti) notasHtml='<div class="card-notes">'+c.pedidos.map(function(p,i){ return '<div class="note-line">&#128230; Pedido '+(i+1)+': '+(p.nota||'&mdash;')+(p.cod?' &middot; RD$ '+parseFloat(p.cod).toLocaleString():'')+'</div>'; }).join('')+'</div>';
-    else if(c.nota) notasHtml='<div class="note-simple">&#128230; '+c.nota+'</div>';
-    return '<div class="card-v2 '+(esMulti?'card-v2-multi':'')+'">'+
-    '<div class="cv2-left-bar '+(esMulti?'cv2-bar-purple':'cv2-bar-blue')+'"></div>'+
-    '<div class="cv2-body">'+
-      '<div class="cv2-header">'+
-        '<div class="cv2-header-left">'+
-          '<div class="cv2-num">#'+(idx+1)+'</div>'+
-          '<div class="cv2-name">'+(c.nombre||'Sin nombre')+(esMulti?' <span class="cv2-tag cv2-tag-multi">'+c.pedidos.length+' pedidos</span>':'')+'</div>'+
-          '<div class="cv2-sub">&#128222; '+(c.telefono||'&mdash;')+(cod?' &nbsp;&#183;&nbsp; <strong>RD$ '+cod.toLocaleString()+'</strong>':'')+'</div>'+
-        '</div>'+
-      '</div>'+
-      notasHtml+
-      '<div class="cv2-actions">'+
-        '<div class="cv2-row-main">'+
-          (waUrl?'<a class="cv2-btn cv2-btn-wa" href="'+waUrl+'" target="_blank">&#128172; Enviar</a>':'')+
-          (waUbi?'<a class="cv2-btn cv2-btn-blue" href="'+waUbi+'" target="_blank">&#128205; Ubicaci&#243;n</a>':'')+
-        '</div>'+
-        '<div class="cv2-row-main">'+
-          (waUlt?'<a class="cv2-btn cv2-btn-ult" href="'+waUlt+'" target="_blank">&#9888; Último Aviso</a>':'')+
-        '</div>'+
-        '<div class="cv2-row-secondary">'+
-          (c.contactado
-            ?'<button class="card-action-pill pill-gray" onclick="toggleContactado('+globalIdx+')">&#8617; Mover a Pendientes</button>'
-            :'<button class="card-action-pill pill-green" onclick="toggleContactado('+globalIdx+')">&#128257; Ya Contact\u00e9</button>')+
-          '<button class="card-action-pill pill-purple" style="max-width:80px" onclick="enviarJostinRep(\''+c._uid+'\')">&#128100; Jostin</button>'+
-        '</div>'+
-      '</div>'+
-    '</div>'+
-    '</div>';
-  }).join('');
+function moverAPospuesto(uid){
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
+  c.estado='pospuesto'; c.contactado=false;
+  guardar();
+  invShowToast(c.nombre+' movido a Pospuesto','info');
+}
+
+function moverARoutas(uid){
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
+  c.estado='pendiente'; c.contactado=false;
+  guardar(); renderRep();
+  invShowToast(c.nombre+' movido a Rutas','success');
+}
+
+function marcarDevolucionPospuesto(uid){
+  if(!confirm('¿Enviar a Devoluciones?')) return;
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
+  invPackages[uid]=invPackages[uid]||{customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||''};
+  invRecords[uid]={orderNo:uid,customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||'',status:'devolucion',motivo:'',motivoCustom:'',pendienteDia:'',pendienteNota:'',devolucionMotivo:'Marcado desde Pospuesto',devolucionNota:'',ts:new Date().toLocaleString('es-DO')};
+  clientes=clientes.filter(function(x){ return x._uid!==uid; });
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(clientes));
+  localStorage.setItem(STORE_PKGS,JSON.stringify(invPackages));
+  localStorage.setItem(STORE_RECS,JSON.stringify(invRecords));
+  invUpdateBadge(); invUpdateStats();
+  renderRep();
+  invShowToast('Enviado a Devoluciones','info');
 }
 
 function toggleContactado(idx){ clientes[idx].contactado=!clientes[idx].contactado; guardar(); }
