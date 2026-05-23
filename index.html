@@ -334,7 +334,6 @@ width:100%;
     <div class="dw-item active" id="nav-admin" onclick="switchApp('admin')"><span class="ico">&#128506;</span> Rutas</div>
     <div class="dw-item" id="nav-rep" onclick="switchApp('rep')"><span class="ico">&#9203;</span> Pospuesto</div>
     <div class="dw-item" id="nav-inv" onclick="switchApp('inv')"><span class="ico">&#128230;</span> Inventario</div>
-    <div class="dw-item" id="nav-jostin" onclick="switchApp('jostin')"><span class="ico">&#128100;</span> Jostin</div>
   </nav>
   <div class="dw-foot">
     <div class="dw-foot-row" onclick="openModal('modalConfigAdmin');closeDrawer();"><span>&#9881;&#65039;</span> Ajustes</div>
@@ -534,29 +533,24 @@ width:100%;
   </div>
 </div>
 
-<!-- ═══════════ APP JOSTIN ═══════════ -->
+```
+  <div class="rep-brand">
+    
+    <div class="r-phone">Paquetes asignados</div>
+  </div>
+</div>
+<div class="rep-actions">
+  
+</div>
+```
 
-<div id="app-jostin" style="display:none">
-  <div class="rep-sticky">
-    <div class="rep-top">
-      <div class="rep-logo-circle" style="background:linear-gradient(135deg,#7c3aed,#5b21b6) !important;">&#128100;</div>
-      <div class="rep-brand">
-        <div class="r-name">Jostin</div>
-        <div class="r-sub" style="color:#7c3aed !important;">Repartidor</div>
-        <div class="r-phone">Paquetes asignados</div>
-      </div>
-    </div>
-    <div class="rep-actions">
-      <button class="btn-purple" onclick="document.getElementById('fileInputJostinXlsx').click()">&#128202; Cargar Excel Jostin</button>
-      <input type="file" id="fileInputJostinXlsx" accept=".xlsx,.xls" style="display:none" onchange="cargarExcelJostin(event)">
-    </div>
   </div>
   <div class="rep-search">
     <div class="sw"><span class="lupa">&#128269;</span>
-      <input type="text" id="searchJostin" placeholder="Buscar en Jostin..." oninput="renderJostin()">
+      <input type="text" id="searchRep" placeholder="Buscar pospuestos..." oninput="renderRep()">
     </div>
   </div>
-  <div id="list-jostin"><div class="empty"><span class="empty-icon">&#128100;</span><p>No hay paquetes asignados a Jostin</p></div></div>
+  <div id="list-rep"><div class="empty"><span class="empty-icon">&#128100;</span><p>No hay paquetes pospuestos</p></div></div>
 </div>
 
 <!-- ═══════════ MODAL WA STATUS ═══════════ -->
@@ -598,6 +592,21 @@ width:100%;
 .wa-estado-btn.active-devuelto{background:#fef2f2;border-color:#f87171;color:#b91c1c;}
 .wa-estado-icon{font-size:1.1rem;width:24px;text-align:center;flex-shrink:0;}
 </style>
+
+<!-- ═══════════ MODAL COLOR MARK ═══════════ -->
+
+<div class="overlay" id="modalColor" onclick="if(event.target===this)elegirColor(null)">
+  <div class="modal" style="max-width:340px;padding:22px;text-align:center;">
+    <div id="color-modal-data" style="display:none;"></div>
+    <div style="font-size:1.3rem;margin-bottom:6px;">🎨 Marcar ficha</div>
+    <div style="font-size:.82rem;color:#64748b;margin-bottom:20px;">¿Quieres marcar esta ficha con un color para identificar a qué WhatsApp pertenece?</div>
+    <div style="display:flex;gap:10px;margin-bottom:12px;">
+      <button onclick="elegirColor('blue')" style="flex:1;padding:16px;border-radius:16px;border:2px solid #2563eb;background:#e3f0ff;color:#1a56c4;font-size:1.4rem;font-weight:700;cursor:pointer;">🔵<br><span style="font-size:.75rem;">Azul</span></button>
+      <button onclick="elegirColor('red')" style="flex:1;padding:16px;border-radius:16px;border:2px solid #dc2626;background:#fee2e2;color:#b91c1c;font-size:1.4rem;font-weight:700;cursor:pointer;">🔴<br><span style="font-size:.75rem;">Rojo</span></button>
+    </div>
+    <button onclick="elegirColor(null)" style="width:100%;padding:13px;border-radius:14px;border:1.5px solid #e2e8f0;background:#f1f5f9;color:#475569;font-size:.88rem;font-weight:700;cursor:pointer;">Sin color — solo enviar</button>
+  </div>
+</div>
 
 <div class="overlay" id="modalCliente"><div class="modal"><h2 id="modalClienteTitulo">Nuevo Cliente</h2>
   <input type="hidden" id="editId">
@@ -667,7 +676,6 @@ var jostinClientes = [];
 var invPackages = {};
 var invRecords  = {};
 
-try { jostinClientes = JSON.parse(localStorage.getItem('llya_jostin') || '[]'); } catch(e){ jostinClientes=[]; }
 try { invPackages = JSON.parse(localStorage.getItem(STORE_PKGS) || '{}'); } catch(e){ invPackages = {}; }
 try { invRecords  = JSON.parse(localStorage.getItem(STORE_RECS) || '{}'); } catch(e){ invRecords = {}; }
 
@@ -723,17 +731,17 @@ function switchApp(app, skipSave){
   document.getElementById('app-admin').style.display  = app==='admin'  ? 'block' : 'none';
   document.getElementById('app-rep').style.display    = app==='rep'    ? 'block' : 'none';
   document.getElementById('app-inv').style.display    = app==='inv'    ? 'block' : 'none';
-  document.getElementById('app-jostin').style.display = app==='jostin' ? 'block' : 'none';
+  
   document.getElementById('fab-admin').style.display  = app==='admin'  ? 'flex'  : 'none';
-  ['admin','rep','inv','jostin'].forEach(function(a){
+  ['admin','rep','inv'].forEach(function(a){
     document.getElementById('nav-'+a).classList.toggle('active', a===app);
   });
-  var titles = {admin:'&#128506; LLEGA YA &mdash; Rutas', rep:'&#9203; LLEGA YA &mdash; Pospuesto', inv:'&#128230; LLEGA YA &mdash; Inventario', jostin:'&#128100; Jostin'};
+  var titles = {admin:'&#128506; LLEGA YA &mdash; Rutas', rep:'&#9203; LLEGA YA &mdash; Pospuesto', inv:'&#128230; LLEGA YA &mdash; Inventario'};
   document.getElementById('headerTitle').innerHTML = titles[app]||app;
   closeDrawer();
   if(app==='admin') renderAdmin();
   else if(app==='rep') renderRep();
-  else if(app==='jostin') renderJostin();
+  
   else if(app==='inv'){ invUpdateBadge(); invUpdateStats(); if(invTabActual==='registros') invRenderRecords(); }
 }
 
@@ -821,7 +829,8 @@ function renderAdmin(){
     var completadoBtn=c.estado==='completado'
       ?'<button class="card-action-pill pill-gray" onclick="devolverAdmin(\''+uid+'\')">&#8617; Volver a Rutas</button>'
       :'<button class="card-action-pill pill-orange" onclick="completarAdmin(\''+uid+'\')">&#128222; No Contesta</button>';
-    return '<div class="card-v2 '+(c.estado==='completado'?'card-v2-done':'')+(sinUbi?' card-v2-nogps':'')+'">'+
+    var colorBorder=c.colorMark==='blue'?' style="border-left:4px solid #2563eb !important;"':c.colorMark==='red'?' style="border-left:4px solid #dc2626 !important;"':'';
+    return '<div class="card-v2 '+(c.estado==='completado'?'card-v2-done':'')+(sinUbi?' card-v2-nogps':'')+'"'+colorBorder+'>'+
     '<div class="cv2-left-bar cv2-bar-'+accentColor+'"></div>'+
     '<div class="cv2-body">'+
       '<div class="cv2-header">'+
@@ -852,7 +861,6 @@ function renderAdmin(){
           '<button class="cv2-icon-btn" onclick="editarCliente(\''+uid+'\')" title="Editar">&#9999;&#65039;</button>'+
           completadoBtn+
           '<button class="card-action-pill pill-green" style="max-width:82px" onclick="marcarEntregadoDesdeRuta(\''+uid+'\')">&#10003; Entregado</button>'+
-          '<button class="card-action-pill pill-orange" style="max-width:72px" onclick="enviarJostin(\''+uid+'\')">&#128100; Jostin</button>'+
           '<button class="card-action-pill pill-red" style="max-width:68px" onclick="marcarDevolucionDesdeRuta(\''+uid+'\')">&#8617; Dev.</button>'+
           '<button class="card-action-pill" style="background:#fff8e1;color:#f57f17;border:1.5px solid #ffe082;max-width:82px" onclick="moverAPospuesto(\''+uid+'\')">&#9203; Posponer</button>'+
         '</div>'+
@@ -947,139 +955,6 @@ function marcarDevolucionDesdeRuta(uid){
   var mw2=document.getElementById('route-map-wrap'); if(mw2) mw2.dataset.gpsCount='';
   renderAdmin(); renderRep();
   invShowToast('↩️ Devolución registrada en Inventario','info');
-}
-
-function enviarJostin(uid){
-  if(!confirm('\u00bfAsignar este paquete a Jostin? Saldr\u00e1 de Rutas y Entregas.')) return;
-  var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
-  c.enJostin=true; c.estado='jostin';
-  clientes=clientes.filter(function(x){ return x._uid!==uid; });
-  jostinClientes.push(c);
-  localStorage.setItem('llya_jostin', JSON.stringify(jostinClientes));
-  exportados=exportados.filter(function(x){ return x._uid!==uid; });
-  guardar(); renderJostin();
-  invShowToast(c.nombre+' asignado a Jostin','info');
-}
-
-function devolverDeJostin(uid){
-  var c=jostinClientes.find(function(x){ return x._uid===uid; }); if(!c) return;
-  c.estado='pendiente'; c.enJostin=false;
-  jostinClientes=jostinClientes.filter(function(x){ return x._uid!==uid; });
-  clientes.push(c);
-  localStorage.setItem('llya_jostin', JSON.stringify(jostinClientes));
-  guardar(); renderJostin();
-}
-
-function cargarExcelJostin(e){
-  var f=e.target.files[0]; if(!f) return; e.target.value='';
-  var reader=new FileReader();
-  reader.onload=function(ev){
-    try{
-      var wb=XLSX.read(ev.target.result,{type:'binary'});
-      var ws=wb.Sheets[wb.SheetNames[0]];
-      var raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
-      if(!raw.length) return;
-      var headerIdx=-1;
-      for(var i=0;i<Math.min(raw.length,6);i++){
-        var rowStr=raw[i].join('|').toLowerCase();
-        if(rowStr.indexOf('dropoff')!==-1||rowStr.indexOf('cod')!==-1||rowStr.indexOf('tel')!==-1){ headerIdx=i;break; }
-      }
-      if(headerIdx===-1)return alert('No se encontr\u00f3 la fila de encabezados.');
-      var headers=raw[headerIdx];
-      var rows=[];
-      for(var j=headerIdx+1;j<raw.length;j++){
-        var obj={}; headers.forEach(function(h,k){obj[h]=raw[j][k]||'';}); rows.push(obj);
-      }
-      function findCol(row,cands){ var keys=Object.keys(row); for(var i=0;i<cands.length;i++){ var f=keys.find(function(k){return k.toLowerCase().trim()===cands[i].toLowerCase();}); if(f)return f; } for(var i=0;i<cands.length;i++){ var f=keys.find(function(k){return k.toLowerCase().indexOf(cands[i].toLowerCase())!==-1;}); if(f)return f; } return null; }
-      var sample=rows[0];
-      var colNombre=findCol(sample,['dropoff contact name','contacto','nombre','name','receiver']);
-      var colTel=findCol(sample,['dropoff contact','telefono','phone','tel','celular']);
-      var colCod=findCol(sample,['cod','monto','amount','valor']);
-      var colNota=findCol(sample,['nota','note','notas','producto','descripcion']);
-      var lista=rows.map(function(r){
-        var nombre=colNombre?String(r[colNombre]||'').trim():'';
-        var tel=colTel?String(r[colTel]||'').trim().replace(/\D/g,''):'';
-        var cod=colCod?parseFloat(String(r[colCod]||'0').replace(/[^0-9.]/g,''))||0:0;
-        var nota=colNota?String(r[colNota]||'').trim():'';
-        if(!nombre&&!tel)return null;
-        return{nombre:nombre,telefono:tel,cod:cod,nota:nota,lat:null,lng:null,estado:'jostin',enJostin:true,_uid:generarId()};
-      }).filter(Boolean);
-      /* Remove matching entries from clientes */
-      var telsJostin=lista.map(function(x){ return normTel(x.telefono); }).filter(Boolean);
-      var removed=0;
-      clientes=clientes.filter(function(c){
-        if(telsJostin.indexOf(normTel(c.telefono))!==-1){ removed++; return false; }
-        return true;
-      });
-      exportados=exportados.filter(function(c){ return telsJostin.indexOf(normTel(c.telefono))===-1; });
-      /* Add to jostin, avoid duplicates */
-      var existing=new Set(jostinClientes.map(function(x){ return normTel(x.telefono); }));
-      var added=0;
-      lista.forEach(function(x){ if(!existing.has(normTel(x.telefono))){ jostinClientes.push(x); added++; } });
-      localStorage.setItem('llya_jostin', JSON.stringify(jostinClientes));
-      guardar(); renderJostin();
-      invShowToast(added+' fichas a Jostin, '+removed+' quitadas de Rutas/Entregas','success');
-    }catch(err){ alert('Error: '+err.message); }
-  };
-  reader.readAsBinaryString(f);
-}
-
-function renderJostin(){
-  var list=document.getElementById('list-jostin');
-  var q=(document.getElementById('searchJostin')?document.getElementById('searchJostin').value:'').toLowerCase().trim();
-  var datos=jostinClientes.slice();
-  if(q) datos=datos.filter(function(c){ return (c.nombre||'').toLowerCase().includes(q)||(c.telefono||'').includes(q); });
-  if(!datos.length){ list.innerHTML='<div class="empty"><span class="empty-icon">&#128100;</span><p>No hay paquetes asignados a Jostin</p></div>'; return; }
-  list.innerHTML=datos.map(function(c,idx){
-    var uid=c._uid; var cod=calcCod(c);
-    var tel=(c.telefono||'').replace(/\D/g,'');
-    var nombre1=(c.nombre||'').split(' ')[0];
-    var producto=encodeURIComponent(c.nota||c.nombre||'tu pedido');
-    var waMsg='%5BLLEGA+YA%5D+Hola+'+encodeURIComponent(nombre1)+'!+%F0%9F%9A%9A+Tu+pedido+'+producto+'+est%C3%A1+en+camino.+Pronto+llegar%C3%A1+a+tu+puerta.%0A%0ASu+chofer+a+cargo+de+su+paquete+es+Jostin.';
-    var waUrl=tel?'https://wa.me/'+tel+'?text='+waMsg:null;
-    var notasHtml=c.nota?'<div class="note-simple">&#128230; '+c.nota+'</div>':'';
-    return '<div class="card-v2"><div class="cv2-left-bar cv2-bar-purple"></div>'+
-    '<div class="cv2-body">'+
-      '<div class="cv2-header"><div class="cv2-header-left">'+
-        '<div class="cv2-num">#'+(idx+1)+'</div>'+
-        '<div class="cv2-name">'+(c.nombre||'Sin nombre')+'</div>'+
-        '<div class="cv2-sub">&#128222; '+(c.telefono||'&mdash;')+(cod?' &nbsp;&#183;&nbsp; <strong>RD$ '+cod.toLocaleString()+'</strong>':'')+'</div>'+
-      '</div></div>'+
-      notasHtml+
-      '<div class="cv2-actions">'+
-        '<div class="cv2-row-main">'+
-          (waUrl?'<a class="cv2-btn cv2-btn-wa" href="'+waUrl+'" target="_blank">&#128172; WhatsApp</a>':'')+
-        '</div>'+
-        '<div class="cv2-row-secondary">'+
-          '<button class="card-action-pill pill-green" onclick="marcarEntregadoJostin(\''+uid+'\')">&#10003; Entregado</button>'+
-          '<button class="card-action-pill pill-gray" onclick="devolverDeJostin(\''+uid+'\')">&#8617; Devolver</button>'+
-          '<button class="card-action-pill pill-red" onclick="marcarDevolucionJostin(\''+uid+'\')">&#8617; Dev.</button>'+
-        '</div>'+
-      '</div>'+
-    '</div></div>';
-  }).join('');
-}
-
-function marcarEntregadoJostin(uid){
-  if(!confirm('\u00bfConfirmar entrega? Ir\u00e1 a Inventario > Entregados.')) return;
-  var c=jostinClientes.find(function(x){ return x._uid===uid; }); if(!c) return;
-  invPackages[uid]={customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||''};
-  invRecords[uid]={orderNo:uid,customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||'',status:'entregado',motivo:'',motivoCustom:'',pendienteDia:'',pendienteNota:'',devolucionMotivo:'',devolucionNota:'',ts:new Date().toLocaleString('es-DO')};
-  jostinClientes=jostinClientes.filter(function(x){ return x._uid!==uid; });
-  localStorage.setItem('llya_jostin', JSON.stringify(jostinClientes));
-  invSave(false); renderJostin();
-  invShowToast('Entregado registrado en Inventario','success');
-}
-
-function marcarDevolucionJostin(uid){
-  if(!confirm('\u00bfEnviar a Devoluciones?')) return;
-  var c=jostinClientes.find(function(x){ return x._uid===uid; }); if(!c) return;
-  invPackages[uid]={customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||''};
-  invRecords[uid]={orderNo:uid,customer:c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:'',cod:String(calcCod(c)||''),note:c.nota||'',status:'devolucion',motivo:'',motivoCustom:'',pendienteDia:'',pendienteNota:'',devolucionMotivo:'Marcado desde Jostin',devolucionNota:'',ts:new Date().toLocaleString('es-DO')};
-  jostinClientes=jostinClientes.filter(function(x){ return x._uid!==uid; });
-  localStorage.setItem('llya_jostin', JSON.stringify(jostinClientes));
-  invSave(false); renderJostin();
-  invShowToast('Enviado a Devoluciones','info');
 }
 
 function completarAdmin(uid){
@@ -1265,10 +1140,9 @@ function cargarJSON(e){
       if(!Array.isArray(lista)||!lista.length){ invShowToast('JSON vacío o formato incorrecto','error'); return; }
 
       /* Block uids already in final status */
-      var finalStatuses={'entregado':1,'devolucion':1,'jostin':1};
+      var finalStatuses={'entregado':1,'devolucion':1};
       var blockUids=new Set(
         clientes.map(function(c){ return c._uid; })
-        .concat(jostinClientes.map(function(c){ return c._uid; }))
       );
       Object.keys(invRecords).forEach(function(uid){
         if(finalStatuses[invRecords[uid].status]) blockUids.add(uid);
@@ -1398,12 +1272,11 @@ function leerExcel(file,origen){
       if(!lista.length){ invShowToast('No se encontraron clientes válidos','error'); return; }
 
       /* Final statuses — these should NOT come back to Rutas/Entregas */
-      var finalStatuses={'entregado':1,'devolucion':1,'jostin':1};
+      var finalStatuses={'entregado':1,'devolucion':1};
 
-      /* Only block if uid is already in active clientes/jostin OR has a final inv status */
+      /* Only block if uid is already in active clientes OR has a final inv status */
       var blockUids=new Set(
         clientes.map(function(c){ return c._uid; })
-        .concat(jostinClientes.map(function(c){ return c._uid; }))
       );
       /* Also block codes that have final status in invRecords */
       Object.keys(invRecords).forEach(function(uid){
@@ -1512,69 +1385,91 @@ function switchTabRep(tab){
   renderRep();
 }
 
+function getDatosPospuesto(){
+  var posp=clientes.filter(function(c){ return c.estado==='pospuesto'; });
+  if(repTabActual==='pendientes')    return posp.filter(function(c){ return c.lat&&c.lng; });
+  if(repTabActual==='sin_ubicacion') return posp.filter(function(c){ return !c.lat||!c.lng; });
+  if(repTabActual==='contactados')   return posp.filter(function(c){ return c.estado==='pospuesto_nc'; });
+  return posp;
+}
+
 function renderRep(){
   var list=document.getElementById('list-rep');
-  /* Pospuestos = clientes with estado==='pospuesto' */
-  var pospuestos=clientes.filter(function(c){ return c.estado==='pospuesto'; });
-  if(!pospuestos.length && repTabActual==='pendientes'){
-    list.innerHTML='<div class="empty"><span class="empty-icon">&#9203;</span><p>No hay paquetes pospuestos</p></div>'; return;
-  }
-
-  var datos;
-  if(repTabActual==='pendientes') datos=pospuestos.filter(function(c){ return c.lat&&c.lng; });
-  else if(repTabActual==='sin_ubicacion') datos=pospuestos.filter(function(c){ return !c.lat||!c.lng; });
-  else datos=pospuestos.filter(function(c){ return c.contactado; });
-
   var q=(document.getElementById('searchRep')?document.getElementById('searchRep').value:'').toLowerCase().trim();
+  var datos=getDatosPospuesto();
   if(q) datos=datos.filter(function(c){ return (c.nombre||'').toLowerCase().includes(q)||(c.telefono||'').includes(q); });
-
-  if(!datos.length){ list.innerHTML='<div class="empty">No hay paquetes en esta sección</div>'; return; }
-
+  if(!datos.length){ list.innerHTML='<div class="empty"><span class="empty-icon">&#9203;</span><p>No hay paquetes pospuestos aquí</p></div>'; return; }
   list.innerHTML=datos.map(function(c,idx){
-    var uid=c._uid; var cod=calcCod(c);
-    var tel=(c.telefono||'').replace(/\D/g,'');
+    var uid=c._uid;
     var mapsUrl=c.lat&&c.lng?'https://www.google.com/maps?q='+c.lat+','+c.lng:null;
-    var waUrl=tel?'https://wa.me/'+tel:null;
+    var sinUbi=!c.lat||!c.lng;
     var esMulti=c.pedidos&&c.pedidos.length>1;
-    var notasHtml=c.nota?'<div class="note-simple">&#128230; '+c.nota+'</div>':'';
-    return '<div class="card-v2"><div class="cv2-left-bar cv2-bar-yellow"></div>'+
+    var cod=calcCod(c);
+    var accentColor=sinUbi?'yellow':(esMulti?'purple':'blue');
+    /* Card color mark */
+    var cardBorder='';
+    if(c.colorMark==='blue') cardBorder=' style="border-left:4px solid #2563eb !important;"';
+    else if(c.colorMark==='red') cardBorder=' style="border-left:4px solid #dc2626 !important;"';
+    var notasHtml='';
+    if(esMulti) notasHtml='<div class="card-notes">'+c.pedidos.map(function(p,i){ return '<div class="note-line">&#128230; Pedido '+(i+1)+': '+(p.nota||'&mdash;')+(p.cod?' &middot; RD$ '+parseFloat(p.cod).toLocaleString():'')+'</div>'; }).join('')+'</div>';
+    else if(c.nota) notasHtml='<div class="note-simple">&#128230; '+c.nota+'</div>';
+    var noContesta=c.estado==='pospuesto_nc';
+    var noContestaBtn=noContesta
+      ?'<button class="card-action-pill pill-gray" onclick="quitarNoContestaPospuesto(\''+uid+'\')">&#8617; Quitar NC</button>'
+      :'<button class="card-action-pill pill-orange" onclick="marcarNoContestaPospuesto(\''+uid+'\')">&#128222; No Contesta</button>';
+    return '<div class="card-v2 '+(sinUbi?'card-v2-nogps':'')+'"'+cardBorder+'>'+
+    '<div class="cv2-left-bar cv2-bar-'+accentColor+'"></div>'+
     '<div class="cv2-body">'+
-      '<div class="cv2-header"><div class="cv2-header-left">'+
-        '<div class="cv2-num">#'+(idx+1)+'</div>'+
-        '<div class="cv2-name">'+(c.nombre||'Sin nombre')+'</div>'+
-        '<div class="cv2-sub">&#128222; '+(c.telefono||'&mdash;')+(cod?' &nbsp;&#183;&nbsp; <strong>RD$ '+cod.toLocaleString()+'</strong>':'')+'</div>'+
-      '</div></div>'+
+      '<div class="cv2-header">'+
+        '<div class="cv2-header-left">'+
+          '<div class="cv2-num">#'+(idx+1)+'</div>'+
+          '<div class="cv2-name">'+(c.nombre||'Sin nombre')+
+            (sinUbi?' <span class="cv2-tag cv2-tag-gps">Sin GPS</span>':'')+
+          '</div>'+
+          '<div class="cv2-sub">&#128222; '+(c.telefono||'&mdash;')+(cod?' &nbsp;&#183;&nbsp; <strong>RD$ '+cod.toLocaleString()+'</strong>':'')+'</div>'+
+        '</div>'+
+        '<div class="cv2-sort">'+
+          '<button onclick="moverPospuesto(\''+uid+'\',-1)" class="cv2-sort-btn">&#9650;</button>'+
+          '<button onclick="moverPospuesto(\''+uid+'\',1)" class="cv2-sort-btn">&#9660;</button>'+
+        '</div>'+
+      '</div>'+
       notasHtml+
       '<div class="cv2-actions">'+
         '<div class="cv2-row-main">'+
           (mapsUrl?'<a class="cv2-btn cv2-btn-blue" href="'+mapsUrl+'" target="_blank">&#128506; Mapa</a>':'')+
-          (waUrl?'<button class="cv2-btn cv2-btn-wa" onclick="abrirMenuWA(\''+uid+'\')">&#128172; WhatsApp</button>':'')+
+          '<button class="cv2-btn cv2-btn-wa" onclick="abrirMenuWA(\''+uid+'\')">&#128172; WhatsApp</button>'+
+          '<button class="cv2-btn" style="background:#f1f5f9;color:#475569;border:1.5px solid #cbd5e1;max-width:48px;flex:0 0 48px;padding:9px 0;" onclick="abrirUbi(\''+uid+'\')" title="GPS">&#128205;</button>'+
         '</div>'+
-        '<div class="cv2-row-secondary">'+
-          '<button class="card-action-pill pill-green" onclick="moverARoutas(\''+uid+'\')">&#8593; A Rutas</button>'+
-          '<button class="card-action-pill pill-orange" onclick="enviarJostinRep(\''+uid+'\')">&#128100; Jostin</button>'+
-          '<button class="card-action-pill pill-red" onclick="marcarDevolucionPospuesto(\''+uid+'\')">&#8617; Dev.</button>'+
+        '<div class="cv2-row-secondary" style="flex-wrap:wrap;gap:6px;">'+
+          '<button class="cv2-icon-btn" onclick="editarCliente(\''+uid+'\')" title="Editar">&#9999;&#65039;</button>'+
+          noContestaBtn+
+          '<button class="card-action-pill pill-green" style="max-width:90px" onclick="marcarEntregadoDesdeRuta(\''+uid+'\')">&#10003; Entregado</button>'+
+          '<button class="card-action-pill pill-red" style="max-width:68px" onclick="marcarDevolucionDesdeRuta(\''+uid+'\')">&#8617; Dev.</button>'+
+          '<button class="card-action-pill" style="background:#e8f0fe;color:#1a56c4;border:1.5px solid #90bbf5;" onclick="moverARoutas(\''+uid+'\')">&#8593; A Rutas</button>'+
         '</div>'+
       '</div>'+
-    '</div></div>';
+    '</div>'+
+    '</div>';
   }).join('');
 }
 
-function guardarFecha(){
-  repFecha=document.getElementById('inputFecha').value;
-  localStorage.setItem(FECHA_KEY,repFecha);
-  closeModal('modalFecha'); renderRep();
+function moverPospuesto(uid,dir){
+  var datos=getDatosPospuesto();
+  var pos=datos.findIndex(function(x){ return x._uid===uid; });
+  var np=pos+dir; if(np<0||np>=datos.length) return;
+  var ia=clientes.findIndex(function(x){ return x._uid===datos[pos]._uid; });
+  var ib=clientes.findIndex(function(x){ return x._uid===datos[np]._uid; });
+  var tmp=clientes[ia]; clientes[ia]=clientes[ib]; clientes[ib]=tmp;
+  guardar();
 }
 
-function borrarPestanaRep(){
-  if(!confirm('Borrar '+(repTabActual==='pendientes'?'pendientes':'ya contactados')+'?')) return;
-  if(repTabActual==='pendientes') clientes=clientes.filter(function(c){ return c.contactado; });
-  else clientes=clientes.filter(function(c){ return !c.contactado; });
-  guardar(); closeModal('modalConfigRep');
+function marcarNoContestaPospuesto(uid){
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
+  c.estado='pospuesto_nc'; guardar(); renderRep();
 }
-function borrarTodoRep(){
-  if(!confirm('Borrar TODOS los clientes?')) return;
-  clientes=[]; guardar(); closeModal('modalConfigRep');
+function quitarNoContestaPospuesto(uid){
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
+  c.estado='pospuesto'; guardar(); renderRep();
 }
 
 function moverAPospuesto(uid){
@@ -1607,18 +1502,6 @@ function marcarDevolucionPospuesto(uid){
 
 function toggleContactado(idx){ clientes[idx].contactado=!clientes[idx].contactado; guardar(); }
 
-function enviarJostinRep(uid){
-  if(!confirm('\u00bfAsignar a Jostin? La ficha saldr\u00e1 de Rutas y Entregas.')) return;
-  var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
-  c.enJostin=true; c.estado='jostin';
-  clientes=clientes.filter(function(x){ return x._uid!==uid; });
-  jostinClientes.push(c);
-  localStorage.setItem('llya_jostin', JSON.stringify(jostinClientes));
-  exportados=exportados.filter(function(x){ return x._uid!==uid; });
-  guardar(); renderRep();
-  invShowToast(c.nombre+' asignado a Jostin','info');
-}
-
 /* APP INVENTARIO */
 var invCameraOn=false;
 var invCurrentPkg=null;
@@ -1642,15 +1525,14 @@ function switchInvTab(tab){
 function invClearAll(){
   if(!confirm('¿Eliminar todos los paquetes y registros del día?')) return;
   invPackages={}; invRecords={};
-  clientes=[]; jostinClientes=[];
+  clientes=[];
   try{
     localStorage.removeItem(STORE_PKGS); localStorage.removeItem(STORE_RECS);
     localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
-    localStorage.setItem('llya_jostin', JSON.stringify([]));
   }catch(e){}
   invUpdateBadge(); invUpdateStats();
   document.getElementById('inv-loaded-summary').style.display='none';
-  renderAdmin(); renderRep(); renderJostin();
+  renderAdmin(); renderRep();
   invShowToast('Todo limpiado','info');
   invRenderRecords();
 }
@@ -1765,13 +1647,11 @@ function invSetFilter(el,val){
   invRenderRecords();
 }
 
-/* Build the unified list of ALL known UIDs across clientes, jostin, invPackages, invRecords */
+/* Build the unified list of ALL known UIDs across clientes, invPackages, invRecords */
 function getAllInvIds(){
   var seen={}, all=[];
   /* clientes activos (pendiente) */
   clientes.forEach(function(c){ if(!seen[c._uid]){seen[c._uid]=1;all.push(c._uid);} });
-  /* jostinClientes */
-  jostinClientes.forEach(function(c){ if(!seen[c._uid]){seen[c._uid]=1;all.push(c._uid);} });
   /* invPackages (cargados por Excel de inventario o por acciones) */
   Object.keys(invPackages).forEach(function(id){ if(!seen[id]){seen[id]=1;all.push(id);} });
   /* invRecords (escaneados) */
@@ -1779,10 +1659,10 @@ function getAllInvIds(){
   return all;
 }
 
-/* Get package data for a uid — prefer invPackages, fallback to clientes/jostin */
+/* Get package data for a uid — prefer invPackages, fallback to clientes */
 function getInvPkg(uid){
   if(invPackages[uid]) return invPackages[uid];
-  var c=clientes.find(function(x){ return x._uid===uid; })||jostinClientes.find(function(x){ return x._uid===uid; });
+  var c=clientes.find(function(x){ return x._uid===uid; });
   if(c) return{customer:c.customer||c.nombre||'',receiver:c.nombre||'',phone:c.telefono||'',zone:c.zone||'',cod:String(calcCod(c)||''),note:c.nota||''};
   return {};
 }
@@ -1897,9 +1777,7 @@ function invRemoveUid(uid){
   delete invRecords[uid];
   delete invPackages[uid];
   clientes=clientes.filter(function(c){ return c._uid!==uid; });
-  jostinClientes=jostinClientes.filter(function(c){ return c._uid!==uid; });
   localStorage.setItem(STORAGE_KEY, JSON.stringify(clientes));
-  localStorage.setItem('llya_jostin', JSON.stringify(jostinClientes));
 }
 
 function invClearCurrentGroup(){
@@ -2046,14 +1924,29 @@ function enviarMsgWA(){
   if(!c||!c.telefono){ invShowToast('Sin número de teléfono','error'); return; }
   var msg = document.getElementById('wa-msg-preview').value;
   var tel = c.telefono.replace(/\D/g,'');
-  /* Save status on client */
   c.waEstado = waCurrentStatus;
   guardar();
   closeModal('modalWA');
-  /* Open WA */
-  window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');
+  /* Show color picker before opening WhatsApp */
+  var colorEl = document.getElementById('color-modal-data');
+  colorEl.dataset.tel = tel;
+  colorEl.dataset.msg = encodeURIComponent(msg);
+  colorEl.dataset.uid = waCurrentUid;
+  openModal('modalColor');
+}
 
-  invShowToast('Mensaje enviado — estado: '+waCurrentStatus,'success');
+function elegirColor(color){
+  var colorEl = document.getElementById('color-modal-data');
+  var uid = colorEl.dataset.uid;
+  var tel = colorEl.dataset.tel;
+  var msg = colorEl.dataset.msg;
+  if(color){
+    var c = clientes.find(function(x){ return x._uid===uid; });
+    if(c){ c.colorMark=color; guardar(); }
+  }
+  closeModal('modalColor');
+  window.open('https://wa.me/'+tel+'?text='+msg,'_blank');
+  invShowToast('Mensaje enviado','success');
 }
 
 
