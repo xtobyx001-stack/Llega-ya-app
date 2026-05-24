@@ -829,8 +829,8 @@ function renderAdmin(){
     var completadoBtn=c.estado==='completado'
       ?'<button class="card-action-pill pill-gray" onclick="devolverAdmin(\''+uid+'\')">&#8617; Volver a Rutas</button>'
       :'<button class="card-action-pill pill-orange" onclick="completarAdmin(\''+uid+'\')">&#128222; No Contesta</button>';
-    var colorBorder=c.colorMark==='blue'?' style="border-left:4px solid #2563eb !important;"':c.colorMark==='red'?' style="border-left:4px solid #dc2626 !important;"':'';
-    return '<div class="card-v2 '+(c.estado==='completado'?'card-v2-done':'')+(sinUbi?' card-v2-nogps':'')+'"'+colorBorder+'>'+
+    var colorStyle=c.colorMark==='blue'?'background:#e3f0ff !important;border-color:#90bbf5 !important;':c.colorMark==='red'?'background:#fee2e2 !important;border-color:#fca5a5 !important;':'';
+    return '<div class="card-v2 '+(c.estado==='completado'?'card-v2-done':'')+(sinUbi?' card-v2-nogps':'')+'" style="'+colorStyle+'">'+
     '<div class="cv2-left-bar cv2-bar-'+accentColor+'"></div>'+
     '<div class="cv2-body">'+
       '<div class="cv2-header">'+
@@ -854,8 +854,9 @@ function renderAdmin(){
       '<div class="cv2-actions">'+
         '<div class="cv2-row-main">'+
           (mapsUrl?'<a class="cv2-btn cv2-btn-blue" href="'+mapsUrl+'" target="_blank">&#128506; Mapa</a>':'')+
-          (c.telefono?'<button class="cv2-btn cv2-btn-wa" onclick="abrirMenuWA(\''+uid+'\')">&#128172; WhatsApp</button>':'')+
-          '<button class="cv2-btn" style="background:#fff3e0;color:#e65100;border:1.5px solid #ffb74d;max-width:48px;padding:9px 0;flex:0 0 48px;" onclick="enviarExportar(\''+uid+'\')" title="Exportar GPS">&#128228;</button>'+
+          (c.telefono?'<button class="cv2-btn cv2-btn-wa" style="flex:2" onclick="abrirMenuWA(\''+uid+'\')">&#128172; WhatsApp</button>':'')+
+          '<button class="cv2-btn" style="background:'+(c.colorMark==='blue'?'#2563eb':c.colorMark==='red'?'#dc2626':'#f1f5f9')+';color:'+(c.colorMark?'#fff':'#475569')+';border:1.5px solid '+(c.colorMark==='blue'?'#2563eb':c.colorMark==='red'?'#dc2626':'#cbd5e1')+';max-width:44px;flex:0 0 44px;padding:9px 0;font-size:1rem;" onclick="toggleColor(\''+uid+'\')" title="Color">&#127775;</button>'+
+          '<button class="cv2-btn" style="background:#fff3e0;color:#e65100;border:1.5px solid #ffb74d;max-width:44px;flex:0 0 44px;padding:9px 0;" onclick="enviarExportar(\''+uid+'\')" title="Exportar GPS">&#128228;</button>'+
         '</div>'+
         '<div class="cv2-row-secondary">'+
           '<button class="cv2-icon-btn" onclick="editarCliente(\''+uid+'\')" title="Editar">&#9999;&#65039;</button>'+
@@ -1405,11 +1406,8 @@ function renderRep(){
     var sinUbi=!c.lat||!c.lng;
     var esMulti=c.pedidos&&c.pedidos.length>1;
     var cod=calcCod(c);
-    var accentColor=sinUbi?'yellow':(esMulti?'purple':'blue');
     /* Card color mark */
-    var cardBorder='';
-    if(c.colorMark==='blue') cardBorder=' style="border-left:4px solid #2563eb !important;"';
-    else if(c.colorMark==='red') cardBorder=' style="border-left:4px solid #dc2626 !important;"';
+    var colorStyle=c.colorMark==='blue'?'background:#e3f0ff !important;border-color:#90bbf5 !important;':c.colorMark==='red'?'background:#fee2e2 !important;border-color:#fca5a5 !important;':'';
     var notasHtml='';
     if(esMulti) notasHtml='<div class="card-notes">'+c.pedidos.map(function(p,i){ return '<div class="note-line">&#128230; Pedido '+(i+1)+': '+(p.nota||'&mdash;')+(p.cod?' &middot; RD$ '+parseFloat(p.cod).toLocaleString():'')+'</div>'; }).join('')+'</div>';
     else if(c.nota) notasHtml='<div class="note-simple">&#128230; '+c.nota+'</div>';
@@ -1417,7 +1415,7 @@ function renderRep(){
     var noContestaBtn=noContesta
       ?'<button class="card-action-pill pill-gray" onclick="quitarNoContestaPospuesto(\''+uid+'\')">&#8617; Quitar NC</button>'
       :'<button class="card-action-pill pill-orange" onclick="marcarNoContestaPospuesto(\''+uid+'\')">&#128222; No Contesta</button>';
-    return '<div class="card-v2 '+(sinUbi?'card-v2-nogps':'')+'"'+cardBorder+'>'+
+    return '<div class="card-v2 '+(sinUbi?'card-v2-nogps':'')+'" style="'+colorStyle+'">'+
     '<div class="cv2-left-bar cv2-bar-'+accentColor+'"></div>'+
     '<div class="cv2-body">'+
       '<div class="cv2-header">'+
@@ -1437,8 +1435,9 @@ function renderRep(){
       '<div class="cv2-actions">'+
         '<div class="cv2-row-main">'+
           (mapsUrl?'<a class="cv2-btn cv2-btn-blue" href="'+mapsUrl+'" target="_blank">&#128506; Mapa</a>':'')+
-          '<button class="cv2-btn cv2-btn-wa" onclick="abrirMenuWA(\''+uid+'\')">&#128172; WhatsApp</button>'+
-          '<button class="cv2-btn" style="background:#f1f5f9;color:#475569;border:1.5px solid #cbd5e1;max-width:48px;flex:0 0 48px;padding:9px 0;" onclick="abrirUbi(\''+uid+'\')" title="GPS">&#128205;</button>'+
+          '<button class="cv2-btn cv2-btn-wa" style="flex:2" onclick="abrirMenuWA(\''+uid+'\')">&#128172; WhatsApp</button>'+
+          '<button class="cv2-btn" style="background:'+(c.colorMark==='blue'?'#2563eb':c.colorMark==='red'?'#dc2626':'#f1f5f9')+';color:'+(c.colorMark?'#fff':'#475569')+';border:1.5px solid '+(c.colorMark==='blue'?'#2563eb':c.colorMark==='red'?'#dc2626':'#cbd5e1')+';max-width:44px;flex:0 0 44px;padding:9px 0;font-size:1rem;" onclick="toggleColor(\''+uid+'\')" title="Color">&#127775;</button>'+
+          '<button class="cv2-btn" style="background:#fff3e0;color:#e65100;border:1.5px solid #ffb74d;max-width:44px;flex:0 0 44px;padding:9px 0;" onclick="enviarExportar(\''+uid+'\')" title="Exportar">&#128228;</button>'+
         '</div>'+
         '<div class="cv2-row-secondary" style="flex-wrap:wrap;gap:6px;">'+
           '<button class="cv2-icon-btn" onclick="editarCliente(\''+uid+'\')" title="Editar">&#9999;&#65039;</button>'+
@@ -1470,6 +1469,14 @@ function marcarNoContestaPospuesto(uid){
 function quitarNoContestaPospuesto(uid){
   var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
   c.estado='pospuesto'; guardar(); renderRep();
+}
+
+function toggleColor(uid){
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
+  if(!c.colorMark) c.colorMark='blue';
+  else if(c.colorMark==='blue') c.colorMark='red';
+  else c.colorMark=null;
+  guardar();
 }
 
 function moverAPospuesto(uid){
@@ -1920,19 +1927,15 @@ function selEstadoWA(key, nombre64, prod64){
 
 function enviarMsgWA(){
   if(!waCurrentStatus){ invShowToast('Selecciona un estado primero','error'); return; }
-  var c = clientes.find(function(x){ return x._uid===waCurrentUid; });
+  var c=clientes.find(function(x){ return x._uid===waCurrentUid; });
   if(!c||!c.telefono){ invShowToast('Sin número de teléfono','error'); return; }
-  var msg = document.getElementById('wa-msg-preview').value;
-  var tel = c.telefono.replace(/\D/g,'');
-  c.waEstado = waCurrentStatus;
+  var msg=document.getElementById('wa-msg-preview').value;
+  var tel=c.telefono.replace(/\D/g,'');
+  c.waEstado=waCurrentStatus;
   guardar();
   closeModal('modalWA');
-  /* Show color picker before opening WhatsApp */
-  var colorEl = document.getElementById('color-modal-data');
-  colorEl.dataset.tel = tel;
-  colorEl.dataset.msg = encodeURIComponent(msg);
-  colorEl.dataset.uid = waCurrentUid;
-  openModal('modalColor');
+  window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');
+  invShowToast('Mensaje enviado','success');
 }
 
 function elegirColor(color){
