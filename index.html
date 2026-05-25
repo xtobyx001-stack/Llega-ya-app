@@ -79,7 +79,7 @@ width:100%;
 .adm-search input{width:100%;padding:12px 14px 12px 40px;border-radius:16px;border:none !important;background:#ffffff !important;color:#0f172a !important;font-size:.88rem;box-shadow:0 1px 4px rgba(0,0,0,.07) !important;-webkit-text-fill-color:#0f172a !important;-webkit-box-shadow:0 0 0 1000px #ffffff inset !important;}
 .adm-search input::placeholder{color:#94a3b8 !important;-webkit-text-fill-color:#94a3b8 !important;}
 .adm-search input:focus{outline:2px solid #2563eb !important;}
-.adm-tabs{display:flex;background:#ffffff !important;border-bottom:2px solid #e2e8f0;position:sticky;top:168px;z-index:47;}
+.adm-tabs{display:flex;background:#ffffff !important;border-bottom:2px solid #e2e8f0;position:sticky;top:185px;z-index:47;overflow-x:auto;scrollbar-width:none;}7;}
 .adm-tabs .tab{flex:1;padding:12px 4px;text-align:center;font-size:.72rem;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;color:#94a3b8 !important;margin-bottom:-2px;letter-spacing:.2px;text-transform:uppercase;}
 .adm-tabs .tab.active{color:#2563eb !important;border-bottom-color:#2563eb !important;}
 
@@ -592,21 +592,6 @@ width:100%;
 .wa-estado-btn.active-devuelto{background:#fef2f2;border-color:#f87171;color:#b91c1c;}
 .wa-estado-icon{font-size:1.1rem;width:24px;text-align:center;flex-shrink:0;}
 </style>
-
-<!-- ═══════════ MODAL COLOR MARK ═══════════ -->
-
-<div class="overlay" id="modalColor" onclick="if(event.target===this)elegirColor(null)">
-  <div class="modal" style="max-width:340px;padding:22px;text-align:center;">
-    <div id="color-modal-data" style="display:none;"></div>
-    <div style="font-size:1.3rem;margin-bottom:6px;">🎨 Marcar ficha</div>
-    <div style="font-size:.82rem;color:#64748b;margin-bottom:20px;">¿Quieres marcar esta ficha con un color para identificar a qué WhatsApp pertenece?</div>
-    <div style="display:flex;gap:10px;margin-bottom:12px;">
-      <button onclick="elegirColor('blue')" style="flex:1;padding:16px;border-radius:16px;border:2px solid #2563eb;background:#e3f0ff;color:#1a56c4;font-size:1.4rem;font-weight:700;cursor:pointer;">🔵<br><span style="font-size:.75rem;">Azul</span></button>
-      <button onclick="elegirColor('red')" style="flex:1;padding:16px;border-radius:16px;border:2px solid #dc2626;background:#fee2e2;color:#b91c1c;font-size:1.4rem;font-weight:700;cursor:pointer;">🔴<br><span style="font-size:.75rem;">Rojo</span></button>
-    </div>
-    <button onclick="elegirColor(null)" style="width:100%;padding:13px;border-radius:14px;border:1.5px solid #e2e8f0;background:#f1f5f9;color:#475569;font-size:.88rem;font-weight:700;cursor:pointer;">Sin color — solo enviar</button>
-  </div>
-</div>
 
 <div class="overlay" id="modalCliente"><div class="modal"><h2 id="modalClienteTitulo">Nuevo Cliente</h2>
   <input type="hidden" id="editId">
@@ -1387,8 +1372,8 @@ function switchTabRep(tab){
 }
 
 function getDatosPospuesto(){
-  var posp=clientes.filter(function(c){ return c.estado==='pospuesto'; });
-  if(repTabActual==='pendientes')    return posp.filter(function(c){ return c.lat&&c.lng; });
+  var posp=clientes.filter(function(c){ return c.estado==='pospuesto'||c.estado==='pospuesto_nc'; });
+  if(repTabActual==='pendientes')    return posp.filter(function(c){ return c.estado==='pospuesto'; });
   if(repTabActual==='sin_ubicacion') return posp.filter(function(c){ return !c.lat||!c.lng; });
   if(repTabActual==='contactados')   return posp.filter(function(c){ return c.estado==='pospuesto_nc'; });
   return posp;
@@ -1937,21 +1922,6 @@ function enviarMsgWA(){
   window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');
   invShowToast('Mensaje enviado','success');
 }
-
-function elegirColor(color){
-  var colorEl = document.getElementById('color-modal-data');
-  var uid = colorEl.dataset.uid;
-  var tel = colorEl.dataset.tel;
-  var msg = colorEl.dataset.msg;
-  if(color){
-    var c = clientes.find(function(x){ return x._uid===uid; });
-    if(c){ c.colorMark=color; guardar(); }
-  }
-  closeModal('modalColor');
-  window.open('https://wa.me/'+tel+'?text='+msg,'_blank');
-  invShowToast('Mensaje enviado','success');
-}
-
 
 (function(){
   var savedApp    = localStorage.getItem('llya_app')      || 'admin';
