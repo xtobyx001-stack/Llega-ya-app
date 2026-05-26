@@ -79,7 +79,9 @@ width:100%;
 .adm-search input{width:100%;padding:12px 14px 12px 40px;border-radius:16px;border:none !important;background:#ffffff !important;color:#0f172a !important;font-size:.88rem;box-shadow:0 1px 4px rgba(0,0,0,.07) !important;-webkit-text-fill-color:#0f172a !important;-webkit-box-shadow:0 0 0 1000px #ffffff inset !important;}
 .adm-search input::placeholder{color:#94a3b8 !important;-webkit-text-fill-color:#94a3b8 !important;}
 .adm-search input:focus{outline:2px solid #2563eb !important;}
-.adm-tabs{display:flex;background:#ffffff !important;border-bottom:2px solid #e2e8f0;position:sticky;top:185px;z-index:47;overflow-x:auto;scrollbar-width:none;}7;}
+.adm-tabs{display:flex;background:#ffffff !important;border-bottom:2px solid #e2e8f0;position:sticky;top:185px;z-index:47;}
+.adm-tabs .tab{flex:1;padding:12px 4px;text-align:center;font-size:.72rem;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;color:#94a3b8 !important;margin-bottom:-2px;letter-spacing:.2px;text-transform:uppercase;}
+.adm-tabs .tab.active{color:#2563eb !important;border-bottom-color:#2563eb !important;}7;}
 .adm-tabs .tab{flex:1;padding:12px 4px;text-align:center;font-size:.72rem;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;color:#94a3b8 !important;margin-bottom:-2px;letter-spacing:.2px;text-transform:uppercase;}
 .adm-tabs .tab.active{color:#2563eb !important;border-bottom-color:#2563eb !important;}
 
@@ -533,18 +535,6 @@ width:100%;
   </div>
 </div>
 
-```
-  <div class="rep-brand">
-    
-    <div class="r-phone">Paquetes asignados</div>
-  </div>
-</div>
-<div class="rep-actions">
-  
-</div>
-```
-
-  </div>
   <div class="rep-search">
     <div class="sw"><span class="lupa">&#128269;</span>
       <input type="text" id="searchRep" placeholder="Buscar pospuestos..." oninput="renderRep()">
