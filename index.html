@@ -555,7 +555,7 @@ width:100%;
 <div style="font-size:.65rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">
   Mensaje (WhatsApp) <span id="wa-char-count" style="float:right;color:#2563eb;"></span>
 </div>
-<textarea id="wa-msg-preview" rows="4" style="width:100%;padding:12px;border-radius:13px;border:1.5px solid #e2e8f0;background:#f8fafc;font-size:.84rem;color:#0f172a;resize:none;line-height:1.5;" oninput="document.getElementById('wa-char-count').textContent=this.value.length+' / 160'"></textarea>
+<textarea id="wa-msg-preview" rows="4" style="width:100%;padding:12px;border-radius:13px;border:1.5px solid #e2e8f0;background:#f8fafc;font-size:.84rem;color:#0f172a;resize:none;line-height:1.5;" oninput="var n=this.value.length;var el=document.getElementById('wa-char-count');el.textContent=n+' chars';el.style.color=n>4000?'#dc2626':n>300?'#f59e0b':'#2563eb';"></textarea>
 
 <button onclick="enviarMsgWA()" style="width:100%;margin-top:14px;padding:15px;background:#16a34a;color:#fff;border:none;border-radius:16px;font-size:.92rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">&#128172; Guardar y Notificar</button>
 <button onclick="closeModal('modalWA')" style="width:100%;margin-top:8px;padding:13px;background:#f1f5f9;color:#475569;border:none;border-radius:16px;font-size:.88rem;font-weight:700;cursor:pointer;">Cancelar</button>
@@ -1898,10 +1898,12 @@ function enviarMsgWA(){
   if(!c||!c.telefono){ invShowToast('Sin número de teléfono','error'); return; }
   var msg=document.getElementById('wa-msg-preview').value;
   var tel=c.telefono.replace(/\D/g,'');
+  /* Open WhatsApp FIRST before any other operations - Safari blocks popup if delayed */
+  var waWin=window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');
+  if(!waWin){ invShowToast('Permite ventanas emergentes para abrir WhatsApp','error'); return; }
   c.waEstado=waCurrentStatus;
   guardar();
   closeModal('modalWA');
-  window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');
   invShowToast('Mensaje enviado','success');
 }
 
