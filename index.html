@@ -713,11 +713,20 @@ function switchApp(app, skipSave){
 }
 
 function openModal(id){
-  if(id==='modalConfigRep') document.getElementById('labelBorrar').textContent = repTabActual==='pendientes'?'Pendientes':'Ya Contact\u00e9';
+  if(id==='modalConfigRep') document.getElementById('labelBorrar').textContent = repTabActual==='pendientes'?'Pospuestos':'No Contesta';
   document.getElementById(id).classList.add('open');
 }
 function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.overlay').forEach(function(o){ o.addEventListener('click',function(e){ if(e.target===o) o.classList.remove('open'); }); });
+/* Use event delegation so ALL overlays including dynamically shown ones close on outside click */
+document.addEventListener('click', function(e){
+  if(e.target.classList.contains('overlay')) e.target.classList.remove('open');
+});
+
+function guardarFecha(){
+  repFecha=document.getElementById('inputFecha').value;
+  localStorage.setItem(FECHA_KEY,repFecha);
+  closeModal('modalFecha'); renderRep();
+}
 
 /* APP ADMIN */
 var adminTab = 'pendientes';
@@ -830,8 +839,7 @@ function renderAdmin(){
           completadoBtn+
           '<button class="card-action-pill pill-green" style="max-width:82px" onclick="marcarEntregadoDesdeRuta(\''+uid+'\')">&#10003; Entregado</button>'+
           '<button class="card-action-pill pill-red" style="max-width:68px" onclick="marcarDevolucionDesdeRuta(\''+uid+'\')">&#8617; Dev.</button>'+
-          '<button class="card-action-pill" style="background:#fff8e1;color:#f57f17;border:1.5px solid #ffe082;max-width:82px" onclick="moverAPospuesto(\''+uid+'\')">&#9203; Posponer</button>'+
-        '</div>'+
+          '<button class="card-action-pill" style="background:#fff8e1;color:#f57f17;border:1.5px solid #ffe082;max-width:82px" onclick="moverAPospuesto(\''+uid+'\')">&#9203; Posponer</button>'+        '</div>'+
       '</div>'+
     '</div>'+
     '</div>';
@@ -1411,7 +1419,7 @@ function renderRep(){
           noContestaBtn+
           '<button class="card-action-pill pill-green" style="max-width:90px" onclick="marcarEntregadoDesdeRuta(\''+uid+'\')">&#10003; Entregado</button>'+
           '<button class="card-action-pill pill-red" style="max-width:68px" onclick="marcarDevolucionDesdeRuta(\''+uid+'\')">&#8617; Dev.</button>'+
-          '<button class="card-action-pill" style="background:#e8f0fe;color:#1a56c4;border:1.5px solid #90bbf5;" onclick="moverARoutas(\''+uid+'\')">&#8593; A Rutas</button>'+
+          '<button class="card-action-pill" style="background:#e8f0fe;color:#1a56c4;border:1.5px solid #90bbf5;" onclick="moverAPospuesto(\''+uid+'\')">&#8593; A Rutas</button>'+
         '</div>'+
       '</div>'+
     '</div>'+
@@ -1448,9 +1456,17 @@ function toggleColor(uid){
 
 function moverAPospuesto(uid){
   var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
-  c.estado='pospuesto'; c.contactado=false;
-  guardar();
-  invShowToast(c.nombre+' movido a Pospuesto','info');
+  if(c.estado==='pospuesto'||c.estado==='pospuesto_nc'){
+    /* Already pospuesto → move back to Rutas */
+    c.estado='pendiente'; c.contactado=false;
+    guardar();
+    invShowToast(c.nombre+' movido a Rutas','success');
+  } else {
+    /* In Rutas → move to Pospuesto */
+    c.estado='pospuesto'; c.contactado=false;
+    guardar();
+    invShowToast(c.nombre+' movido a Pospuesto','info');
+  }
 }
 
 function moverARoutas(uid){
