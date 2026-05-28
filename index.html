@@ -1309,7 +1309,10 @@ function editarCliente(uid){
   var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
   document.getElementById('editId').value=uid;
   document.getElementById('modalClienteTitulo').textContent='Editar Cliente';
-  ['cNombre','cTel','cCod','cCoords'].forEach(function(id){ document.getElementById(id).value=''; });
+  document.getElementById('cNombre').value=c.nombre||'';
+  document.getElementById('cTel').value=c.telefono||'';
+  document.getElementById('cCod').value=calcCod(c)||'';
+  document.getElementById('cCoords').value=(c.lat&&c.lng)?c.lat+','+c.lng:'';
   openModal('modalCliente');
 }
 function guardarCliente(){
@@ -1320,13 +1323,32 @@ function guardarCliente(){
   var coordsVal=document.getElementById('cCoords').value.trim();
   if(editId){
     var c=clientes.find(function(x){ return x._uid===editId; });
-    if(c){ if(nombre) c.nombre=nombre; if(telefono) c.telefono=telefono; if(codVal) c.cod=parseFloat(codVal); if(coordsVal){ var m=coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/); if(m){ c.lat=parseFloat(m[1]); c.lng=parseFloat(m[2]); } } }
+    if(c){
+      if(nombre) c.nombre=nombre;
+      if(telefono) c.telefono=telefono.replace(/\D/g,'');
+      if(codVal) c.cod=parseFloat(codVal)||0;
+      if(coordsVal){
+        var m=coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
+        if(m){ c.lat=parseFloat(m[1]); c.lng=parseFloat(m[2]); }
+      }
+    }
+    guardar();
+    closeModal('modalCliente');
+    invShowToast('Cliente actualizado','success');
   } else {
-    if(!nombre) return alert('El nombre es requerido');
-    var cm=coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
-    clientes.push({_uid:generarId(),nombre:nombre,telefono:telefono,cod:parseFloat(codVal)||0,lat:cm?parseFloat(cm[1]):null,lng:cm?parseFloat(cm[2]):null,estado:'pendiente'});
+    if(!nombre){ invShowToast('El nombre es requerido','error'); return; }
+    var cm=coordsVal?coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/):null;
+    clientes.push({
+      _uid:generarId(),nombre:nombre,
+      telefono:telefono.replace(/\D/g,''),
+      cod:parseFloat(codVal)||0,
+      nota:'',lat:cm?parseFloat(cm[1]):null,
+      lng:cm?parseFloat(cm[2]):null,estado:'pendiente'
+    });
+    guardar();
+    closeModal('modalCliente');
+    invShowToast('Cliente agregado','success');
   }
-  guardar(); closeModal('modalCliente');
 }
 function abrirUbi(uid){ document.getElementById('ubiId').value=uid; document.getElementById('ubiInput').value=''; openModal('modalUbi'); }
 function guardarUbicacion(){
