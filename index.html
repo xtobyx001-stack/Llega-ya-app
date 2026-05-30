@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-
-<html lang="es">
+<!DOCTYPE html><html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -8,9 +6,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent !important;}
-body{background:#f0f4f8 !important;color:#0f172a !important;min-height:100vh;padding-bottom:80px;overflow-x:hidden;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;}
-
-/* ── DRAWER ── */
+body{background:#f0f4f8 !important;color:#0f172a !important;min-height:100vh;padding-bottom:80px;overflow-x:hidden;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;}/* ── DRAWER ── */
 #drawer-overlay{position:fixed;inset:0;background:transparent !important;z-index:200;pointer-events:none;transition:background .3s;}
 #drawer-overlay.open{background:rgba(15,23,42,.45) !important;pointer-events:all;}
 #drawer{position:fixed;top:0;left:-290px;width:270px;height:100%;background:#ffffff !important;z-index:201;transition:left .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;border-radius:0 24px 24px 0;box-shadow:8px 0 30px rgba(0,0,0,.12) !important;overflow:hidden;}
@@ -30,21 +26,18 @@ body{background:#f0f4f8 !important;color:#0f172a !important;min-height:100vh;pad
 .dw-avatar{width:36px;height:36px;background:#2563eb !important;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff !important;font-size:.85rem;}
 .dw-uname{font-size:.82rem;font-weight:700;color:#0f172a !important;}
 .dw-urole{font-size:.68rem;color:#94a3b8 !important;}
-
 /* ── HEADER ── */
 header{background:#ffffff !important;padding:0 16px;height:58px;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.05) !important;}
 .header-title{display:flex;align-items:center;gap:8px;}
 .header-title .app-badge{font-size:.65rem;font-weight:700;background:#eff6ff !important;color:#2563eb !important;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;}
 header h1{font-size:.95rem;font-weight:800;color:#0f172a !important;letter-spacing:-.2px;}
 .hamburger{background:#f1f5f9 !important;border:none !important;color:#0f172a !important;font-size:1.1rem;cursor:pointer;padding:9px 11px;line-height:1;border-radius:12px;}
-
 /* ════════════════════════════════════
 SISTEMA DE BOTONES UNIFICADO
 Estilo “Completado”: fondo pastel,
 borde del mismo color, texto sólido,
 sin sombra, bien redondeado
 ════════════════════════════════════ */
-
 /* Mixin base para todos los botones */
 .btn-pill {
 display:inline-flex; align-items:center; justify-content:center; gap:6px;
@@ -54,24 +47,22 @@ border-width:1.5px; border-style:solid; transition:opacity .15s;
 width:100%;
 }
 .btn-pill:active{opacity:.75;}
-
-/* Verde (Completado, WhatsApp, Guardar, +Cliente, Entregado) */
+/* Verde (Completado, WhatsApp, Guardar, +Cliente, Entregado) /
 .btn-green  { background:#e8f5e9 !important; border-color:#81c784 !important; color:#2e7d32 !important; }
-/* Azul (Mapa, Excel, primario) */
+/ Azul (Mapa, Excel, primario) /
 .btn-blue   { background:#e3f0ff !important; border-color:#90bbf5 !important; color:#1a56c4 !important; }
-/* Morado (GPS, Cercanía) */
+/ Morado (GPS, Cercanía) /
 .btn-purple { background:#ede7f6 !important; border-color:#b39ddb !important; color:#5e35b1 !important; }
-/* Rojo (Eliminar, No entregado, Borrar) */
+/ Rojo (Eliminar, No entregado, Borrar) /
 .btn-red    { background:#fce8e8 !important; border-color:#ef9a9a !important; color:#c62828 !important; }
-/* Naranja (Devolución, Último aviso) */
+/ Naranja (Devolución, Último aviso) /
 .btn-orange { background:#fff3e0 !important; border-color:#ffb74d !important; color:#e65100 !important; }
-/* Gris (Cancelar, Pendiente, Contacté) */
+/ Gris (Cancelar, Pendiente, Contacté) /
 .btn-gray   { background:#f1f5f9 !important; border-color:#cbd5e1 !important; color:#475569 !important; }
-/* Slate/oscuro (Fecha, Config) */
+/ Slate/oscuro (Fecha, Config) /
 .btn-slate  { background:#eef2f7 !important; border-color:#b0bec5 !important; color:#37474f !important; }
-/* Amarillo/Exportar */
+/ Amarillo/Exportar */
 .btn-amber  { background:#fffde7 !important; border-color:#ffe082 !important; color:#f57f17 !important; }
-
 /* ── ADMIN STICKY ── */
 .adm-bar{display:flex;gap:8px;padding:12px 14px;background:#ffffff !important;border-bottom:1px solid #e2e8f0;position:sticky;top:58px;z-index:49;}
 .adm-bar button{flex:1;padding:13px 6px;border-radius:18px;font-weight:700;font-size:.82rem;cursor:pointer;border-width:1.5px;border-style:solid;letter-spacing:.1px;}
@@ -84,7 +75,6 @@ width:100%;
 .adm-tabs .tab.active{color:#2563eb !important;border-bottom-color:#2563eb !important;}7;}
 .adm-tabs .tab{flex:1;padding:12px 4px;text-align:center;font-size:.72rem;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;color:#94a3b8 !important;margin-bottom:-2px;letter-spacing:.2px;text-transform:uppercase;}
 .adm-tabs .tab.active{color:#2563eb !important;border-bottom-color:#2563eb !important;}
-
 /* ── REP STICKY ── */
 .rep-sticky{position:sticky;top:58px;z-index:49;background:#ffffff !important;border-bottom:1px solid #e2e8f0;}
 .rep-top{display:flex;align-items:center;gap:12px;padding:12px 14px 10px;}
@@ -99,7 +89,6 @@ width:100%;
 .rep-tabs .tab.active{color:#2563eb !important;border-bottom-color:#2563eb !important;}
 .rep-search{padding:10px 14px;background:#f0f4f8 !important;border-bottom:1px solid #e2e8f0;}
 .rep-search input{width:100%;padding:12px 14px 12px 40px;border-radius:16px;border:none !important;background:#ffffff !important;color:#0f172a !important;font-size:.88rem;outline:none !important;box-shadow:0 1px 4px rgba(0,0,0,.07) !important;}
-
 /* ── INV STICKY ── */
 .inv-sticky{position:sticky;top:58px;z-index:49;background:#ffffff !important;border-bottom:1px solid #e2e8f0;}
 .inv-top-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 10px;}
@@ -109,11 +98,9 @@ width:100%;
 .inv-tabs-bar{display:flex;border-top:1px solid #e2e8f0;border-bottom:2px solid #e2e8f0;}
 .inv-tab{flex:1;padding:12px 8px;text-align:center;font-size:.72rem;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:#94a3b8 !important;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;}
 .inv-tab.active{color:#2563eb !important;border-bottom-color:#2563eb !important;}
-
 /* ── SEARCH ── */
 .sw{position:relative;}
 .sw .lupa{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:.9rem;pointer-events:none;color:#94a3b8 !important;}
-
 /* ── UNIVERSAL CARD ── */
 #list-admin,#list-rep{padding:14px;}
 .card-v2{background:#ffffff !important;border-radius:22px;margin-bottom:12px;border:1px solid #e8edf4 !important;box-shadow:0 2px 10px rgba(15,23,42,.07),0 6px 20px rgba(15,23,42,.04) !important;display:flex;overflow:hidden;transition:transform .12s;}
@@ -139,33 +126,27 @@ width:100%;
 .card-notes{margin:6px 0 8px;background:#f8fafc !important;border-radius:12px;padding:9px 11px;border:1px solid #e8edf4 !important;}
 .note-line{font-size:.78rem;color:#334155 !important;padding:2px 0;}
 .note-simple{font-size:.78rem;color:#334155 !important;padding:4px 0 8px;}
-
 /* Card action buttons — pill style like “Completado” */
 .cv2-actions{display:flex;flex-direction:column;gap:8px;margin-top:10px;}
 .cv2-row-main{display:flex;gap:8px;}
 .cv2-row-secondary{display:flex;align-items:center;gap:7px;}
-
 .cv2-btn{flex:1;padding:12px 6px;border-radius:18px;font-weight:700;font-size:.8rem;cursor:pointer;text-align:center;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:5px;border-width:1.5px;border-style:solid;}
 .cv2-btn-blue  {background:#e3f0ff !important;border-color:#90bbf5 !important;color:#1a56c4 !important;}
 .cv2-btn-wa    {background:#e8f5e9 !important;border-color:#81c784 !important;color:#2e7d32 !important;}
 .cv2-btn-purple{background:#ede7f6 !important;border-color:#b39ddb !important;color:#5e35b1 !important;}
 .cv2-btn-ult{background:#fff0f0 !important;border-color:#ffb3b3 !important;color:#c0392b !important;}
-
 .card-action-pill{flex:1;padding:12px 8px;border-radius:18px;border-width:1.5px;border-style:solid;font-weight:700;font-size:.8rem;cursor:pointer;text-align:center;}
 .pill-green{background:#e8f5e9 !important;border-color:#81c784 !important;color:#2e7d32 !important;}
 .pill-gray  {background:#f1f5f9 !important;border-color:#cbd5e1 !important;color:#475569 !important;}
 .pill-orange{background:#fff3e0 !important;border-color:#ffb74d !important;color:#e65100 !important;}
 .pill-red   {background:#fce8e8 !important;border-color:#ef9a9a !important;color:#c62828 !important;}
 .pill-purple{background:#ede7f6 !important;border-color:#b39ddb !important;color:#5e35b1 !important;}
-
 .cv2-icon-btn{background:#f1f5f9 !important;border:1.5px solid #cbd5e1 !important;color:#475569 !important;border-radius:13px;width:40px;height:40px;font-size:.9rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
 .cv2-icon-btn-amber{background:#fffde7 !important;border-color:#ffe082 !important;color:#f57f17 !important;}
 .cv2-icon-btn-red  {background:#fce8e8 !important;border-color:#ef9a9a !important;color:#c62828 !important;}
-
 /* ── INV VIEWS ── */
 .inv-view{display:none;padding:14px;background:#f0f4f8 !important;min-height:calc(100vh - 120px);}
 .inv-view.active{display:block;}
-
 .upload-zone{border:2px dashed #cbd5e1 !important;border-radius:22px;padding:38px 20px;text-align:center;cursor:pointer;position:relative;overflow:hidden;background:#ffffff !important;}
 .upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:16px;}
 .upload-icon{font-size:2.6rem;display:block;margin-bottom:10px;}
@@ -175,20 +156,17 @@ width:100%;
 .file-pill strong{font-size:.83rem;color:#0f172a !important;font-weight:700;display:block;}
 .file-pill span{font-size:.7rem;color:#334155 !important;}
 .btn-clear-inv{background:none !important;border:none !important;color:#dc2626 !important;font-size:1.1rem;cursor:pointer;padding:4px;margin-left:auto;}
-
 .map-card{background:#ffffff !important;border:1px solid #e8edf4 !important;border-radius:20px;padding:16px;margin-top:14px;}
 .map-card h4{font-size:.72rem;font-weight:700;color:#2563eb !important;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
 .map-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
 .map-lbl{font-size:.72rem;color:#334155 !important;font-weight:600;width:82px;flex-shrink:0;}
 .map-sel{flex:1;background:#f8fafc !important;border:1.5px solid #e2e8f0 !important;color:#0f172a !important;padding:8px 10px;border-radius:10px;font-size:.74rem;}
 .map-sel:focus{outline:none !important;border-color:#2563eb !important;}
-
 /* Inv buttons — same pill style */
 .ibtn{display:block;width:100%;padding:14px;border-radius:18px;font-size:.9rem;font-weight:700;cursor:pointer;text-align:center;margin-top:12px;border-width:1.5px;border-style:solid;}
 .ibtn-primary  {background:#e3f0ff !important;border-color:#90bbf5 !important;color:#1a56c4 !important;}
 .ibtn-secondary{background:#f1f5f9 !important;border-color:#cbd5e1 !important;color:#475569 !important;}
 .ibtn-danger   {background:#fce8e8 !important;border-color:#ef9a9a !important;color:#c62828 !important;}
-
 .stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;}
 .stat-box{background:#ffffff !important;border:1px solid #e8edf4 !important;border-radius:16px;padding:16px 8px;text-align:center;}
 .stat-n{font-size:1.7rem;font-weight:800;}
@@ -196,13 +174,11 @@ width:100%;
 .sn-blue{color:#1a56c4 !important;}
 .sn-green{color:#2e7d32 !important;}
 .sn-red{color:#c62828 !important;}
-
 .ftabs{display:flex;border-bottom:2px solid #e2e8f0;overflow-x:auto;scrollbar-width:none;background:#ffffff !important;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
 .ftabs::-webkit-scrollbar{display:none;}
 .ftab{flex-shrink:0;padding:11px 12px;font-size:.63rem;font-weight:700;cursor:pointer;border:none !important;border-bottom:2px solid transparent;background:none !important;color:#94a3b8 !important;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;margin-bottom:-2px;scroll-snap-align:start;}
 .ftab.active{color:#2563eb !important;border-bottom-color:#2563eb !important;}
 .ftab-n{display:inline-block;background:#e2e8f0 !important;color:#334155 !important;border-radius:20px;font-size:.58rem;font-weight:700;padding:1px 6px;margin-left:3px;vertical-align:middle;}
-
 /* ── RECORD CARDS (Inventario > Registros) — mismo estilo blanco unificado ── */
 .record-item{background:#ffffff !important;border:1px solid #e8edf4 !important;border-radius:22px;padding:15px;margin-bottom:11px;cursor:pointer;box-shadow:0 2px 10px rgba(15,23,42,.07),0 6px 20px rgba(15,23,42,.04) !important;display:flex;flex-direction:column;transition:transform .12s;}
 .record-item:active{transform:scale(.985);}
@@ -213,19 +189,16 @@ width:100%;
 .record-customer{font-size:.93rem;font-weight:800;color:#0f172a !important;margin-top:3px;}
 .record-meta{font-size:.75rem;color:#64748b !important;margin-top:2px;}
 .scanned-badge{display:inline-flex;align-items:center;background:#e8f5e9 !important;border:1px solid #81c784 !important;border-radius:20px;padding:2px 8px;font-size:.58rem;font-weight:700;color:#2e7d32 !important;text-transform:uppercase;}
-
 /* Status pills — match the unified pastel style */
 .status-pill{display:inline-flex;align-items:center;font-size:.66rem;font-weight:700;padding:4px 11px;border-radius:20px;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;border-width:1.5px;border-style:solid;}
 .pill-pendiente   {background:#f1f5f9 !important;color:#64748b !important;border-color:#cbd5e1 !important;}
 .pill-entregado   {background:#e8f5e9 !important;color:#2e7d32 !important;border-color:#81c784 !important;}
 .pill-no-entregado{background:#fce8e8 !important;color:#c62828 !important;border-color:#ef9a9a !important;}
 .pill-devolucion  {background:#fff3e0 !important;color:#e65100 !important;border-color:#ffb74d !important;}
-
 /* Buttons inside record card — unified pill style */
 .btn-quick-del{background:#fce8e8 !important;border:1.5px solid #ef9a9a !important;color:#c62828 !important;border-radius:12px;font-size:.68rem;font-weight:700;padding:5px 11px;cursor:pointer;white-space:nowrap;}
 .quick-move-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;padding-top:10px;border-top:1px solid #f1f5f9 !important;}
 .btn-move{background:#f1f5f9 !important;border:1.5px solid #e2e8f0 !important;color:#475569 !important;border-radius:12px;font-size:.7rem;font-weight:600;padding:7px 12px;cursor:pointer;}
-
 /* Scan form */
 .pkg-card{background:#ffffff !important;border:1px solid #e8edf4 !important;border-radius:22px;padding:16px;margin-bottom:12px;}
 .pkg-id{font-size:1rem;font-weight:800;color:#1a56c4 !important;margin-bottom:2px;}
@@ -235,7 +208,6 @@ width:100%;
 .pkg-field-label{font-size:.6rem;color:#94a3b8 !important;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:3px;}
 .pkg-field-value{font-size:.84rem;font-weight:600;color:#0f172a !important;}
 .pkg-full{grid-column:1/-1;}
-
 /* Status buttons — pill style */
 .status-btns{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;}
 .sbtn{flex:1;min-width:calc(50% - 4px);padding:12px;border-radius:16px;font-size:.8rem;font-weight:700;cursor:pointer;border-width:1.5px;border-style:solid;transition:all .15s;text-align:center;}
@@ -247,7 +219,6 @@ width:100%;
 .sbtn.pendiente-prog.active{background:#1a56c4 !important;border-color:#1a56c4 !important;color:#fff !important;}
 .sbtn.devolucion    {background:#fff3e0 !important;border-color:#ffb74d !important;color:#e65100 !important;}
 .sbtn.devolucion.active{background:#e65100 !important;border-color:#e65100 !important;color:#fff !important;}
-
 .motivo-row{margin-bottom:10px;display:none;}
 .motivo-row.show{display:block;}
 .extra-row{margin-bottom:10px;display:none;}
@@ -256,12 +227,10 @@ width:100%;
 .inv-sel:focus{outline:none !important;border-color:#2563eb !important;}
 .inv-ta{width:100%;background:#f8fafc !important;border:1.5px solid #e2e8f0 !important;color:#0f172a !important;padding:11px 12px;border-radius:13px;font-size:.84rem;resize:none;}
 .inv-ta:focus{outline:none !important;border-color:#2563eb !important;}
-
 .manual-row{display:flex;gap:9px;margin-bottom:14px;}
 .inv-text-input{flex:1;background:#ffffff !important;border:1.5px solid #e2e8f0 !important;color:#0f172a !important;padding:12px 14px;border-radius:14px;font-size:.9rem;outline:none !important;}
 .inv-text-input:focus{border-color:#2563eb !important;}
 .btn-search-inv{background:#e3f0ff !important;color:#1a56c4 !important;border:1.5px solid #90bbf5 !important;border-radius:14px;padding:12px 16px;font-size:1.1rem;cursor:pointer;font-weight:700;}
-
 .scanner-box{position:relative;border-radius:20px;overflow:hidden;background:#000 !important;aspect-ratio:4/3;margin-bottom:14px;}
 .scan-ov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
 .scan-frame{width:65%;aspect-ratio:3/1;border:2px solid #2563eb !important;border-radius:10px;box-shadow:0 0 0 9999px rgba(0,0,0,.5) !important;position:relative;}
@@ -270,10 +239,8 @@ width:100%;
 #quagga-viewport,#quick-quagga-viewport{position:absolute;inset:0;width:100%;height:100%;}
 #quagga-viewport video,#quick-quagga-viewport video{width:100%;height:100%;object-fit:cover;}
 #quagga-viewport canvas,#quick-quagga-viewport canvas{display:none;}
-
 .inv-search-input{width:100%;background:#ffffff !important;border:none !important;color:#0f172a !important;padding:12px 14px;border-radius:14px;font-size:.88rem;outline:none !important;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.07) !important;}
 .inv-search-input:focus{outline:2px solid #2563eb !important;}
-
 /* MODALS */
 .overlay{position:fixed;inset:0;background:rgba(15,23,42,.55) !important;z-index:300;display:none;align-items:center;justify-content:center;padding:20px;}
 .overlay.open{display:flex;}
@@ -286,7 +253,6 @@ width:100%;
 .field textarea{resize:vertical;min-height:80px;}
 .modal-btns{display:flex;gap:9px;margin-top:16px;}
 .modal-btns button{flex:1;padding:13px;border-radius:16px;border-width:1.5px !important;border-style:solid !important;font-weight:700;cursor:pointer;font-size:.9rem;}
-
 .inv-sheet-back{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55) !important;z-index:300;align-items:flex-end;justify-content:center;}
 .inv-sheet-back.open{display:flex;}
 .inv-sheet{background:#ffffff !important;border-radius:24px 24px 0 0;padding:22px;width:100%;max-height:85vh;overflow-y:auto;}
@@ -300,10 +266,8 @@ width:100%;
 .sheet-field:last-child{border-bottom:none;}
 .sheet-field label{font-size:.62rem;color:#94a3b8 !important;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:3px;font-weight:700;}
 .sheet-field .val{font-size:.87rem;font-weight:600;color:#0f172a !important;}
-
 .fab{position:fixed;bottom:22px;right:16px;display:flex;flex-direction:column;gap:10px;z-index:49;}
 .fab button{width:52px;height:52px;border-radius:50%;font-size:1.2rem;cursor:pointer;background:#e3f0ff !important;border:1.5px solid #90bbf5 !important;color:#1a56c4 !important;}
-
 .empty{text-align:center;padding:52px 20px;color:#94a3b8 !important;}
 .empty p{font-size:.88rem;margin-top:8px;}
 .empty-icon{font-size:2.6rem;display:block;margin-bottom:8px;}
@@ -313,20 +277,14 @@ width:100%;
 .ec-btn{background:#fce8e8 !important;border:1.5px solid #ef9a9a !important;color:#c62828 !important;border-radius:12px;padding:6px 11px;font-size:.71rem;cursor:pointer;font-weight:700;}
 .divider{height:1px;background:#e2e8f0 !important;margin:12px 0;}
 .scanned-tag{display:inline-flex;align-items:center;background:#e8f5e9 !important;border:1px solid #81c784 !important;border-radius:20px;padding:2px 8px;font-size:.58rem;font-weight:700;color:#2e7d32 !important;text-transform:uppercase;margin-left:5px;}
-
 .toast-inv{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);padding:13px 22px;border-radius:40px;font-size:.84rem;font-weight:700;z-index:400;transition:transform .3s ease;white-space:nowrap;color:#fff !important;}
 .toast-inv.show{transform:translateX(-50%) translateY(0);}
 .toast-inv.success{background:#2e7d32 !important;}
 .toast-inv.error  {background:#c62828 !important;}
 .toast-inv.info   {background:#1a56c4 !important;}
-
 </style>
 </head>
-<body>
-
-<!-- DRAWER -->
-
-<div id="drawer-overlay" onclick="closeDrawer()"></div>
+<body><!-- DRAWER --><div id="drawer-overlay" onclick="closeDrawer()"></div>
 <div id="drawer">
   <div class="dw-head">
     <div class="dw-brand"><div class="dw-icon">LY</div><div class="dw-name">LLEGA YA</div></div>
@@ -344,21 +302,13 @@ width:100%;
       <div><div class="dw-uname">Llega Ya</div><div class="dw-urole">Delivery Partner</div></div>
     </div>
   </div>
-</div>
-
-<!-- HEADER -->
-
-<header>
+</div><!-- HEADER --><header>
   <div class="header-title">
     <h1 id="headerTitle">Rutas</h1>
     <span class="app-badge" id="headerBadge">Admin</span>
   </div>
   <button class="hamburger" onclick="openDrawer()">&#9776;</button>
-</header>
-
-<!-- ═══════════ APP ADMIN ═══════════ -->
-
-<div id="app-admin">
+</header><!-- ═══════════ APP ADMIN ═══════════ --><div id="app-admin">
   <div class="adm-bar">
     <button class="btn-blue" onclick="document.getElementById('fileInputAdminXlsx').click()">&#128202; Excel</button>
     <button class="btn-green" style="background:#059669;color:#fff;" onclick="document.getElementById('fileInputAdminJSON').click()">&#123;&#125; JSON</button>
@@ -366,19 +316,13 @@ width:100%;
     <button class="btn-green" onclick="abrirNuevoCliente()">&#43; Cliente</button>
   </div>
   <input type="file" id="fileInputAdminXlsx" accept=".xlsx,.xls" style="display:none" onchange="cargarExcelAdmin(event)">
-  <input type="file" id="fileInputAdminJSON" accept=".json" style="display:none" onchange="cargarJSON(event)">
-
-  <!-- MAPA DE RUTA -->
-
-  <div id="route-map-wrap" style="display:none;margin:10px 14px 0;border-radius:18px;overflow:hidden;box-shadow:0 2px 10px rgba(15,23,42,.10);position:relative;">
+  <input type="file" id="fileInputAdminJSON" accept=".json" style="display:none" onchange="cargarJSON(event)"><!-- MAPA DE RUTA --><div id="route-map-wrap" style="display:none;margin:10px 14px 0;border-radius:18px;overflow:hidden;box-shadow:0 2px 10px rgba(15,23,42,.10);position:relative;">
     <canvas id="route-map-canvas" style="width:100%;display:block;border-radius:18px;"></canvas>
     <div style="position:absolute;bottom:10px;right:10px;">
       <button onclick="abrirGoogleMapsRuta()" style="background:#2563eb;color:#fff;border:none;border-radius:14px;padding:10px 16px;font-size:.78rem;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(37,99,235,.35);">&#127758; Abrir en Maps</button>
     </div>
     <div style="position:absolute;top:10px;left:10px;background:rgba(255,255,255,.92);border-radius:10px;padding:5px 10px;font-size:.7rem;font-weight:700;color:#0f172a;" id="route-map-info"></div>
-  </div>
-
-  <div class="adm-search">
+  </div><div class="adm-search">
     <div class="sw"><span class="lupa">&#128269;</span>
       <input type="text" id="busqueda" placeholder="Buscar por nombre o tel&#233;fono..." oninput="renderAdmin()">
     </div>
@@ -393,11 +337,7 @@ width:100%;
   <div class="fab" id="fab-admin">
     <button onclick="openModal('modalConfigAdmin')">&#9881;&#65039;</button>
   </div>
-</div>
-
-<!-- ═══════════ APP POSPUESTO ═══════════ -->
-
-<div id="app-rep" style="display:none">
+</div><!-- ═══════════ APP POSPUESTO ═══════════ --><div id="app-rep" style="display:none">
   <div class="adm-bar">
     <button class="btn-blue" onclick="document.getElementById('fileInputPospXlsx').click()">&#128202; Excel</button>
     <input type="file" id="fileInputPospXlsx" accept=".xlsx,.xls" style="display:none" onchange="cargarExcelRep(event)">
@@ -414,11 +354,7 @@ width:100%;
     <div class="tab" onclick="switchTabRep('contactados')">No Contesta</div>
   </div>
   <div id="list-rep"><div class="empty"><span class="empty-icon">&#9203;</span><p>No hay paquetes pospuestos</p></div></div>
-</div>
-
-<!-- ═══════════ APP INVENTARIO ═══════════ -->
-
-<div id="app-inv" style="display:none">
+</div><!-- ═══════════ APP INVENTARIO ═══════════ --><div id="app-inv" style="display:none">
   <div class="inv-sticky">
     <div class="inv-top-bar">
       <div class="ititle">LLEGA<span>YA</span> &middot; Inventario</div>
@@ -436,11 +372,7 @@ width:100%;
       <button class="ftab" data-val="devolucion" onclick="invSetFilter(this,'devolucion')">Devoluciones <span class="ftab-n" id="icount-devolucion">0</span></button>
       <button class="ftab" data-val="entregado" onclick="invSetFilter(this,'entregado')">Entregados <span class="ftab-n" id="icount-entregado">0</span></button>
     </div>
-  </div>
-
-  <!-- CARGAR -->
-
-  <div class="inv-view active" id="itab-view-cargar">
+  </div><!-- CARGAR --><div class="inv-view active" id="itab-view-cargar">
     <div style="text-align:center;padding:24px 16px 16px;">
       <div style="font-size:2.8rem;margin-bottom:10px;">&#128230;</div>
       <div style="font-size:1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">Carga el Excel desde Rutas</div>
@@ -458,11 +390,7 @@ width:100%;
         <button class="ibtn ibtn-danger" style="flex:1;margin-top:0" onclick="invClearAll()">&#128465; Limpiar todo</button>
       </div>
     </div>
-  </div>
-
-  <!-- ESCANEAR -->
-
-  <div class="inv-view" id="itab-view-escanear">
+  </div><!-- ESCANEAR --><div class="inv-view" id="itab-view-escanear">
     <div class="manual-row">
       <input type="text" class="inv-text-input" id="inv-manual-code" placeholder="OrderNo manual..." inputmode="numeric">
       <button class="btn-search-inv" onclick="invProcessCode(document.getElementById('inv-manual-code').value.trim())">&#128269;</button>
@@ -522,22 +450,14 @@ width:100%;
     <div id="inv-no-pkg-msg" style="display:none" class="empty">
       <span class="empty-icon">&#128230;</span><p>Paquete no encontrado. Verifica el OrderNo.</p>
     </div>
-  </div>
-
-  <!-- REGISTROS -->
-
-  <div class="inv-view" id="itab-view-registros">
+  </div><!-- REGISTROS --><div class="inv-view" id="itab-view-registros">
     <input type="text" class="inv-search-input" id="inv-search-input" placeholder="Buscar OrderNo o cliente..." oninput="invRenderRecords()">
     <div style="display:flex;justify-content:flex-end;padding:8px 0 4px;">
       <button onclick="invClearCurrentGroup()" style="background:#f8fafc;border:1px solid #e2e8f0;color:#334155;border-radius:8px;padding:6px 12px;font-size:.9rem;cursor:pointer;">&#9881;&#65039;</button>
     </div>
     <div id="inv-records-list"></div>
   </div>
-</div>
-
-<!-- ═══════════ MODAL WA STATUS ═══════════ -->
-
-<div class="overlay" id="modalWA" onclick="if(event.target===this)closeModal('modalWA')">
+</div><!-- ═══════════ MODAL WA STATUS ═══════════ --><div class="overlay" id="modalWA" onclick="if(event.target===this)closeModal('modalWA')">
   <div class="modal" style="max-width:420px;padding:20px;">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
       <div style="width:40px;height:40px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">&#128172;</div>
@@ -547,7 +467,6 @@ width:100%;
       </div>
     </div>
 
-```
 <div style="font-size:.65rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Nuevo Estado</div>
 
 <div id="wa-estados" style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px;"></div>
@@ -559,12 +478,10 @@ width:100%;
 
 <button onclick="enviarMsgWA()" style="width:100%;margin-top:14px;padding:15px;background:#16a34a;color:#fff;border:none;border-radius:16px;font-size:.92rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">&#128172; Guardar y Notificar</button>
 <button onclick="closeModal('modalWA')" style="width:100%;margin-top:8px;padding:13px;background:#f1f5f9;color:#475569;border:none;border-radius:16px;font-size:.88rem;font-weight:700;cursor:pointer;">Cancelar</button>
-```
 
-  </div>
+
 </div>
-
-<style>
+</div><style>
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
 .wa-estado-btn{width:100%;padding:14px 16px;border-radius:14px;border:1.5px solid #e2e8f0;background:#fff;color:#0f172a;font-size:.88rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left;transition:all .15s;}
 .wa-estado-btn.active-pendiente{background:#f1f5f9;border-color:#cbd5e1;color:#475569;}
@@ -573,45 +490,29 @@ width:100%;
 .wa-estado-btn.active-entregado{background:#dcfce7;border-color:#16a34a;color:#166534;}
 .wa-estado-btn.active-devuelto{background:#fef2f2;border-color:#f87171;color:#b91c1c;}
 .wa-estado-icon{font-size:1.1rem;width:24px;text-align:center;flex-shrink:0;}
-</style>
-
-<div class="overlay" id="modalCliente"><div class="modal"><h2 id="modalClienteTitulo">Nuevo Cliente</h2>
+</style><div class="overlay" id="modalCliente"><div class="modal"><h2 id="modalClienteTitulo">Nuevo Cliente</h2>
   <input type="hidden" id="editId">
   <div class="field"><label>Nombre</label><input type="text" id="cNombre" placeholder="Nombre completo"></div>
   <div class="field"><label>Tel&#233;fono</label><input type="tel" id="cTel" placeholder="8093334444"></div>
   <div class="field"><label>Monto RD$</label><input type="number" id="cCod" placeholder="0"></div>
   <div class="field"><label>Coordenadas</label><input type="text" id="cCoords" placeholder="19.2917, -70.2558"></div>
   <div class="modal-btns"><button class="btn-green" onclick="guardarCliente()">GUARDAR</button><button class="btn-gray" onclick="closeModal('modalCliente')">CANCELAR</button></div>
-</div></div>
-
-<div class="overlay" id="modalUbi"><div class="modal"><h2>&#128205; Actualizar Ubicaci&#243;n</h2>
+</div></div><div class="overlay" id="modalUbi"><div class="modal"><h2>&#128205; Actualizar Ubicaci&#243;n</h2>
   <input type="hidden" id="ubiId">
   <p style="font-size:.83rem;color:#64748b;margin-bottom:12px;">Pega coordenadas o link de Google Maps</p>
   <div class="field"><textarea id="ubiInput" placeholder="19.2917, -70.2558"></textarea></div>
   <div class="modal-btns"><button class="btn-green" onclick="guardarUbicacion()">GUARDAR</button><button class="btn-gray" onclick="closeModal('modalUbi')">CANCELAR</button></div>
-</div></div>
-
-<div class="overlay" id="modalConfigAdmin"><div class="modal"><h2>&#9881;&#65039; Opciones &mdash; Rutas</h2><br>
+</div></div><div class="overlay" id="modalConfigAdmin"><div class="modal"><h2>&#9881;&#65039; Opciones &mdash; Rutas</h2><br>
   <button class="ibtn ibtn-danger" onclick="if(confirm('Borrar todos los clientes?')){clientes=[];exportados=[];guardar();closeModal('modalConfigAdmin');}">&#128465; Borrar Todo</button>
   <button class="ibtn ibtn-secondary" onclick="closeModal('modalConfigAdmin')">CERRAR</button>
-</div></div>
-
-<!-- ═══════════ MODALS REP ═══════════ -->
-
-<div class="overlay" id="modalFecha"><div class="modal"><h2>&#128197; Fecha de Entrega</h2>
+</div></div><!-- ═══════════ MODALS REP ═══════════ --><div class="overlay" id="modalFecha"><div class="modal"><h2>&#128197; Fecha de Entrega</h2>
   <div class="field"><label>Fecha</label><input type="date" id="inputFecha"></div>
   <div class="modal-btns"><button class="btn-green" onclick="guardarFecha()">GUARDAR</button><button class="btn-gray" onclick="closeModal('modalFecha')">CANCELAR</button></div>
-</div></div>
-
-<div class="overlay" id="modalConfigRep"><div class="modal"><h2>&#9881;&#65039; Opciones &mdash; Entregas</h2><br>
+</div></div><div class="overlay" id="modalConfigRep"><div class="modal"><h2>&#9881;&#65039; Opciones &mdash; Entregas</h2><br>
   <button class="ibtn ibtn-danger" onclick="borrarPestanaRep()">&#128465; Borrar <span id="labelBorrar">Pendientes</span></button>
   <button class="ibtn ibtn-danger" onclick="borrarTodoRep()">&#128465; Borrar Todo</button>
   <button class="ibtn ibtn-secondary" onclick="closeModal('modalConfigRep')">CERRAR</button>
-</div></div>
-
-<!-- ═══════════ INV DETAIL SHEET ═══════════ -->
-
-<div class="inv-sheet-back" id="inv-detail-modal" onclick="invCloseModal(event)">
+</div></div><!-- ═══════════ INV DETAIL SHEET ═══════════ --><div class="inv-sheet-back" id="inv-detail-modal" onclick="invCloseModal(event)">
   <div class="inv-sheet">
     <div class="sheet-handle"></div>
     <h3>Detalle del registro</h3>
@@ -624,11 +525,7 @@ width:100%;
       <button class="ibtn ibtn-danger" style="margin-top:0;" onclick="invDeletePackage()">Borrar paquete completo</button>
     </div>
   </div>
-</div>
-
-<div class="toast-inv" id="inv-toast"></div>
-
-<script>
+</div><div class="toast-inv" id="inv-toast"></div><script>
 
 var STORAGE_KEY = 'llega_ya_clientes';
 var EXPORT_KEY  = 'llega_ya_exportados';
@@ -1936,17 +1833,14 @@ function enviarMsgWA(){
   if(!c||!c.telefono){ invShowToast('Sin número de teléfono','error'); return; }
   var msg=document.getElementById('wa-msg-preview').value;
   var tel=c.telefono.replace(/\D/g,'');
+  /* Open WhatsApp FIRST before any other operations - Safari blocks popup if delayed */
+  var waWin=window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');
+  if(!waWin){ invShowToast('Permite ventanas emergentes para abrir WhatsApp','error'); return; }
   c.waEstado=waCurrentStatus;
   guardar();
-  /* Cerrar modal antes de abrir WhatsApp */
-  document.getElementById('modalWA').classList.remove('open');
+  closeModal('modalWA');
   invShowToast('Mensaje enviado','success');
-  /* Abrir WhatsApp con pequeño delay para que Safari no bloquee */
-  setTimeout(function(){
-    window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');
-  }, 150);
 }
-
 
 (function(){
   var savedApp    = localStorage.getItem('llya_app')      || 'admin';
@@ -1985,7 +1879,5 @@ function enviarMsgWA(){
   if(savedInvTab==='registros') invRenderRecords();
 })();
 
-</script>
-
-</body>
+</script></body>
 </html>
