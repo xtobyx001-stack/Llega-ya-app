@@ -1936,14 +1936,17 @@ function enviarMsgWA(){
   if(!c||!c.telefono){ invShowToast('Sin número de teléfono','error'); return; }
   var msg=document.getElementById('wa-msg-preview').value;
   var tel=c.telefono.replace(/\D/g,'');
-  /* Open WhatsApp FIRST before any other operations - Safari blocks popup if delayed */
-  var waWin=window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');
-  if(!waWin){ invShowToast('Permite ventanas emergentes para abrir WhatsApp','error'); return; }
   c.waEstado=waCurrentStatus;
   guardar();
-  closeModal('modalWA');
+  /* Cerrar modal antes de abrir WhatsApp */
+  document.getElementById('modalWA').classList.remove('open');
   invShowToast('Mensaje enviado','success');
+  /* Abrir WhatsApp con pequeño delay para que Safari no bloquee */
+  setTimeout(function(){
+    window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');
+  }, 150);
 }
+
 
 (function(){
   var savedApp    = localStorage.getItem('llya_app')      || 'admin';
